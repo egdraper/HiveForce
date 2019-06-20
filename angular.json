@@ -1,0 +1,140 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "",
+  "projects": {
+    "hive-force": {
+      "projectType": "application",
+      "schematics": {
+        "@nrwl/workspace:component": {
+          "style": "scss"
+        }
+      },
+      "root": "apps/hive-force",
+      "sourceRoot": "apps/hive-force/src",
+      "prefix": "hive-force",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/hive-force",
+            "index": "apps/hive-force/src/index.html",
+            "main": "apps/hive-force/src/main.ts",
+            "polyfills": "apps/hive-force/src/polyfills.ts",
+            "tsConfig": "apps/hive-force/tsconfig.app.json",
+            "assets": [
+              "apps/hive-force/src/favicon.ico",
+              "apps/hive-force/src/assets"
+            ],
+            "styles": ["apps/hive-force/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/hive-force/src/environments/environment.ts",
+                  "with": "apps/hive-force/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "hive-force:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "hive-force:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "hive-force:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "apps/hive-force/tsconfig.app.json",
+              "apps/hive-force/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/hive-force/jest.config.js",
+            "tsConfig": "apps/hive-force/tsconfig.spec.json",
+            "setupFile": "apps/hive-force/src/test-setup.ts"
+          }
+        }
+      }
+    },
+    "hive-force-e2e": {
+      "root": "apps/hive-force-e2e",
+      "sourceRoot": "apps/hive-force-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/hive-force-e2e/cypress.json",
+            "tsConfig": "apps/hive-force-e2e/tsconfig.e2e.json",
+            "devServerTarget": "hive-force:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "hive-force:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "apps/hive-force-e2e/tsconfig.e2e.json"
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "warnings": {
+      "typescriptMismatch": false,
+      "versionMismatch": false
+    },
+    "defaultCollection": "@nrwl/angular"
+  },
+  "schematics": {
+    "@nrwl/angular:application": {
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "unitTestRunner": "jest"
+    }
+  },
+  "defaultProject": "hive-force"
+}
