@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
+import { UserInfo } from './user.model';
 
 @Injectable()
 export class User {
-  public UserInfo: UserInfo = {}
+  public userInfo: UserInfo
 
   public createNewUser(): void {
 
@@ -20,7 +21,7 @@ export class User {
 
   }
 
-  public loadUser(userName: string, password: string): UserInfo {
+  public loadUser(userName: string, password: string): any {
 
   }
 }

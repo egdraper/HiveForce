@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserService } from "./user.service";
+import { User } from "./user.service";
 
 @NgModule({
   imports: [CommonModule],
-  providers: [UserService]
+  providers: [User]
 })
 export class UserModule {}

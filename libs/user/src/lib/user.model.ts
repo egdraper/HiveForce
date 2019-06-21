@@ -55,6 +55,7 @@ export class NonMovableItemAsset extends MapAsset {
 }
 
 export class CreatureAsset extends Asset {
+    public proficiencyBonus: number
     public race: string
     public hostile: boolean
     public bonusHp: number
@@ -127,7 +128,7 @@ export class Action {
   onlyAsBonus: boolean
   creature: CreatureAsset
 
-  public performAction(type: string, actionPerformer: CreatureAsset, againstWho: CreatureAsset): void {
+  public performAction(type: string, actionPerformer: CreatureAsset, againstWho: Array<CreatureAsset>): void {
       this.creature = actionPerformer
       this.getAction(type)
   }
@@ -136,18 +137,6 @@ export class Action {
       // TODO: this will get it from a master list of actions
       return null
   }
-
-// tslint:disable-next-line: member-ordering
-  private actions: Action[] = [
-    {
-        type: "Attack",
-        excecute: () => {
-
-        }
-    },
-
-]
-  
 }
 
 export class Damage {
@@ -156,64 +145,74 @@ export class Damage {
 
 export class Attack {
   public attacks: Array<Weopon> = []
-  public dice = new Dice()
+//   public dice = new Dice()
 
   public strike(creatureAttacking: CreatureAsset, creatureBeingAttacked: CreatureAsset) {
       this.attacks.forEach((weopon) => {
-        const result = this.dice.roll(creatureAttacking, weopon)
-        creatureAttacking.takeDamage(result)
+        // const result = this.dice.roll(creatureAttacking, weopon)
+        // creatureBeingAttacked.takeDamage(result)
         // GameLog("creature lost so much life")
       })
   }
 
-  public addStrike(weopon: Weopon): void {
-    this.
-  }
+  public addStrike(weopon: Weopon): void { }
 
-  public clear(): [
+  public clear(): void { }
 
-  ]
-
-  public removeWeopon(): [
-
-  ]
+  public removeWeopon(): void { }
 }
 
 export class RollableObject {
-    public diceName: string
+    public diceEquation: string
 }
 
 export class Weopon extends RollableObject {
-    public name: string
-    public type: string
-    public strengthRequiremnt?: number
+    constructor (
+      public description: string,
+      public diceEquation: string,
+      public name: string,
+      public strengthRequiremnt?: number,
+      public type?: string,
+    ) {
+      super()
+    }
 }
 
-export class Dice {
-    private dice: Array<{timesRoll: number, numberOfSide: number, modifier: number}>-- 
+// export class Dice {
+//     private dice: Array<{timesRoll: number, numberOfSides: number, modifier: number}>
 
-    public roll(diceName): string {
-        this.rollPerDice(diceName)
-        return "10"
-    }
+//     // 2d4+3 || 2d4+3d6+14 || d4
+//     public roll(diceEquation: string): void {
+//         // this.parseDice()
+//         // this.rollPerDice(diceEquation)
+//         // return "10"
+//     }
 
-    private rollPerDice(diceName: string): roll {
-        const numberOfRolls = Number.parseInt(diceName.substring(0, diceName.indexOf('d')), 10) || 1;
-        const dice = Number.parseInt(diceName.substring(diceName.indexOf('d'), , 10) || 1;
-        let totalValue = 0
+//     private rollPerDice(diceName: string): void {
+//         // const numberOfRolls = Number.parseInt(diceName.substring(0, diceName.indexOf('d')), 10) || 1;
+//         // const dice = Number.parseInt(diceName.substring(diceName.indexOf('d'), , 10) || 1;
+//         // let totalValue = 0
        
-        for (let i = 0; i < numberOfRolls; i++) { 
-            totalValue += this.getRandomInt(4)
-        }
-    }
+//         // for (let i = 0; i < numberOfRolls; i++) { 
+//         //     totalValue += this.getRandomInt(4)
+//         // }
+//     }
 
-    private getRandomInt(max: number): number {
-       return Math.floor(Math.random() * Math.floor(max));
-    }
+//     private parseDiceEquation(diceEquation): any { 
+//         const diceStrings = ["3d8+6", "d4", "d4+6"]
+//         diceStrings.forEach(diceString => {
+//             const numberOfRolls = Number.parseInt(diceString.substring(0, diceString.indexOf('d')), 10) || 1;
+//             const numberOfSides = Number.parseInt(diceString.substring(diceString.indexOf("d") + 1))
+//         });
+//     }
+
+//     private getRandomInt(max: number): number {
+//        return Math.floor(Math.random() * Math.floor(max));
+//     }
         
-	​
+// 	​
       
-}
+// }
 
 export class Sense {
 
