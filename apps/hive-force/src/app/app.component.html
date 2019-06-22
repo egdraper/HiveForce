@@ -3,11 +3,16 @@
 <h1>{{ totalRollAmount }}</h1>
 
 <div *ngFor="let character of characters">
-  <button (click)="attack(character)">{{character.name}}</button>
+  <button (click)="attack(character)">{{character.name}} Attack</button>
+  <button (click)="heal(character)">{{character.name}} Heal</button>
 </div>
 <div style="margin-bottom: 15px"></div>
+
 <div *ngFor="let charactera of characters">  
-  <button [class.selected]="selectedCharacter?.id === charactera.id" (click)="selectCharacter(charactera)"> {{charactera.name}} </button>
+  <button 
+    [class.selected]="charactera.selected" 
+    [class.dead]="charactera.currentHitPoints <= 0"
+    (click)="selectCharacter(charactera)"> {{charactera.name}} </button>
   <span>hitpoints: </span>
   <span>{{ charactera.currentHitPoints }}</span>
 </div>

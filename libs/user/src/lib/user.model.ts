@@ -81,6 +81,7 @@ export class CreatureAsset extends Asset {
     public intelligence: number
     public intelligenceModifier: number
     public senses: Array<Sense>
+    public selected: boolean
     public skills: Array<Skill>
     public speed: number
     public strength: number
