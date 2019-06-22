@@ -2,10 +2,9 @@
 <button (click)="addCharacter()"> Add Character </button>
 <h1>{{ totalRollAmount }}</h1>
 
-<div *ngFor="let character of characters">
-  <button (click)="attack(character)">{{character.name}} Attack</button>
-  <button (click)="heal(character)">{{character.name}} Heal</button>
-</div>
+<span *ngFor="let action of playerInfo.actions"> 
+  <button (click)="performAction(action.name)">Jahml {{ action.name }}</button>
+</span>
 <div style="margin-bottom: 15px"></div>
 
 <div *ngFor="let charactera of characters">  

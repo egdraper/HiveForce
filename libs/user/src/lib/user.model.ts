@@ -60,6 +60,7 @@ export class CreatureAsset extends Asset {
     public hostile: boolean
     public bonusHp: number
     public actions: Array<Action>
+    public bonusActions: Array<BonusAction>
     public maxActions: number
     public maxBonusActions: number
     public actionsRemaining: number
@@ -89,23 +90,24 @@ export class CreatureAsset extends Asset {
     public wisdom: number
     public wisdomModifier: number
 
-    public action(type: string, against?: Array<CreatureAsset>): void {
-        // this.actionService.perfomAction(type, this, against) 
-        // --this.actionsRemaining   
-    }
-
-    public bonusAction(type: string, against?: Array<CreatureAsset> ): void {
-        // this.actionService.performAction(type, this, against)
-        // --this.bonusActionsRemaining
-    }
-
-    public heal(amount: number): void {
-        if((amount + this.currentHitPoints + this.bonusHp) >= this.maxHitPoints) {
-            this.currentHitPoints = (this.maxHitPoints + this.bonusHp)
-        } else {
-            this.currentHitPoints += (amount + this.bonusHp)
+    public calculateNewHitpoints(character: Character, amount: number) {
+        const newHitPointsValue = character.currentHitPoints + amount
+        
+        // Character is dead
+        if(newHitPointsValue <= 0) {
+          character.currentHitPoints = 0
+          return
+        } 
+        
+        // Character is fully healed
+        if (newHitPointsValue >= character.maxHitPoints) {
+          character.currentHitPoints = character.maxHitPoints + character.bonusHp
+          return
         }
-    }
+          
+        // Character's adjusted hitpoints
+        character.currentHitPoints = newHitPointsValue
+      }
 
     public reaction(type: string): void {
         // this.reactionService.getReaction(type)
@@ -124,20 +126,130 @@ export class CreatureAsset extends Asset {
     }
 }
 
-@Injectable()
 export class Action {
-  onlyAsBonus: boolean
-  creature: CreatureAsset
+  public name: string 
+  public execute(characters: Array<Character>, currentPlayer: Character): void {
+  }
+}
 
-  public performAction(type: string, actionPerformer: CreatureAsset, againstWho: Array<CreatureAsset>): void {
-      this.creature = actionPerformer
-      this.getAction(type)
+export class BonusAction extends Action {
+
+}
+
+
+export class Roll {
+    public actualRollValue = 0;
+    public modifiedRollValue = 0;
+    public hasAdvantage = false;
+    public hasDisadvantage = false;
+  }
+  
+
+export class DiceEquation {
+    constructor(
+      public numberOfSides: number,
+      public numberOfRolls: number,
+      public rollModifier: number,
+      public stringFormat: string
+    ) {}
   }
 
-  private getAction(type: string) : Action {
-      // TODO: this will get it from a master list of actions
-      return null
+export class Dice {
+    public savedRoll: Array<DiceEquation> = [];
+  
+    public roll(diceEquation: string): Roll {
+      const roll = new Roll();
+      this.parseEquation(diceEquation);
+      this.savedRoll.forEach(sr => {
+        for (let i = 0; i < sr.numberOfRolls; i++) {
+          roll.actualRollValue = this.getRandomInt(sr.numberOfSides);
+          roll.modifiedRollValue += roll.actualRollValue;
+          console.log(
+            `Roll${i}: d${sr.numberOfSides} for ${roll.actualRollValue}`
+          );
+        }
+        console.log(
+          `TotalRoll: d${sr.numberOfSides} for ${roll.modifiedRollValue}+${
+            sr.rollModifier
+          }=${roll.modifiedRollValue + sr.rollModifier}`
+        );
+        roll.modifiedRollValue += sr.rollModifier;
+      });
+  
+      return roll;
+    }
+  
+    public getRandomInt(max) {
+      return Math.floor(Math.random() * Math.floor(max) + 1);
+    }
+  
+    public parseEquation(diceEquation: string): any {
+      const rolls = diceEquation.match(
+        /(\d+d|d)([4,6,8]|\d+[10,12,20,100])(\+\d+|)/g
+      );
+      rolls.forEach(r => {
+        const numberOfRolls = r.match(/\d+(?=d)/g);
+        const dice = r.match(/(?<=d)(\?*\d+)/g);
+        const modifer = r.match(/(?<=\+)(\?*\d+)/g);
+  
+        this.savedRoll.push(
+          new DiceEquation(
+            dice ? Number.parseInt(dice[0]) : 0,
+            numberOfRolls ? Number.parseInt(numberOfRolls[0]) : 1,
+            modifer ? Number.parseInt(modifer[0]) : 0,
+            r
+          )
+        );
+      });
+    }
   }
+
+export class HealAction implements Action {
+    public name = "Heal"
+    public execute(characters: Array<Character>, currentPlayer: Character): void {
+        const rollEquation = `1d12+2`;
+        const heal = new Dice().roll(rollEquation);
+       
+        characters.forEach(character => {
+          if (!character.selected) {
+            return;
+          }
+    
+          character.calculateNewHitpoints(character, heal.modifiedRollValue)
+          console.log(`${currentPlayer.name} healed ${character.name} for ${heal.modifiedRollValue}`);
+        })
+      }
+}
+
+export class AttackAction implements Action {
+    public name = "Attack"
+    public execute(characters: Array<Character>, currentPlayer: Character): void {
+        let rollEquation = `2d8+${currentPlayer.dexterityModifier}`;
+        const dice = new Dice();
+        const attackRoll = dice.roll(
+          `d20+${currentPlayer.dexterityModifier + currentPlayer.proficiencyBonus}`
+        );
+    
+        if (attackRoll.actualRollValue === 20) {
+          rollEquation = `4d8+${currentPlayer.dexterityModifier * 2}`;
+        }
+        const damage = new Dice().roll(rollEquation);
+    
+        characters.forEach(character => {
+          if (!character.selected) {
+            return;
+          }
+    
+          if (attackRoll.modifiedRollValue > character.armorClas) {
+            character.calculateNewHitpoints(character, damage.modifiedRollValue * -1)
+            console.log(`${currentPlayer.name} hit ${character.name} and took ${
+              damage.modifiedRollValue
+            } damage`);
+          } else {
+            console.log(`${currentPlayer.name} missed!`);
+          }
+        });
+    }
 }
 
 export class Damage {
@@ -178,42 +290,6 @@ export class Weopon extends RollableObject {
       super()
     }
 }
-
-// export class Dice {
-//     private dice: Array<{timesRoll: number, numberOfSides: number, modifier: number}>
-
-//     // 2d4+3 || 2d4+3d6+14 || d4
-//     public roll(diceEquation: string): void {
-//         // this.parseDice()
-//         // this.rollPerDice(diceEquation)
-//         // return "10"
-//     }
-
-//     private rollPerDice(diceName: string): void {
-//         // const numberOfRolls = Number.parseInt(diceName.substring(0, diceName.indexOf('d')), 10) || 1;
-//         // const dice = Number.parseInt(diceName.substring(diceName.indexOf('d'), , 10) || 1;
-//         // let totalValue = 0
-       
-//         // for (let i = 0; i < numberOfRolls; i++) { 
-//         //     totalValue += this.getRandomInt(4)
-//         // }
-//     }
-
-//     private parseDiceEquation(diceEquation): any { 
-//         const diceStrings = ["3d8+6", "d4", "d4+6"]
-//         diceStrings.forEach(diceString => {
-//             const numberOfRolls = Number.parseInt(diceString.substring(0, diceString.indexOf('d')), 10) || 1;
-//             const numberOfSides = Number.parseInt(diceString.substring(diceString.indexOf("d") + 1))
-//         });
-//     }
-
-//     private getRandomInt(max: number): number {
-//        return Math.floor(Math.random() * Math.floor(max));
-//     }
-        
-// 	​
-      
-// }
 
 export class Sense {
 

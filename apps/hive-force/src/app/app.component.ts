@@ -2,8 +2,9 @@
 import { Component } from '@angular/core';
 import { stringify } from '@angular/compiler/src/util';
 
-import { Character, Attack } from '@hive-force/user';
+import { Character, Attack, AttackAction, HealAction, Dice } from '@hive-force/user';
 import { compileBaseDefFromMetadata } from '@angular/compiler';
+import { Action } from 'rxjs/internal/scheduler/Action';
 
 @Component({
   selector: 'hive-force-root',
@@ -13,10 +14,17 @@ import { compileBaseDefFromMetadata } from '@angular/compiler';
 export class AppComponent {
   public title = 'hive-force';
   public totalRollAmount = 0;
+  public playerInfo: Character
   public characters: Array<Character> = [];
   public id = 0;
   public selectedCharacters: Array<Character>;
   public message = '';
+
+  public ngOnInit(): void {
+    this.playerInfo = this.createCharacter()
+    this.playerInfo.actions.push(new AttackAction)
+    this.playerInfo.actions.push(new HealAction)
+  }
 
   public onClick(): void {
     const dice = new Dice();
@@ -24,6 +32,10 @@ export class AppComponent {
   }
 
   public addCharacter(): void {
+    this.characters.push(this.createCharacter())
+  }
+
+  public createCharacter(): Character {
     this.id++;
     const character = new Character();
     character.proficiencyBonus = 2;
@@ -31,9 +43,8 @@ export class AppComponent {
     character.actionsRemaining = 2;
     character.armorClas = 17;
     character.attack = new Attack();
-    character.bonusAction = () => {
-      return;
-    };
+    character.actions = []
+    character.bonusActions = []
     character.bonusActionsRemaining = 1;
     character.bonusHp = 0;
     character.challengeLevel = 0;
@@ -66,139 +77,18 @@ export class AppComponent {
     character.weight = 200;
     character.wisdom = 16;
     character.wisdomModifier = 3;
-
-    this.characters.push(character);
+    return character
   }
 
-  public heal(currentPlayer: Character): void {
-    const rollEquation = `1d12+2`;
-    const heal = new Dice().roll(rollEquation);
-   
-    this.characters.forEach(character => {
-      if (!character.selected) {
-        return;
-      }
-
-      this.calculateNewHitpoints(character, heal.modifiedRollValue)
-      this.message = `${currentPlayer.name} healed ${character.name} for ${heal.modifiedRollValue}`;
-    })
-  }
-
-  public attack(currentPlayer: Character): void {
-    let rollEquation = `2d8+${currentPlayer.dexterityModifier}`;
-    const dice = new Dice();
-    const attackRoll = dice.roll(
-      `d20+${currentPlayer.dexterityModifier + currentPlayer.proficiencyBonus}`
-    );
-
-    if (attackRoll.actualRollValue === 20) {
-      rollEquation = `4d8+${currentPlayer.dexterityModifier * 2}`;
-    }
-    const damage = new Dice().roll(rollEquation);
-
-    this.characters.forEach(character => {
-      if (!character.selected) {
-        return;
-      }
-
-      if (attackRoll.modifiedRollValue > character.armorClas) {
-        this.calculateNewHitpoints(character, damage.modifiedRollValue * -1)
-        this.message = `${currentPlayer.name} hit ${character.name} and took ${
-          damage.modifiedRollValue
-        } damage`;
-      } else {
-        this.message = `${currentPlayer.name} missed!`;
-      }
-    });
+  public performAction(actionName: string): void {
+    const action = this.playerInfo.actions.find(a => a.name === actionName)
+    action.execute(this.characters, this.characters[0])
   }
 
   public selectCharacter(character: Character): void {
     character.selected = !character.selected;
-    this.selectedCharacters.push(character);
-  }
-
-  private calculateNewHitpoints(character: Character, amount: number) {
-    const newHitPointsValue = character.currentHitPoints + amount
-    
-    // Character is dead
-    if(newHitPointsValue <= 0) {
-      character.currentHitPoints = 0
-      return
-    } 
-    
-    // Character is fully healed
-    if (newHitPointsValue >= character.maxHitPoints) {
-      character.currentHitPoints = character.maxHitPoints + character.bonusHp
-      return
-    }
-      
-    // Character's adjusted hitpoints
-    character.currentHitPoints = newHitPointsValue
   }
 }
 
-export class Dice {
-  public savedRoll: Array<DiceEquation> = [];
 
-  public roll(diceEquation: string): Roll {
-    const roll = new Roll();
-    this.parseEquation(diceEquation);
-    this.savedRoll.forEach(sr => {
-      for (let i = 0; i < sr.numberOfRolls; i++) {
-        roll.actualRollValue = this.getRandomInt(sr.numberOfSides);
-        roll.modifiedRollValue += roll.actualRollValue;
-        console.log(
-          `Roll${i}: d${sr.numberOfSides} for ${roll.actualRollValue}`
-        );
-      }
-      console.log(
-        `TotalRoll: d${sr.numberOfSides} for ${roll.modifiedRollValue}+${
-          sr.rollModifier
-        }=${roll.modifiedRollValue + sr.rollModifier}`
-      );
-      roll.modifiedRollValue += sr.rollModifier;
-    });
 
-    return roll;
-  }
-
-  public getRandomInt(max) {
-    return Math.floor(Math.random() * Math.floor(max) + 1);
-  }
-
-  public parseEquation(diceEquation: string): any {
-    const rolls = diceEquation.match(
-      /(\d+d|d)([4,6,8]|\d+[10,12,20,100])(\+\d+|)/g
-    );
-    rolls.forEach(r => {
-      const numberOfRolls = r.match(/\d+(?=d)/g);
-      const dice = r.match(/(?<=d)(\?*\d+)/g);
-      const modifer = r.match(/(?<=\+)(\?*\d+)/g);
-
-      this.savedRoll.push(
-        new DiceEquation(
-          dice ? Number.parseInt(dice[0]) : 0,
-          numberOfRolls ? Number.parseInt(numberOfRolls[0]) : 1,
-          modifer ? Number.parseInt(modifer[0]) : 0,
-          r
-        )
-      );
-    });
-  }
-}
-
-export class DiceEquation {
-  constructor(
-    public numberOfSides: number,
-    public numberOfRolls: number,
-    public rollModifier: number,
-    public stringFormat: string
-  ) {}
-}
-
-export class Roll {
-  public actualRollValue = 0;
-  public modifiedRollValue = 0;
-  public hasAdvantage = false;
-  public hasDisadvantage = false;
-}
