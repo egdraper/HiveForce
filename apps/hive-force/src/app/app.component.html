@@ -1,17 +1,38 @@
-<button (click)="onClick()"> ROLL </button>
-<button (click)="addCharacter()"> Add Character </button>
-<h1>{{ totalRollAmount }}</h1>
+<button (click)="onClick()">ROLL</button>
+<button (click)="addCharacter()">Add Character</button>
 
-<span *ngFor="let action of playerInfo.actions"> 
-  <button (click)="performAction(action.name)">Jahml {{ action.name }}</button>
-</span>
+<h1>Do your worst</h1>
+<div>
+  <span *ngFor="let action of player.actions">
+    <button (click)="executeAction(action)">
+      Jahml {{ action }}
+    </button>
+  </span>
+</div>
+<div>
+  <span *ngFor="let inventory of player.inventory">
+    <button (click)="executeAction(getAction('Attack'), inventory)">
+      {{ inventory.name }}
+    </button>
+  </span>
+</div>
+<div>
+  <span>
+    <button (click)="performFeature(getClassFeature('Fury of Blows'))">
+      "Furry Of Blows"
+    </button>
+  </span>
+</div>
+
 <div style="margin-bottom: 15px"></div>
 
-<div *ngFor="let charactera of characters">  
-  <button 
-    [class.selected]="charactera.selected" 
+<div *ngFor="let charactera of characters">
+  <button
+    [class.selected]="charactera.selected"
     [class.dead]="charactera.currentHitPoints <= 0"
-    (click)="selectCharacter(charactera)"> {{charactera.name}} </button>
+    (click)="selectCharacter(charactera)">
+    {{ charactera.name }}
+  </button>
   <span>hitpoints: </span>
   <span>{{ charactera.currentHitPoints }}</span>
 </div>
