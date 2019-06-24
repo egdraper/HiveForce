@@ -11,7 +11,8 @@ import {
   Action,
   Rollable,
   Roll,
-  RollableItem
+  RollableItem,
+  MasterLog
 } from '@hive-force/user';
 
 @Component({
@@ -20,16 +21,20 @@ import {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  public message = ""
   public title = 'hive-force';
   public totalRollAmount = 0;
   public player: Character;
   public characters: Array<Character> = [];
   public id = 0;
   public selectedCharacters: Array<Character>;
-  public message = '';
 
   public ngOnInit(): void {
     this.player = this.createCharacter("Jahml");
+    MasterLog.subscribe((m) => {
+      debugger
+      this.message = m
+    })
   }
 
   public onClick(): void {
@@ -49,7 +54,7 @@ export class AppComponent {
     character.armorClas = 17;
     character.actions = [ "Attack", "Heal", "Move" ];
     character.bonusActions = [];
-    character.bonusActionsRemaining = 1;
+    character.bonusActionsRemaining = 3;
     character.bonusHp = 0;
     character.challengeLevel = 0;
     character.charisma = 15;
@@ -180,7 +185,7 @@ export class FurryOFBlows implements ClassFeature {
     new AttackAction().execute(player, characters,  { diceEquation: '1d6' })
   
     new AttackAction().execute(player, characters, { diceEquation: '1d6' })
-  
+    MasterLog.log(player, "Did Furry of blows")
 
   } 
 }

@@ -16,6 +16,27 @@
     },
     "user": {
       "tags": []
+    },
+    "race": {
+      "tags": []
+    },
+    "architype": {
+      "tags": []
+    },
+    "feit": {
+      "tags": []
+    },
+    "character-class": {
+      "tags": []
+    },
+    "items": {
+      "tags": []
+    },
+    "spells": {
+      "tags": []
+    },
+    "backstories": {
+      "tags": []
     }
   }
 }
