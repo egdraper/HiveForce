@@ -1,19 +1,13 @@
 // tslint:disable: radix
-import { Component } from '@angular/core';
+import { Component } from '@angular/core'
+import { MasterLog } from "@hive-force/log"
+import { Dice, Rollable } from "@hive-force/dice"
+import { Character } from "@hive-force/user"
+import { Action, AttackAction, HideAction, HelpAction, DisengageAction,
+  DodgeAction, DashAction, CastAction, HealAction,  } from "@hive-force/actions"
+import { Weopon } from '@hive-force/items';
+import { WoodDwarf } from '@hive-force/race'
 
-import {
-  Character,
-  AttackAction,
-  HealAction,
-  Dice,
-  Item,
-  Weopon,
-  Action,
-  Rollable,
-  Roll,
-  RollableItem,
-  MasterLog
-} from '@hive-force/user';
 
 @Component({
   selector: 'hive-force-root',
@@ -48,7 +42,7 @@ export class AppComponent {
 
   public createCharacter(name?: string): Character {
     this.id++;
-    const character = new Character();
+    const character = new Dwarf()
     character.proficiencyBonus = 2;
     character.actionsRemaining = 2;
     character.armorClas = 17;
@@ -62,7 +56,6 @@ export class AppComponent {
     character.constitution = 12;
     character.constitutionModifier = 1;
     character.currentHitPoints = 35;
-    character.damage = 0;
     character.dexterity = 17;
     character.dexterityModifier = 3;
     character.experience = 1000;
@@ -106,14 +99,20 @@ export class AppComponent {
      switch(actionName){
      case "Attack":
        return new AttackAction()
-     case "Heal": 
-       return new HealAction() 
+     case "Help": 
+       return new HelpAction() 
      case "Disengage":
-       return new HealAction()
+       return new DisengageAction()
      case "Dash":
-       return new HealAction()
+       return new DashAction()
      case "Hide":
-       return new HealAction()  
+       return new HideAction()  
+     case "Cast":
+       return new CastAction()
+     case "Dodge": 
+       return new DodgeAction() 
+     case "Heal":
+       return new HealAction()    
      }
   }
 
@@ -146,49 +145,8 @@ export class AppComponent {
 
 }
 
-export class ClassFeature { 
- public startLevel: number
- public name: string
- public savingThrow?: string
- public usesAction?: boolean
- public usesBonusAction?: boolean
- public usesReaction?: boolean
- public usesActionPoints?: boolean
- public actionPointAmmount?: number
- public durration?: string
 
- public perform(player?: Character, characters?: Array<Character>) {} 
-  
 
-}
-
-export class FurryOFBlows implements ClassFeature {
-  public name = "Furry of Blows"
-  public startLevel = 3
-  public durration = "action"
-  public usesActionPoints = true
-  public usesBonusAction = true
-  public 
-  public perform(player?: Character, characters?: Array<Character>) {
-    if(player.bonusActionsRemaining > 0) { 
-      player.bonusActionsRemaining--
-    } else {
-      console.log("You have no Bonus Action Remaining")
-      return
-    }
-  //  if(player.class.ki > 0) { 
-  //     player.class.ki -- 
-  //   } else {
-  //     console.log("You have insificient Ki points")
-  //   }
-   
-    new AttackAction().execute(player, characters,  { diceEquation: '1d6' })
-  
-    new AttackAction().execute(player, characters, { diceEquation: '1d6' })
-    MasterLog.log(player, "Did Furry of blows")
-
-  } 
-}
 
 export class PlayerRace {
   public RaceName: string

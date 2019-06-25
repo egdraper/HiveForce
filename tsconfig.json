@@ -20,10 +20,15 @@
       "@hive-force/race": ["libs/race/src/index.ts"],
       "@hive-force/architype": ["libs/architype/src/index.ts"],
       "@hive-force/feit": ["libs/feit/src/index.ts"],
-      "@hive-force/character-class": ["libs/character-class/src/index.ts"],
+      "@hive-force/class": ["libs/class/src/index.ts"],
       "@hive-force/items": ["libs/items/src/index.ts"],
       "@hive-force/spells": ["libs/spells/src/index.ts"],
-      "@hive-force/backstories": ["libs/backstories/src/index.ts"]
+      "@hive-force/backstories": ["libs/backstories/src/index.ts"],
+      "@hive-force/log": ["libs/log/src/index.ts"],
+      "@hive-force/dice": ["libs/dice/src/index.ts"],
+      "@hive-force/assets": ["libs/assets/src/index.ts"],
+      "@hive-force/actions": ["libs/actions/src/index.ts"],
+      "@hive-force/maps": ["libs/maps/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

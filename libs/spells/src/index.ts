@@ -1,1 +1,1 @@
-export * from './lib/spells.module';
+export * from "./lib/spells.model"
