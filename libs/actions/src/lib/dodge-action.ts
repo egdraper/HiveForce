@@ -1,6 +1,6 @@
 import { Action } from './action.model';
 
-export class DodgeAction implements Action { 
+export class DodgeAction extends Action { 
     public name: "Dodge"
-    public execute() {}
+    public execute(): boolean { return false }
 }

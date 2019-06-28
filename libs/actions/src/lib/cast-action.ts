@@ -1,6 +1,6 @@
 import { Action } from './action.model';
 
-export class CastAction implements Action { 
+export class CastAction extends Action { 
     public name: "Cast"
-    public execute() {}
+    public execute(): boolean { return false }
 }

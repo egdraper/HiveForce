@@ -8,10 +8,7 @@ export class ClassFeature {
     public usesBonusAction?: boolean
     public usesReaction?: boolean
     public usesActionPoints?: boolean
-    public actionPointAmmount?: number
-    public durration?: string
-   
-    public perform(player?: CreatureAsset, characters?: Array<CreatureAsset>) {} 
-     
+    public actionPointAmount?: number
+    public duration?: string    
    
    }

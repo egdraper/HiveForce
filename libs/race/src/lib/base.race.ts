@@ -3,6 +3,7 @@ import { RatialTraits } from './racial-traits/base.traits';
 import { Class } from "@hive-force/class"
 
 export class Race {
+    name: string
     attributes
     age: number
     alignment: "Lawful Good" | "Neutral Good" | "Chaotic Good" | "Lawful Neutral" | "Neutral" | "Chaotic Netrual" | "Lawful Evil" | "Neutral Evil" | "Chaotic Evil"

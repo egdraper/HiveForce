@@ -4,14 +4,16 @@ export class Item {
     public id: string;
     public name: string;
     public description: string;
+    public use: string
+    public equipped: boolean
+    public selected?: boolean
   }
   
 export class RollableItem extends Item implements Rollable {
    public diceEquation: string;
 }
 
-export class Weopon extends RollableItem {
-    public strengthRequiremnt?: number;
-    public type?: 'Meele' | 'Ranged' | 'Finess';
+export class Weapon extends RollableItem {
+    public type?: 'Versatile' | 'Ranged' | 'Finesse' | "Brute";
   }
   

@@ -1,6 +1,6 @@
 import { Action } from './action.model';
 
-export class DisengageAction implements Action {
+export class DisengageAction extends Action {
     public name = "Disengage"
-    public execute() { }
+    public execute(): boolean { return false }
  }

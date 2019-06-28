@@ -14,6 +14,10 @@ export class Asset {
     shape: string;
     image: any;
   }
+
+  export class SelectableAsset extends Asset {
+    selected = false
+  }
   
   export class TurrainAsset extends MapAsset {}
   

@@ -1,6 +1,6 @@
 import { Action } from './action.model';
 
-export class HideAction implements Action { 
+export class HideAction extends Action { 
     public name: "Hide"
-    public execute() {}
+    public execute(): boolean { return false }
 }

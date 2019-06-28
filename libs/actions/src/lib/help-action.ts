@@ -1,6 +1,6 @@
 import { Action } from './action.model';
 
-export class HelpAction implements Action { 
+export class HelpAction extends Action { 
     public name: "Help"
-    public execute() {}
+    public execute(): boolean { return false}
 }

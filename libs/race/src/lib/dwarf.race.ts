@@ -3,6 +3,8 @@ import { StoneCunning } from './racial-traits/dwarf.traits';
 import { Attributes } from '@hive-force/assets';
 
 export class Dwarf extends Race {
+    public name = "Dwarf"
+
     constructor(public attributes: Attributes) { 
         super()
     }
@@ -14,12 +16,12 @@ export class Dwarf extends Race {
         this.attributes.vision = 60
 
         // Proficiencies
-        this.attributes.skillPoficiencies.push({skill: "History" })
+        this.attributes.skillProficiencies.push({skill: "History" })
         
         // Racial Traites
         const stoneCunning = new StoneCunning()
         this.traits.push(new StoneCunning())        
-        this.attributes.skillPoficiencies.push(stoneCunning.getFeatures())
+        this.attributes.skillProficiencies.push(stoneCunning.getFeatures())
         
         // Languages
         this.Languages.push("Common")
@@ -28,14 +30,15 @@ export class Dwarf extends Race {
 }
 
 export class HillDwarf extends Dwarf {
+    public name = "Hill Dwarf"
 
     constructor(public attributes: Attributes) { 
         super(attributes)
     }
 
     public buildCharacter(): void {
-        this.abilityScoreIncrease.push({ability: "Wisdom", amount: 1})
-        super.buildCharacter()
+        // this.abilityScoreIncrease.push({ability: "Wisdom", amount: 1})
+        // super.buildCharacter()
     }
 
     public levelUp(): void {
@@ -44,6 +47,8 @@ export class HillDwarf extends Dwarf {
 }
 
 export class MountainDwarf extends Dwarf {
+    public name = "Mountain Dwarf"
+
     constructor(public attributes: Attributes) { 
         super(attributes)
     }

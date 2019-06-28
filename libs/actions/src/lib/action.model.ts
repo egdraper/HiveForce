@@ -1,14 +1,31 @@
-import { Rollable } from '@hive-force/dice';
-import { CreatureAsset } from "@hive-force/assets";
-
+import { CreatureAsset } from "@hive-force/assets"
 
 export class Action {
     public name: string;
+    public creaturesEffected: Array<CreatureEffected> = []
+    
     public execute(
       currentPlayer?: CreatureAsset,
       characters?: Array<CreatureAsset>,
-      rollable?: Rollable
-    ): void {}
+    ): Array<CreatureEffected> | CreatureEffected | CreatureAsset | boolean | void { return false }
   }
 
-  export class BonusAction extends Action {}
+  export class CreatureEffected {
+    creature: CreatureAsset
+    effected: true
+    effect?: Effect
+  }
+
+  export class Effect {
+    name: string
+  }
+
+  export class ConsumableAction extends Action {
+    public consumeAction: (quantity?: number ) => void
+  }
+
+  export class BonusAction extends ConsumableAction { }
+
+  export class NonPlayableAction extends Action { 
+    public effects: string
+  }

@@ -3,37 +3,42 @@
 
 <h1>Do your worst</h1>
 <div>
-  <span *ngFor="let action of player.actions">
-    <button (click)="executeAction(action)">
-      Jahml {{ action }}
+  Jahml the {{ player.race.name }} {{ player.class.name }}
+  <button
+    *ngFor="let action of player.attributes?.actions"
+    (click)="action.execute(player, getSelectedCreatures())"> 
+    <span> {{ action.name }} </span>
+  </button>
+</div>
+<div>
+  <span *ngFor="let item of player.attributes.inventory">
+    <button
+      *ngIf="item.equipped"
+      [class.selected]="item.selected"
+      (click)="player.selectItem(item)">
+      {{ item.name }}
     </button>
   </span>
 </div>
 <div>
-  <span *ngFor="let inventory of player.inventory">
-    <button (click)="executeAction(getAction('Attack'), inventory)">
-      {{ inventory.name }}
-    </button>
-  </span>
-</div>
-<div>
-  <span>
+  <!-- <span>
     <button (click)="performFeature(getClassFeature('Fury of Blows'))">
       "Furry Of Blows"
     </button>
-  </span>
+  </span> -->
 </div>
 
 <div style="margin-bottom: 15px"></div>
 
-<div *ngFor="let charactera of characters">
+<div *ngFor="let creature of creatures">
   <button
-    [class.selected]="charactera.selected"
-    [class.dead]="charactera.currentHitPoints <= 0"
-    (click)="selectCharacter(charactera)">
-    {{ charactera.name }}
+    [class.selected]="creature.selected"
+    [class.dead]="creature.attributes.currentHitPoints <= 0"
+    [class.disabled]="creature.disabled"
+    (click)="selectCharacter(creature)">
+    {{ creature.name }}
   </button>
   <span>hitpoints: </span>
-  <span>{{ charactera.currentHitPoints }}</span>
+  <span>{{ creature.attributes.currentHitPoints }}</span>
 </div>
 <h2>{{ message }}</h2>
