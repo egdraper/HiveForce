@@ -6,12 +6,14 @@
   Jahml the {{ player.race.name }} {{ player.class.name }}
   <button
     *ngFor="let action of player.attributes?.actions"
+    [class.disabled]="action.disabled"
     (click)="action.execute(player, getSelectedCreatures())"> 
     <span> {{ action.name }} </span>
   </button>
+  <button (click)="resetTurn()">Forward to Next Turn</button>
 </div>
 <div>
-  <span *ngFor="let item of player.attributes.inventory">
+  <span *ngFor="let item of player.inventory">
     <button
       *ngIf="item.equipped"
       [class.selected]="item.selected"

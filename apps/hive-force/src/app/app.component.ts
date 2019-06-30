@@ -1,13 +1,11 @@
 // tslint:disable: radix
 import { Component } from '@angular/core'
 import { MasterLog } from "@hive-force/log"
-import { Dice, Rollable } from "@hive-force/dice"
-import { Action, AttackAction, HideAction, HelpAction, DisengageAction,
-  DodgeAction, DashAction, CastAction, HealAction,  } from "@hive-force/actions"
-import { Weapon, Item } from '@hive-force/items';
-import { CreatureAsset } from '@hive-force/assets';
+import { Dice } from "@hive-force/dice"
+import { CreatureAsset } from '@hive-force/assets'
 import { HillDwarf } from '@hive-force/race';
-import { Monk, ClassFeature, FurryOFBlows } from '@hive-force/class';
+import { Monk } from '@hive-force/class';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'hive-force-root',
@@ -41,12 +39,18 @@ export class AppComponent {
   public createCreature(name?: string): CreatureAsset {
     this.id++
     const creature = new CreatureAsset()
-
     creature.id = '123456-' + this.id,
+    creature.level = 6;
     creature.name = name || 'Steve' + this.id,
-    creature.primaryWeapon 
+    creature.effects = [],
+    creature.inventory = []
     creature.attributes = {
+      attacksRemaining: 2,
+      hasAdvantage: false,
+      hasDisadvantage: false,
       actions: [],
+      actionsPerformed: [],
+      actionsQueued: [],
       actionsRemaining: 2,
       armorProficiencies: [],
       armorClass: 12,
@@ -67,7 +71,6 @@ export class AppComponent {
       immunities: [],
       intelligence: 15,
       intelligenceModifier: 2,
-      inventory: this.getItems(),
       maxActions: 1,
       maxBonusActions: 2,
       maxHitPoints: 35,
@@ -85,101 +88,28 @@ export class AppComponent {
       wisdomModifier: 3,
       vision: 0,
     }  
-
+    
+    creature.inventory = []
+    creature.attributes.actionsPerformed = []
     const hillDwarf = new HillDwarf(creature.attributes)
-    const monk = new Monk(creature.attributes)
+    const monk = new Monk(creature.attributes, creature.inventory)
     monk.createClass()
     hillDwarf.buildCharacter()
+    
     creature.class = monk
     creature.race = hillDwarf
     return creature;
   }
-
+  
   public selectCharacter(character: CreatureAsset): void {
     character.selected = !character.selected;
   }
-
+  
   public getSelectedCreatures(): Array<CreatureAsset> {
     return this.creatures.filter(c => c.selected) || []
   }
 
-  public getAction(actionName: string): Action {
-     switch(actionName){
-     case "Attack":
-       return new AttackAction()
-     case "Help": 
-       return new HelpAction() 
-     case "Disengage":
-       return new DisengageAction()
-     case "Dash":
-       return new DashAction()
-     case "Hide":
-       return new HideAction()  
-     case "Cast":
-       return new CastAction()
-     case "Dodge": 
-       return new DodgeAction() 
-     case "Heal":
-       return new HealAction()    
-     }
+  public resetTurn(): void {
+    
   }
-
-  private getClassFeature(name: string): ClassFeature {
-    return new FurryOFBlows()
-  }
-
-  // for demo purposes
-  private getItems(): Array<Weapon> {
-    return [
-      {
-        description: 'Strong Weapon',
-        diceEquation: '2d8',
-        id: '1234',
-        name: 'Mace',
-        use: "Weapon",
-        equipped: true,
-        selected: false,
-        type: "Brute",
-      },
-      {
-        description: 'Small and Pokey',
-        diceEquation: '1d4',
-        id: '1237',
-        name: 'Short Sword',
-        use: "Weapon",
-        equipped: false,
-        selected: false,
-        type: "Versatile",
-      },
-      {
-        description: 'Fists of Fury',
-        diceEquation: '1d6',
-        id: '1235',
-        equipped: true,
-        name: 'Unarmed',        
-        use: "Weapon",
-        selected: true,
-        type: "Finesse",
-      },      
-      {
-        description: 'Long Bow',
-        diceEquation: '1d12',
-        id: '1236',
-        name: 'Silver Bow',        
-        use: "Weapon",
-        equipped: false,
-        selected: true,
-        type: "Ranged",
-      },
-    ];
-  } 
-}
-
-export class PlayerRace {
-  public RaceName: string
-  public size: number
-}
-
-export class PlayerClass {
-  public archetype: string
 }

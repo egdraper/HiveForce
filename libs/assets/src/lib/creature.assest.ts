@@ -1,24 +1,26 @@
-import { Asset, SelectableAsset } from './assets.model';
+import { SelectableAsset } from './assets.model';
 import { Item, Weapon } from '@hive-force/items';
 import { Spell } from '@hive-force/spells';
-import { Class, ClassFeature } from '@hive-force/class';
+import { Class } from '@hive-force/class';
 import { Race } from '@hive-force/race';
-import { DiceEquation, Dice, Rollable } from '@hive-force/dice';
+import { Dice } from '@hive-force/dice';
 import { Action } from '@hive-force/actions';
+import { Subject } from 'rxjs';
+
 
 export class CreatureAsset extends SelectableAsset {
-  public id: string
-  public name: string
-  public nonPlayableCharacter: boolean
-  public primaryWeapon: Weapon
-  public secondaryWeapon: Weapon
-  public rangedWeapon: Weapon
+  public id: string;
+  public name: string;
+  public level: number;
+  public nonPlayableCharacter: boolean;
 
-  public class?: Class
-  public race?: Race
-  public attributes: Attributes
-  public effects: Effects[] 
-  public disabled
+
+  public class?: Class;
+  public race?: Race;
+  public attributes: Attributes;
+  public effects: Effect[];  
+  public inventory: Array<Item>;
+  public disabled: boolean;
 
   public savingThrow(DC: number, skill?: string): boolean {
     console.log('Perform Saving Throw?: yes');
@@ -26,35 +28,28 @@ export class CreatureAsset extends SelectableAsset {
     const modifierAmount = this.attributes[`${skill}Modifier`];
     const result = dice.roll(`d20+${modifierAmount}`);
     const saved = result.modifiedRollValue >= DC;
-    console.log(saved ? `${this.name} saved!` : `${this.name} failed!`)
-    console.log(`Rolled ${result.modifiedRollValue}: Needed ${DC}!`)
+    console.log(saved ? `${this.name} saved!` : `${this.name} failed!`);
+    console.log(`Rolled ${result.modifiedRollValue}: Needed ${DC}!`);
     return result.modifiedRollValue >= DC;
   }
 
   public disarm(): Weapon {
-    const weapon = this.attributes.inventory.find(i => i.selected) as Weapon 
-    this.attributes.inventory.forEach(i => i.selected = false)
-    return weapon
+    const weapon = this.inventory.find(i => i.selected) as Weapon;
+    this.inventory.forEach(i => (i.selected = false));
+    return weapon;
   }
 
   public selectItem(item: Weapon): Weapon {
-    const weapon = this.attributes.inventory.find(i => i.selected) as Weapon 
-    this.attributes.inventory.forEach(i => i.selected = false)
-    item.selected = true
-    item.equipped = true
+    const weapon = this.inventory.find(i => i.selected) as Weapon;
+    this.inventory.forEach(i => (i.selected = false));
+    item.selected = true;
+    item.equipped = true;
 
-    return weapon
-  }
-
-  public executeAction(
-    action: Action,
-    selectedCreatures: Array<CreatureAsset>,
-  ): void {
-    action.execute(this, selectedCreatures)
+    return weapon;
   }
 
   public getSelectedItem(): Item {
-    return this.attributes.inventory.find(i => i.selected === true)
+    return this.inventory.find(i => i.selected === true);
   }
 
   public calculateNewHitPoints(amount: number) {
@@ -76,17 +71,27 @@ export class CreatureAsset extends SelectableAsset {
     // Character's adjusted hitpoints
     this.attributes.currentHitPoints = newHitPointsValue;
   }
-
 }
 
-export class Effects {
-    name: string
-    duration: number
-    remainingTime: number
-} 
+export interface Effect {
+  name: string;
+  description: string;
+  duration: number;
+  startTime: string;
+  endTime: string;
+
+  applyRule: () => void
+  removeRule: () => void
+  check: () => void
+}
 
 export class Attributes {
+  public hasAdvantage: boolean;
+  public hasDisadvantage: boolean;
+  public attacksRemaining: number;
   public actions: Array<Action>;
+  public actionsPerformed: Array<Action>;
+  public actionsQueued: Array<Action>;
   public actionsRemaining: number;
   public armorClass: number;
   public armorProficiencies: string[];
@@ -107,7 +112,6 @@ export class Attributes {
   public immunities: Array<Spell>;
   public intelligence: number;
   public intelligenceModifier: number;
-  public inventory: Array<Item>;
   public maxActions: number;
   public maxBonusActions: number;
   public maxHitPoints: number;

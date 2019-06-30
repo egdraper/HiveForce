@@ -8,7 +8,5 @@ export class ClassFeature {
     public usesBonusAction?: boolean
     public usesReaction?: boolean
     public usesActionPoints?: boolean
-    public actionPointAmount?: number
-    public duration?: string    
-   
+    public actionPointAmount?: number  
    }
