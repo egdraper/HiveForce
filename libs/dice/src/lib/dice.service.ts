@@ -1,4 +1,5 @@
 import { DiceEquation, Roll } from './dice.model';
+import { MasterLog } from '@hive-force/log';
 
 
 export class Dice {
@@ -8,17 +9,18 @@ export class Dice {
       const roll = new Roll();
       this.parseEquation(diceEquation);
       this.savedRoll.forEach(sr => {
+        MasterLog.log("The ROLL")
         for (let i = 0; i < sr.numberOfRolls; i++) {
           roll.actualRollValue = this.getRandomInt(sr.numberOfSides);
           roll.modifiedRollValue += roll.actualRollValue;
-          console.log(
-            `Roll${i}: d${sr.numberOfSides} for ${roll.actualRollValue}`
+          MasterLog.log(
+            `The d${sr.numberOfSides} was rolled for ${roll.actualRollValue}`
           );
         }
-        console.log(
-          `TotalRoll: d${sr.numberOfSides} for ${roll.modifiedRollValue}+${
+        MasterLog.log(
+          `${roll.modifiedRollValue}+${
             sr.rollModifier
-          }=${roll.modifiedRollValue + sr.rollModifier}`
+          }=${roll.modifiedRollValue + sr.rollModifier}`, "TOTAL"
         );
         roll.modifiedRollValue += sr.rollModifier;
       });

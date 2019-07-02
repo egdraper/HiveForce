@@ -1,6 +1,7 @@
 import { Action } from './action.model';
 import { Dice } from "@hive-force/dice";
 import { CreatureAsset } from '@hive-force/assets';
+import { MasterLog } from '@hive-force/log';
 
 export class HealAction extends Action {
     public name = 'Heal';
@@ -14,7 +15,7 @@ export class HealAction extends Action {
         }
   
         character.calculateNewHitPoints(heal.modifiedRollValue);
-        console.log(
+        MasterLog.log(
           `${currentPlayer.name} healed ${character.name} for ${
             heal.modifiedRollValue
           }`

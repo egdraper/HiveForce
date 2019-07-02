@@ -2,33 +2,35 @@
 <button (click)="addCharacter()">Add Character</button>
 
 <h1>Do your worst</h1>
-<div>
-  Jahml the {{ player.race.name }} {{ player.class.name }}
-  <button
-    *ngFor="let action of player.attributes?.actions"
-    [class.disabled]="action.disabled"
-    (click)="action.execute(player, getSelectedCreatures())"> 
-    <span> {{ action.name }} </span>
-  </button>
-  <button (click)="resetTurn()">Forward to Next Turn</button>
-</div>
-<div>
-  <span *ngFor="let item of player.inventory">
+<div *ngFor="let player of players">
+  <div *ngIf="player.id === activePlayer.id">
+    {{ player.name }} the {{ player.race.name }} {{ player.class.name }}
     <button
-      *ngIf="item.equipped"
-      [class.selected]="item.selected"
-      (click)="player.selectItem(item)">
-      {{ item.name }}
+      *ngFor="let action of player.attributes?.actions"
+      [class.disabled]="action.disabled"
+      (click)="executeAction(player, action)"
+    >
+      <span> {{ action.name }} </span>
     </button>
-  </span>
+    <button (click)="endTurn(player)">End Turn</button>
+    <div>
+      <span *ngFor="let item of player.inventory">
+        <button
+          *ngIf="item.equipped"
+          [class.selected]="item.selected"
+          (click)="player.selectItem(item)"
+        >
+          {{ item.name }}
+        </button>
+      </span>
+    </div>
+  </div>
 </div>
-<div>
-  <!-- <span>
+<!-- <span>
     <button (click)="performFeature(getClassFeature('Fury of Blows'))">
       "Furry Of Blows"
     </button>
   </span> -->
-</div>
 
 <div style="margin-bottom: 15px"></div>
 
@@ -37,10 +39,13 @@
     [class.selected]="creature.selected"
     [class.dead]="creature.attributes.currentHitPoints <= 0"
     [class.disabled]="creature.disabled"
-    (click)="selectCharacter(creature)">
+    (click)="selectCharacter(creature)"
+  >
     {{ creature.name }}
   </button>
   <span>hitpoints: </span>
   <span>{{ creature.attributes.currentHitPoints }}</span>
 </div>
-<h2>{{ message }}</h2>
+<textarea #hey rows="13" cols="50">
+  {{ message }}
+</textarea>

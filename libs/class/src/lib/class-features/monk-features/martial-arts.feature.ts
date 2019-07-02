@@ -10,15 +10,15 @@ export class MartialArts extends MonkFeature {
     public usesActionPoints = false;
     public usesBonusAction = true;
   
-    public execute(player?: CreatureAsset, characters?: Array<CreatureAsset>) {
+    public execute(player?: CreatureAsset, character?: CreatureAsset) {
       if (player.attributes.bonusActionsRemaining > 0) {
         player.attributes.bonusActionsRemaining--;
       } else {
-        console.log('You have no Bonus Action Remaining');
+        MasterLog.log('You have no Bonus Action Remaining', "WARNING");
         return;
       }
   
-      new AttackAction().execute(player, characters);
+      new AttackAction().execute(player, character);
       MasterLog.log(player.name, 'Did Unarmed Strike');
       return true
     }

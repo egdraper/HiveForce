@@ -6,6 +6,7 @@ import { Race } from '@hive-force/race';
 import { Dice } from '@hive-force/dice';
 import { Action } from '@hive-force/actions';
 import { Subject } from 'rxjs';
+import { MasterLog } from '@hive-force/log';
 
 
 export class CreatureAsset extends SelectableAsset {
@@ -23,13 +24,13 @@ export class CreatureAsset extends SelectableAsset {
   public disabled: boolean;
 
   public savingThrow(DC: number, skill?: string): boolean {
-    console.log('Perform Saving Throw?: yes');
+    MasterLog.log('Perform Saving Throw?: yes');
     const dice = new Dice();
     const modifierAmount = this.attributes[`${skill}Modifier`];
     const result = dice.roll(`d20+${modifierAmount}`);
     const saved = result.modifiedRollValue >= DC;
-    console.log(saved ? `${this.name} saved!` : `${this.name} failed!`);
-    console.log(`Rolled ${result.modifiedRollValue}: Needed ${DC}!`);
+    MasterLog.log(saved ? `${this.name} saved!` : `${this.name} failed!`);
+    MasterLog.log(`Rolled ${result.modifiedRollValue}: Needed ${DC}!`);
     return result.modifiedRollValue >= DC;
   }
 

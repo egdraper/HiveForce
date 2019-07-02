@@ -2,6 +2,7 @@ import { ClassFeature } from '../class.features';
 import { CreatureAsset, Effect } from '@hive-force/assets';
 import { Monk } from '../../monk.class';
 import { Action } from '@hive-force/actions';
+import { MasterLog } from '@hive-force/log';
 
 export abstract class MonkFeature extends Action implements ClassFeature {
   public name = 'Monk Features';
@@ -16,7 +17,7 @@ export abstract class MonkFeature extends Action implements ClassFeature {
       monk.ki = monk.ki - qty;
       return true
     } else {
-      console.log('You have insufficient Ki points');
+      MasterLog.log('You have insufficient Ki points', "WARNING");
       return false;
     }
   }

@@ -2,10 +2,8 @@ import { Attributes } from '@hive-force/assets';
 import { Class } from './base.class';
 import { Action, AttackAction } from '@hive-force/actions';
 import { StunningStrike } from './class-features/monk-features/stunning-strike.feature';
-import { MartialArts } from './class-features/monk-features/martial-arts.feature';
 import { FurryOFBlows } from './class-features/monk-features/furry-of-blows.feature';
 import { Weapon, Item } from '@hive-force/items';
-import { ExtraAttack } from './class-features/monk-features/extra-attack.feature';
 
 export class Monk extends Class {
     public name = "Monk"

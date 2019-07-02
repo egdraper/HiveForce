@@ -13,26 +13,26 @@ export class FurryOFBlows extends MonkFeature  {
     public usesActionPoints = true;
     public usesBonusAction = true;
   
-    public execute(player?: CreatureAsset, creatures?: Array<CreatureAsset>): void {
-        this.checkDependencies(player, creatures)
+    public execute(player?: CreatureAsset, creature?: CreatureAsset): void {
+        this.checkDependencies(player, creature)
     }  
 
-    private checkDependencies(player: CreatureAsset, creatures: Array<CreatureAsset>): void {
+    private checkDependencies(player: CreatureAsset, creature: CreatureAsset): void {
         const action = player.attributes.actionsPerformed.find(ap => ap.name === "Attack")
         
         if(!action && (player.attributes.actionsRemaining === 0 || player.attributes.bonusActionsRemaining === 0 )) {
-          console.log("You have no Actions Remaining!")
+          MasterLog.log("You have no Actions Remaining!!!", "WARNING")
           return
         }
 
         if(!action) {
-            new AttackAction().execute(player, creatures) 
+            new AttackAction().execute(player, creature) 
         }       
 
-        this.performBonusAction(player, creatures)
+        this.performBonusAction(player, creature)
     }
 
-    private performBonusAction(player: CreatureAsset, creatures: Array<CreatureAsset>): void {        
+    private performBonusAction(player: CreatureAsset, creature: CreatureAsset): void {        
       const unarmed = player.inventory.find(a => a.name === 'Unarmed');
       const mainWeapon = player.selectItem(unarmed as Weapon);
       
@@ -40,12 +40,12 @@ export class FurryOFBlows extends MonkFeature  {
   
       const attack1 = new AttackAction()
       attack1.executeAsBonusAction = true
-      attack1.execute(player, creatures)
+      attack1.execute(player, creature)
       const attack2 = new AttackAction()
       attack2.executeAsBonusAction = true
-      attack2.execute(player, creatures);
+      attack2.execute(player, creature);
 
-      MasterLog.log(player.name, 'Did Furry of blows');
+      MasterLog.log('Did Furry of Blows', player.name, );
       player.selectItem(mainWeapon as Weapon);
       player.attributes.bonusActionsRemaining --
       this.disabled = true

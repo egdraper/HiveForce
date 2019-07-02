@@ -1,17 +1,19 @@
 import { CreatureAsset, Effect } from '@hive-force/assets';
+import { MasterLog } from '@hive-force/log';
 
 export class Action {
   public name: string;
-  public creaturesEffected: Array<CreatureEffected> = [];
+  public creaturesEffect: CreaturesEffect
   public requiresAttackAction: boolean;
+  public executeAsBonusAction: boolean;
   public disabled: boolean;
 
   public execute(
     currentPlayer?: CreatureAsset,
-    characters?: Array<CreatureAsset>
+    characters?: CreatureAsset | Array<CreatureAsset>
   ):
-    | Array<CreatureEffected>
-    | CreatureEffected
+    | Array<CreaturesEffect>
+    | CreaturesEffect
     | CreatureAsset
     | boolean
     | void {
@@ -22,15 +24,15 @@ export class Action {
     if (player.attributes.bonusActionsRemaining > 0) {
       player.attributes.bonusActionsRemaining--;
     } else {
-      console.log('You have no Bonus Action Remaining');
+      MasterLog.log('You have no Bonus Action Remaining!!!');
       return;
     }
   }
 }
 
-export class CreatureEffected {
+export class CreaturesEffect {
   creature: CreatureAsset;
-  effected: true;
+  effected: boolean;
   effect?: Effect;
 }
 

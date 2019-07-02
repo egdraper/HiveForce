@@ -2,8 +2,8 @@ export class MasterLog {
     public static message = ""
     private static subscriptions: Array<any> = []
   
-    public static log(title: string, message: string): void {
-      this.message += "\n " + title
+    public static log(message: string, title: string = ""): void {
+      if(title) this.message += "\n " + title
       this.message += "\n " + message
       this.next()
     }

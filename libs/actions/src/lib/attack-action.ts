@@ -1,96 +1,121 @@
 import { Dice, Roll } from '@hive-force/dice';
-import { Action, CreatureEffected } from './action.model';
+import { Action, CreaturesEffect } from './action.model';
 import { CreatureAsset } from '@hive-force/assets';
 import { Weapon } from '@hive-force/items';
+import { MasterLog } from '@hive-force/log';
 
 export class AttackAction extends Action {
   public name = 'Attack';
-  public disabled = false
-  public effectedCreature: Array<CreatureAsset>
-  public executeAsBonusAction = false
+  public disabled = false;
+  public executeAsBonusAction = false;
 
   public execute(
     player: CreatureAsset,
-    creatures: Array<CreatureAsset>,
-  ): Array<CreatureEffected> {
-    if(!this.checkDependencies(player)) { return [] }
+    creature: CreatureAsset
+  ): CreaturesEffect {
+    if (!this.checkDependencies(player)) {
+      return;
+    }
 
-    const results = this.performAction(player, creatures)
+    if (!creature.selected) {
+      return;
+    }
 
-    if(player.attributes.attacksRemaining === 0) { this.disabled = true }
-    player.attributes.actionsPerformed.push(this)
-    return results
+    const results = this.performAction(player, creature);
+
+    if (player.attributes.attacksRemaining <= 0) {
+      const playersAttack = player.attributes.actions.find(a => a.name === "Attack")
+      playersAttack.disabled = true
+    }
+
+    player.attributes.actionsPerformed.push(this);
+    return results;
   }
 
   private checkDependencies(player: CreatureAsset): boolean {
-    if(this.executeAsBonusAction) {
-      return true
-    } 
-
-    if(player.attributes.attacksRemaining === 0) {
-      console.log("You have no Attack Actions Remaining for this turn.")
-      return false
+    if (this.executeAsBonusAction) {
+      return true;
     }
 
-    return true
+    if (player.attributes.attacksRemaining === 0) {
+      MasterLog.log('You have no Attack Actions Remaining for this turn!!!', "ATTACK STOPPED");
+      return false;
+    }
+
+    return true;
   }
-   
-  public performAction(player: CreatureAsset, creatures: Array<CreatureAsset>): Array<CreatureEffected>  {
+
+  public performAction(
+    player: CreatureAsset,
+    creature: CreatureAsset
+  ): CreaturesEffect {
     const weapon = player.getSelectedItem() as Weapon;
-    player.attributes.actionsPerformed.push(this)
-    player.attributes.attacksRemaining --
+    if(!this.executeAsBonusAction) { player.attributes.attacksRemaining-- }
 
-    const attackRoll = this.rollAttack(player, weapon)
+    MasterLog.log(`${player.name} attacked with the ${weapon.name}`)
+    const attackRoll = this.rollAttack(player, weapon);
+    
     const damageEquation = `${weapon.diceEquation}+${this.getWeaponTypeModifier(player, weapon)}`;
-    creatures.forEach(creature => {
-      if (!creature.selected) {
-        return;
+
+    if (attackRoll.modifiedRollValue > creature.attributes.armorClass) {
+      MasterLog.log("DAMAGE")
+      const damage = new Dice().roll(damageEquation);
+
+      if (attackRoll.actualRollValue === 20) {
+        MasterLog.log(`Critical Hit!!!`);
+        const critDamage = new Dice().roll(damageEquation);
+        damage.actualRollValue += critDamage.actualRollValue;
+        damage.modifiedRollValue += critDamage.modifiedRollValue;
       }
 
-      if (attackRoll.modifiedRollValue > creature.attributes.armorClass) {
-        const damage = new Dice().roll(damageEquation);
+      creature.calculateNewHitPoints(damage.modifiedRollValue * -1);
+      this.creaturesEffect = { creature: creature, effected: true };
 
-        if (attackRoll.actualRollValue === 20) {
-          console.log(`Critical Hit!!!`);
-          const critDamage = new Dice().roll(damageEquation);
-          damage.actualRollValue += critDamage.actualRollValue;
-          damage.modifiedRollValue += critDamage.modifiedRollValue;
-        }
-
-        creature.calculateNewHitPoints(damage.modifiedRollValue * -1);
-        this.creaturesEffected.push({ creature: creature, effected: true });
-
-        console.log(
-          `${player.name} hit ${creature.name} and took ${
-            damage.modifiedRollValue
-          } damage`
-        );
-      } else {
-        console.log(`${player.name} missed!`);
-        return;
-      }
-      console.log(
-        '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+      MasterLog.log(
+        `${player.name} hit ${creature.name} and took ${
+          damage.modifiedRollValue
+        } damage`
       );
-    });
+    } else {
+      this.creaturesEffect = { creature: creature, effected: false };
+      MasterLog.log(`${player.name} missed!`);
+    }
+    MasterLog.log(
+      '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
+    );
 
-    return this.creaturesEffected;
+    return this.creaturesEffect
   }
 
   public rollAttack(player: CreatureAsset, weapon: Weapon): Roll {
-    let attackRoll  = new Dice().roll(`d20+${this.getWeaponTypeModifier(player, weapon) + player.attributes.proficiencyBonus}`);
-    
-    if(player.attributes.hasAdvantage) {
-      const attackRoll2 = new Dice().roll(`d20+${this.getWeaponTypeModifier(player, weapon) + player.attributes.proficiencyBonus}`);
-      attackRoll = attackRoll.actualRollValue >= attackRoll2.actualRollValue ? attackRoll: attackRoll2
+    let attackRoll = new Dice().roll(
+      `d20+${this.getWeaponTypeModifier(player, weapon) +
+        player.attributes.proficiencyBonus}`
+    );
+
+    if (player.attributes.hasAdvantage) {
+      const attackRoll2 = new Dice().roll(
+        `d20+${this.getWeaponTypeModifier(player, weapon) +
+          player.attributes.proficiencyBonus}`
+      );
+      attackRoll =
+        attackRoll.actualRollValue >= attackRoll2.actualRollValue
+          ? attackRoll
+          : attackRoll2;
     }
 
-    if(player.attributes.hasDisadvantage) {
-      const attackRoll2 = new Dice().roll(`d20+${this.getWeaponTypeModifier(player, weapon) + player.attributes.proficiencyBonus}`);
-      attackRoll = attackRoll.actualRollValue <= attackRoll2.actualRollValue ? attackRoll : attackRoll2
+    if (player.attributes.hasDisadvantage) {
+      const attackRoll2 = new Dice().roll(
+        `d20+${this.getWeaponTypeModifier(player, weapon) +
+          player.attributes.proficiencyBonus}`
+      );
+      attackRoll =
+        attackRoll.actualRollValue <= attackRoll2.actualRollValue
+          ? attackRoll
+          : attackRoll2;
     }
 
-    return attackRoll   
+    return attackRoll;
   }
 
   public getWeaponTypeModifier(
