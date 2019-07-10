@@ -1,8 +1,10 @@
 import { Dice, Roll } from '@hive-force/dice';
-import { Action, CreaturesEffect } from './action.model';
-import { CreatureAsset } from '@hive-force/assets';
-import { Weapon } from '@hive-force/items';
-import { MasterLog } from '@hive-force/log';
+import { Action, CreaturesEffect } from './action.model'
+import { CreatureAsset } from '@hive-force/assets'
+import { Weapon } from '@hive-force/items'
+import { MasterLog } from '@hive-force/log'
+import { cloneDeep } from "lodash"
+import { Observable, Subject } from 'rxjs';
 
 export class AttackAction extends Action {
   public name = 'Attack';
@@ -11,32 +13,38 @@ export class AttackAction extends Action {
 
   public execute(
     player: CreatureAsset,
-    creature: CreatureAsset
+    creature: CreatureAsset,
   ): CreaturesEffect {
-    if (!this.checkDependencies(player)) {
+    if (!this.checkDependencies(player, creature)) {
       return;
     }
-
-    if (!creature.selected) {
-      return;
-    }
-
+  
     const results = this.performAction(player, creature);
 
+    // disables the attack button
     if (player.attributes.attacksRemaining <= 0) {
       const playersAttack = player.attributes.actions.find(a => a.name === "Attack")
       playersAttack.disabled = true
     }
 
-    player.attributes.actionsPerformed.push(this);
+    if(!this.executeAsBonusAction) {
+      player.attributes.actionsPerformed.push(cloneDeep(this));
+    }
     return results;
   }
 
-  private checkDependencies(player: CreatureAsset): boolean {
+  private checkDependencies(player: CreatureAsset, creature?: CreatureAsset): boolean {
+    // Must have creature selected
+    if (!creature.selected) {
+      return false;
+    }
+
+    // Allow action if a bonus action
     if (this.executeAsBonusAction) {
       return true;
     }
 
+    // Must have attack actions remaining
     if (player.attributes.attacksRemaining === 0) {
       MasterLog.log('You have no Attack Actions Remaining for this turn!!!', "ATTACK STOPPED");
       return false;

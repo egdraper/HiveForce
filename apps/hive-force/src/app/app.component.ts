@@ -59,6 +59,7 @@ export class AppComponent {
     creature.inventory = []
     creature.attributes = {
       attacksRemaining: 2,
+      numberOfAttacksAllowed: 2,
       hasAdvantage: false,
       hasDisadvantage: false,
       actions: [],
@@ -105,8 +106,8 @@ export class AppComponent {
     creature.inventory = []
     creature.attributes.actionsPerformed = []
     const hillDwarf = new HillDwarf(creature.attributes)
-    const monk = new Monk(creature.attributes, creature.inventory)
-    monk.createClass()
+    const monk = new Monk(creature)
+    monk.createClass(6)
     hillDwarf.buildCharacter()
     
     creature.class = monk

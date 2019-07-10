@@ -5,11 +5,9 @@ import { Action } from '@hive-force/actions';
 import { MasterLog } from '@hive-force/log';
 
 export abstract class MonkFeature extends Action implements ClassFeature {
-  public name = 'Monk Features';
+  public name = '';
   public startLevel = 0;
   public duration = 'none';
-  public usesActionPoints = false;
-  public usesBonusAction = false;
 
   public useKi(player: CreatureAsset, qty: number = 1): boolean {
     const monk = player.class as Monk;

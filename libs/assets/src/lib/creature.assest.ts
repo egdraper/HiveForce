@@ -90,6 +90,7 @@ export class Attributes {
   public hasAdvantage: boolean;
   public hasDisadvantage: boolean;
   public attacksRemaining: number;
+  public numberOfAttacksAllowed: number;
   public actions: Array<Action>;
   public actionsPerformed: Array<Action>;
   public actionsQueued: Array<Action>;

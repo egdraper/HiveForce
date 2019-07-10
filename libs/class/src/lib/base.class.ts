@@ -1,6 +1,6 @@
 
 
-export class Class{
+export class Class {
   public name: string  
   public hitDice: string
   public hitPointsAtLevel1: number

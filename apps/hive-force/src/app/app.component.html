@@ -23,14 +23,12 @@
           {{ item.name }}
         </button>
       </span>
+      <div *ngFor="let actions of player.attributes.actionsPerformed">
+        {{ actions.name }}
+      </div>
     </div>
   </div>
 </div>
-<!-- <span>
-    <button (click)="performFeature(getClassFeature('Fury of Blows'))">
-      "Furry Of Blows"
-    </button>
-  </span> -->
 
 <div style="margin-bottom: 15px"></div>
 
@@ -49,3 +47,4 @@
 <textarea #hey rows="13" cols="50">
   {{ message }}
 </textarea>
+

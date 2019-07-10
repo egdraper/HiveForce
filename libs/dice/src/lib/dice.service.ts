@@ -9,7 +9,6 @@ export class Dice {
       const roll = new Roll();
       this.parseEquation(diceEquation);
       this.savedRoll.forEach(sr => {
-        MasterLog.log("The ROLL")
         for (let i = 0; i < sr.numberOfRolls; i++) {
           roll.actualRollValue = this.getRandomInt(sr.numberOfSides);
           roll.modifiedRollValue += roll.actualRollValue;

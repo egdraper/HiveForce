@@ -5,8 +5,6 @@ export class ClassFeature {
     public name: string
     public savingThrow?: string
     public usesAction?: boolean
-    public usesBonusAction?: boolean
     public usesReaction?: boolean
-    public usesActionPoints?: boolean
     public actionPointAmount?: number  
    }
