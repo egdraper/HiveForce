@@ -15,13 +15,13 @@ export class CreatureAsset extends SelectableAsset {
   public level: number;
   public nonPlayableCharacter: boolean;
 
-
-  public class?: Class;
   public race?: Race;
   public attributes: Attributes;
   public effects: Effect[];  
   public inventory: Array<Item>;
   public disabled: boolean;
+
+  public actionPerformed = new Subject<Action[]>()
 
   public savingThrow(DC: number, skill?: string): boolean {
     MasterLog.log('Perform Saving Throw?: yes');
@@ -72,6 +72,19 @@ export class CreatureAsset extends SelectableAsset {
     // Character's adjusted hitpoints
     this.attributes.currentHitPoints = newHitPointsValue;
   }
+
+  
+  public checkForImmunities(name: string): boolean {
+    return !!this.attributes.immunities.find(a => a === name)
+  }
+
+  public checkForResistances(name: string): string[] {
+    return this.attributes.resistances.filter(a => a === name)
+  }
+
+  public checkForVulnerabilities(name: string): boolean {
+    return !!this.attributes.vulnerabilities.find(a => a === name)
+  }
 }
 
 export interface Effect {
@@ -87,20 +100,16 @@ export interface Effect {
 }
 
 export class Attributes {
-  public hasAdvantage: boolean;
-  public hasDisadvantage: boolean;
-  public attacksRemaining: number;
-  public numberOfAttacksAllowed: number;
   public actions: Array<Action>;
   public actionsPerformed: Array<Action>;
   public actionsQueued: Array<Action>;
   public actionsRemaining: number;
   public armorClass: number;
   public armorProficiencies: string[];
+  public attacksRemaining: number;
   public bonusActions: string[];
   public bonusActionsRemaining: number;
   public bonusHp: number;
-  public challengeLevel: number;
   public charisma: number;
   public charismaModifier: number;
   public constitution: number;
@@ -109,23 +118,26 @@ export class Attributes {
   public dexterity: number;
   public dexterityModifier: number;
   public experience: number;
+  public hasAdvantage: boolean;
+  public hasDisadvantage: boolean;
   public height: number;
   public hostile: boolean;
-  public immunities: Array<Spell>;
+  public immunities: string[];
   public intelligence: number;
   public intelligenceModifier: number;
   public maxActions: number;
   public maxBonusActions: number;
   public maxHitPoints: number;
+  public numberOfAttacksAllowed: number;
   public proficiencyBonus: number;
+  public resistances: string[];
   public senses: Array<any>;
   public size: 'small' | 'medium' | 'large';
   public skillProficiencies: Array<{ skill: string; specialization?: string }>;
   public skills: Array<any>;
-  public speed: number;
   public strength: number;
   public strengthModifier: number;
-  public vision: number;
+  public vulnerabilities: []
   public weaponProficiencies: string[];
   public weight: number;
   public wisdom: number;

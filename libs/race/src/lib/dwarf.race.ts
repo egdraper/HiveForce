@@ -12,20 +12,20 @@ export class Dwarf extends Race {
     buildCharacter(): void {
         // Ability Score Increase
         this.abilityScoreIncrease.push({ability: "Constitution", amount: 2})
-        this.attributes.speed = 25
-        this.attributes.vision = 60
+        this.speed = 25
+        this.vision = 60
 
         // Proficiencies
         this.attributes.skillProficiencies.push({skill: "History" })
         
-        // Racial Traites
+        // Racial Traits
         const stoneCunning = new StoneCunning()
         this.traits.push(new StoneCunning())        
         this.attributes.skillProficiencies.push(stoneCunning.getFeatures())
         
         // Languages
         this.Languages.push("Common")
-        this.Languages.push("Dwarvish")
+        this.Languages.push("Dwarfish")
     }
 }
 

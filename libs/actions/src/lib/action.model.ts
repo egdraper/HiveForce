@@ -1,5 +1,6 @@
 import { CreatureAsset, Effect } from '@hive-force/assets';
 import { MasterLog } from '@hive-force/log';
+import { Item } from '@hive-force/items';
 
 export class Action {
   public name: string;
@@ -7,10 +8,12 @@ export class Action {
   public requiresAttackAction: boolean;
   public executeAsBonusAction: boolean;
   public disabled: boolean;
+  public overcomes: string[];
 
   public execute(
-    currentPlayer?: CreatureAsset,
-    characters?: CreatureAsset | Array<CreatureAsset>
+    player?: CreatureAsset,
+    creature?: CreatureAsset | Array<CreatureAsset>,
+    item?: Item
   ):
     | Array<CreaturesEffect>
     | CreaturesEffect

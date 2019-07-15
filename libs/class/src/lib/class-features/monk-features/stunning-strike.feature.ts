@@ -3,6 +3,9 @@ import { CreatureAsset } from '@hive-force/assets';
 import { StunnedEffect, MonkFeature } from './monk.feature';
 import { MasterLog } from '@hive-force/log';
 import { Subject } from 'rxjs';
+import { Monk } from '../../monk.class';
+import { Weapon } from '@hive-force/items';
+import { Certificate } from 'crypto';
 
 export class StunningStrike extends MonkFeature {
   public name = 'Stunning Strike';
@@ -26,6 +29,7 @@ export class StunningStrike extends MonkFeature {
   public checkDependencies(player: CreatureAsset, creature: CreatureAsset): boolean {
     let effectedCreature: CreaturesEffect;
 
+    // gets attack actions
     const action = player.attributes.actionsPerformed.find(
       ap =>
         ap.name === 'Attack' &&
@@ -33,23 +37,23 @@ export class StunningStrike extends MonkFeature {
         !ap.executeAsBonusAction
     );
 
+    // checks if creature is dead
     if (creature.attributes.currentHitPoints === 0) {
       MasterLog.log("Creature is already dead. Unable to Stun")
       return false;
     }
 
     this.disabled = true
-
-    if (action && player.attributes.attacksRemaining === 0) {
-      MasterLog.log(
-        'All Attacks Actions Missed, A hit was required',
-        'WARNING'
-      );
+    
+    // checks and uses Ki
+    if (!this.useKi(player as Monk)) {
       return false;
     }
 
-    if (!this.useKi(player)) {
-      return false;
+    // checks to see if creature is immune to stunning
+    if(creature.checkForImmunities("stunning")) {
+      MasterLog.log("This creature Cannot be Stunned")
+      return false
     }
 
     // Makes sure there was an attack action, If not it attacks for you.
@@ -59,14 +63,14 @@ export class StunningStrike extends MonkFeature {
       // If at least one hit remains and no hit has taken place, it will perform an attack.
       MasterLog.log("Attack Action Required. Performing action for you")
       const attackAction = new AttackAction();
-      effectedCreature = attackAction.execute(player, creature);
+      effectedCreature = attackAction.execute(player, creature, player.getSelectedItem() as Weapon);
 
       if (
         !effectedCreature.effected &&
         player.attributes.attacksRemaining > 0
       ) {
         const attackAction2 = new AttackAction();
-        effectedCreature = attackAction2.execute(player, creature);
+        effectedCreature = attackAction2.execute(player, creature, player.getSelectedItem() as Weapon);
       }
     }
 

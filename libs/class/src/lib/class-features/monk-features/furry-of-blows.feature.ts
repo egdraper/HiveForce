@@ -5,6 +5,7 @@ import { AttackAction, BonusAction, Action } from '@hive-force/actions';
 import { MasterLog } from '@hive-force/log';
 import { MonkFeature } from './monk.feature';
 import { Subject } from 'rxjs';
+import { Monk } from '../../monk.class';
 
 export class FurryOFBlows extends MonkFeature {
   public name = 'Furry of Blows';
@@ -57,7 +58,7 @@ export class FurryOFBlows extends MonkFeature {
     const unarmed = player.inventory.find(a => a.name === 'Fist');
     const mainWeapon = player.selectItem(unarmed as Weapon);
 
-    if (!this.useKi(player)) {
+    if (!this.useKi(player as Monk)) {
       return;
     }
 

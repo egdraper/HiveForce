@@ -4,7 +4,7 @@
 <h1>Do your worst</h1>
 <div *ngFor="let player of players">
   <div *ngIf="player.id === activePlayer.id">
-    {{ player.name }} the {{ player.race.name }} {{ player.class.name }}
+    {{ player.name }} the {{ player.race.name }} {{ player.className }}
     <button
       *ngFor="let action of player.attributes?.actions"
       [class.disabled]="action.disabled"

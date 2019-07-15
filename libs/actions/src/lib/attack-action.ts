@@ -4,33 +4,43 @@ import { CreatureAsset } from '@hive-force/assets'
 import { Weapon } from '@hive-force/items'
 import { MasterLog } from '@hive-force/log'
 import { cloneDeep } from "lodash"
-import { Observable, Subject } from 'rxjs';
+
+export enum DamageStatus {
+  doubled,
+  halved,
+  regular,
+  squelched,
+}
 
 export class AttackAction extends Action {
   public name = 'Attack';
   public disabled = false;
   public executeAsBonusAction = false;
-
+  public damageStatus: DamageStatus = DamageStatus.regular
+  
   public execute(
     player: CreatureAsset,
     creature: CreatureAsset,
-  ): CreaturesEffect {
-    if (!this.checkDependencies(player, creature)) {
-      return;
-    }
+    weapon: Weapon,
+    ): CreaturesEffect {
+      if (!this.checkDependencies(player, creature)) {
+        return;
+      }
   
-    const results = this.performAction(player, creature);
-
-    // disables the attack button
-    if (player.attributes.attacksRemaining <= 0) {
-      const playersAttack = player.attributes.actions.find(a => a.name === "Attack")
-      playersAttack.disabled = true
-    }
-
-    if(!this.executeAsBonusAction) {
-      player.attributes.actionsPerformed.push(cloneDeep(this));
-    }
-    return results;
+      const results = this.performAction(player, creature, weapon);
+      
+      // disables the attack button    
+      if(!this.executeAsBonusAction) {
+        player.attributes.actionsPerformed.push(cloneDeep(this));
+        player.attributes.attacksRemaining--
+      }
+      
+      if (player.attributes.attacksRemaining <= 0) {
+        const playersAttack = player.attributes.actions.find(a => a.name === "Attack")
+        playersAttack.disabled = true
+      }
+    
+      return results;
   }
 
   private checkDependencies(player: CreatureAsset, creature?: CreatureAsset): boolean {
@@ -55,10 +65,10 @@ export class AttackAction extends Action {
 
   public performAction(
     player: CreatureAsset,
-    creature: CreatureAsset
+    creature: CreatureAsset,
+    weapon: Weapon
   ): CreaturesEffect {
-    const weapon = player.getSelectedItem() as Weapon;
-    if(!this.executeAsBonusAction) { player.attributes.attacksRemaining-- }
+    let totalHitPointsTaken: number
 
     MasterLog.log(`${player.name} attacked with the ${weapon.name}`)
     const attackRoll = this.rollAttack(player, weapon);
@@ -76,12 +86,28 @@ export class AttackAction extends Action {
         damage.modifiedRollValue += critDamage.modifiedRollValue;
       }
 
-      creature.calculateNewHitPoints(damage.modifiedRollValue * -1);
+      switch (this.damageStatus) {
+        case DamageStatus.halved:
+          totalHitPointsTaken = (damage.modifiedRollValue / 2) * -1
+          creature.calculateNewHitPoints(totalHitPointsTaken);          
+          break
+        case DamageStatus.doubled: {
+          totalHitPointsTaken = (damage.modifiedRollValue * 2) * -1
+          creature.calculateNewHitPoints(totalHitPointsTaken);
+          break
+        }
+        case DamageStatus.regular: {
+          totalHitPointsTaken = damage.modifiedRollValue * -1
+          creature.calculateNewHitPoints(damage.modifiedRollValue * -1);
+          break
+        }
+      }
+          
       this.creaturesEffect = { creature: creature, effected: true };
 
       MasterLog.log(
         `${player.name} hit ${creature.name} and took ${
-          damage.modifiedRollValue
+          totalHitPointsTaken
         } damage`
       );
     } else {
@@ -106,8 +132,7 @@ export class AttackAction extends Action {
         `d20+${this.getWeaponTypeModifier(player, weapon) +
           player.attributes.proficiencyBonus}`
       );
-      attackRoll =
-        attackRoll.actualRollValue >= attackRoll2.actualRollValue
+      attackRoll = attackRoll.actualRollValue >= attackRoll2.actualRollValue
           ? attackRoll
           : attackRoll2;
     }
@@ -117,8 +142,7 @@ export class AttackAction extends Action {
         `d20+${this.getWeaponTypeModifier(player, weapon) +
           player.attributes.proficiencyBonus}`
       );
-      attackRoll =
-        attackRoll.actualRollValue <= attackRoll2.actualRollValue
+       attackRoll = attackRoll.actualRollValue <= attackRoll2.actualRollValue
           ? attackRoll
           : attackRoll2;
     }
@@ -140,6 +164,29 @@ export class AttackAction extends Action {
           creature.attributes.strengthModifier
           ? creature.attributes.dexterityModifier
           : creature.attributes.strengthModifier;
+    }
+  }
+
+  public checkResistances(
+    creature: CreatureAsset,
+    weapon: Weapon
+  ): void {
+
+    if( weapon.checkIfOvercomes(weapon.damageType, creature) ){ 
+      this.damageStatus = DamageStatus.regular 
+      return
+    }
+
+    if( creature.checkForImmunities(weapon.damageType)) {
+      this.damageStatus = DamageStatus.squelched
+    }
+
+    if( creature.checkForVulnerabilities(weapon.damageType)) {
+      this.damageStatus = DamageStatus.doubled
+    }
+
+    if( creature.checkForResistances(weapon.damageType).length > 0) {
+      // half as many times as there is resistance
     }
   }
 }
