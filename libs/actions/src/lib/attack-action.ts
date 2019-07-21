@@ -1,49 +1,64 @@
 import { Dice, Roll } from '@hive-force/dice';
-import { Action, CreaturesEffect } from './action.model'
-import { CreatureAsset } from '@hive-force/assets'
-import { Weapon } from '@hive-force/items'
-import { MasterLog } from '@hive-force/log'
-import { cloneDeep } from "lodash"
+import { Action, CreaturesEffect } from './action.model';
+import { CreatureAsset } from '@hive-force/assets';
+import { Weapon } from '@hive-force/items';
+import { MasterLog } from '@hive-force/log';
+import { cloneDeep } from 'lodash';
+import { identifierModuleUrl } from '@angular/compiler';
 
 export enum DamageStatus {
   doubled,
   halved,
   regular,
-  squelched,
+  squelched
 }
 
 export class AttackAction extends Action {
   public name = 'Attack';
   public disabled = false;
   public executeAsBonusAction = false;
-  public damageStatus: DamageStatus = DamageStatus.regular
+  public damageStatus: DamageStatus = DamageStatus.regular;
+  public creatureModifiesDamage = false;
   
-  public execute(
-    player: CreatureAsset,
-    creature: CreatureAsset,
-    weapon: Weapon,
-    ): CreaturesEffect {
-      if (!this.checkDependencies(player, creature)) {
-        return;
-      }
   
-      const results = this.performAction(player, creature, weapon);
-      
-      // disables the attack button    
-      if(!this.executeAsBonusAction) {
-        player.attributes.actionsPerformed.push(cloneDeep(this));
-        player.attributes.attacksRemaining--
-      }
-      
-      if (player.attributes.attacksRemaining <= 0) {
-        const playersAttack = player.attributes.actions.find(a => a.name === "Attack")
-        playersAttack.disabled = true
-      }
-    
-      return results;
+  private halvedTimes = 1
+  constructor(public usedFor: string = "Regular Attack") {
+    super(usedFor)
   }
 
-  private checkDependencies(player: CreatureAsset, creature?: CreatureAsset): boolean {
+  public execute(
+    player: CreatureAsset,
+    creature: CreatureAsset
+  ): CreaturesEffect {
+    const weapon = player.getSelectedItem() as Weapon
+    
+    if (!this.checkDependencies(player, creature, weapon)) {
+      return;
+    }
+
+    const results = this.performAction(player, creature, weapon);
+
+    // disables the attack button
+    if (!this.executeAsBonusAction) {
+      player.attributes.actionsPerformed.push(cloneDeep(this));
+      player.attributes.attacksRemaining--;
+    }
+
+    if (player.attributes.attacksRemaining <= 0) {
+      const playersAttack = player.attributes.actions.find(
+        a => a.name === 'Attack'
+      );
+      playersAttack.disabled = true;
+    }
+
+    return results;
+  }
+
+  private checkDependencies(
+    player: CreatureAsset,
+    creature?: CreatureAsset,
+    weapon?: Weapon
+  ): boolean {
     // Must have creature selected
     if (!creature.selected) {
       return false;
@@ -56,9 +71,28 @@ export class AttackAction extends Action {
 
     // Must have attack actions remaining
     if (player.attributes.attacksRemaining === 0) {
-      MasterLog.log('You have no Attack Actions Remaining for this turn!!!', "ATTACK STOPPED");
+      MasterLog.log(
+        'You have no Attack Actions Remaining for this turn!!!',
+        'ATTACK STOPPED'
+      );
       return false;
     }
+
+    if (player.applyReaction(weapon, creature, this)) {
+      return false;
+    }
+
+    this.checkResilience(creature, weapon)
+
+    if(this.damageStatus === DamageStatus.squelched) {
+      return false
+    }
+
+    creature.effects.forEach(a => {
+      if(a.effects.includes("Attack")) {
+        a.applyRule(player, creature, this)
+      }
+    })
 
     return true;
   }
@@ -68,16 +102,19 @@ export class AttackAction extends Action {
     creature: CreatureAsset,
     weapon: Weapon
   ): CreaturesEffect {
-    let totalHitPointsTaken: number
+    let totalHitPointsTaken: number;
 
-    MasterLog.log(`${player.name} attacked with the ${weapon.name}`)
+    MasterLog.log(`${player.name} attacked ${creature.name} with the ${weapon.name}`);
     const attackRoll = this.rollAttack(player, weapon);
-    
-    const damageEquation = `${weapon.diceEquation}+${this.getWeaponTypeModifier(player, weapon)}`;
+
+    const damageEquation = `${weapon.diceEquation}+${this.getWeaponTypeModifier(
+      player,
+      weapon
+    )}`;
 
     if (attackRoll.modifiedRollValue > creature.attributes.armorClass) {
-      MasterLog.log("DAMAGE")
-      const damage = new Dice().roll(damageEquation);
+      MasterLog.log('DAMAGE');
+      let damage = new Dice().roll(damageEquation);
 
       if (attackRoll.actualRollValue === 20) {
         MasterLog.log(`Critical Hit!!!`);
@@ -86,106 +123,98 @@ export class AttackAction extends Action {
         damage.modifiedRollValue += critDamage.modifiedRollValue;
       }
 
+      if(this.creatureModifiesDamage) {
+       damage = creature.modifyDamage(damage)
+      }
+
       switch (this.damageStatus) {
         case DamageStatus.halved:
-          totalHitPointsTaken = (damage.modifiedRollValue / 2) * -1
-          creature.calculateNewHitPoints(totalHitPointsTaken);          
-          break
-        case DamageStatus.doubled: {
-          totalHitPointsTaken = (damage.modifiedRollValue * 2) * -1
+          MasterLog.log(`${creature.name} is resistant to the attack`)
+          totalHitPointsTaken = Math.floor(damage.modifiedRollValue / this.halvedTimes) * -1;
           creature.calculateNewHitPoints(totalHitPointsTaken);
-          break
+          break;
+        case DamageStatus.doubled: {
+          MasterLog.log(`${creature.name} is vulnerable to ${weapon.name}`)
+          totalHitPointsTaken = damage.modifiedRollValue * 2 * -1;
+          creature.calculateNewHitPoints(totalHitPointsTaken);
+          break;
         }
         case DamageStatus.regular: {
-          totalHitPointsTaken = damage.modifiedRollValue * -1
+          totalHitPointsTaken = damage.modifiedRollValue * -1;
           creature.calculateNewHitPoints(damage.modifiedRollValue * -1);
-          break
+          break;
         }
       }
-          
+
       this.creaturesEffect = { creature: creature, effected: true };
 
       MasterLog.log(
-        `${player.name} hit ${creature.name} and took ${
-          totalHitPointsTaken
-        } damage`
+        `${player.name} hit ${
+          creature.name
+        } and took ${totalHitPointsTaken} damage`
       );
     } else {
       this.creaturesEffect = { creature: creature, effected: false };
       MasterLog.log(`${player.name} missed!`);
     }
-    MasterLog.log(
-      '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'
-    );
 
-    return this.creaturesEffect
+    return this.creaturesEffect;
   }
 
   public rollAttack(player: CreatureAsset, weapon: Weapon): Roll {
-    let attackRoll = new Dice().roll(
+    const attackRoll = new Dice()
+    attackRoll.withAdvantage = player.attributes.hasAdvantage
+    attackRoll.withDisadvantage = player.attributes.hasDisadvantage
+    
+    const roll = attackRoll.roll(
       `d20+${this.getWeaponTypeModifier(player, weapon) +
-        player.attributes.proficiencyBonus}`
+      player.attributes.proficiencyBonus}`
     );
 
-    if (player.attributes.hasAdvantage) {
-      const attackRoll2 = new Dice().roll(
-        `d20+${this.getWeaponTypeModifier(player, weapon) +
-          player.attributes.proficiencyBonus}`
-      );
-      attackRoll = attackRoll.actualRollValue >= attackRoll2.actualRollValue
-          ? attackRoll
-          : attackRoll2;
-    }
-
-    if (player.attributes.hasDisadvantage) {
-      const attackRoll2 = new Dice().roll(
-        `d20+${this.getWeaponTypeModifier(player, weapon) +
-          player.attributes.proficiencyBonus}`
-      );
-       attackRoll = attackRoll.actualRollValue <= attackRoll2.actualRollValue
-          ? attackRoll
-          : attackRoll2;
-    }
-
-    return attackRoll;
+    return roll;
   }
 
-  public getWeaponTypeModifier(
-    creature: CreatureAsset,
+  private getWeaponTypeModifier(
+    player: CreatureAsset,
     weapon: Weapon
   ): number {
-    switch (weapon.type) {
-      case 'Brute':
-        return creature.attributes.strengthModifier;
-      case 'Finesse':
-        return creature.attributes.dexterityModifier;
-      case 'Versatile':
-        return creature.attributes.dexterityModifier >=
-          creature.attributes.strengthModifier
-          ? creature.attributes.dexterityModifier
-          : creature.attributes.strengthModifier;
-    }
+     if(weapon.weaponType === 'finesse') {
+        return player.attributes.dexterityModifier >=
+          player.attributes.strengthModifier
+          ? player.attributes.dexterityModifier
+          : player.attributes.strengthModifier;
+     }
+
+     if(weapon.modifier) {
+       return player.attributes[`${weapon.modifier}Modifier`]
+     }
+
+     return 0
   }
+  
 
-  public checkResistances(
-    creature: CreatureAsset,
-    weapon: Weapon
-  ): void {
-
-    if( weapon.checkIfOvercomes(weapon.damageType, creature) ){ 
-      this.damageStatus = DamageStatus.regular 
-      return
+  private checkResilience(creature: CreatureAsset, weapon: Weapon): void {
+    if (weapon.checkIfOvercomes(creature)) {
+      MasterLog.log(`${creature.name} overcame a resistance or immunity`)
+      this.damageStatus = DamageStatus.regular;
+      return;
     }
 
-    if( creature.checkForImmunities(weapon.damageType)) {
-      this.damageStatus = DamageStatus.squelched
+    if (creature.checkForImmunities(weapon)) {
+      MasterLog.log(`${creature.name} is Immune to ${weapon.damageType} \n No Damage Taken`)
+      
+      this.damageStatus = DamageStatus.squelched;
     }
 
-    if( creature.checkForVulnerabilities(weapon.damageType)) {
-      this.damageStatus = DamageStatus.doubled
+    if (creature.checkForVulnerabilities(weapon)) {
+      this.damageStatus = DamageStatus.doubled; 
     }
-
-    if( creature.checkForResistances(weapon.damageType).length > 0) {
+    const resistances = creature.checkForResistances(weapon)
+    if ( resistances.length > 0) {
+      resistances.forEach( a => {
+        this.halvedTimes = this.halvedTimes * 2 
+        this.damageStatus = DamageStatus.halved
+      })
       // half as many times as there is resistance
     }
   }

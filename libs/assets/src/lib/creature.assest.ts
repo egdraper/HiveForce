@@ -3,7 +3,7 @@ import { Item, Weapon } from '@hive-force/items';
 import { Spell } from '@hive-force/spells';
 import { Class } from '@hive-force/class';
 import { Race } from '@hive-force/race';
-import { Dice } from '@hive-force/dice';
+import { Dice, Roll } from '@hive-force/dice';
 import { Action } from '@hive-force/actions';
 import { Subject } from 'rxjs';
 import { MasterLog } from '@hive-force/log';
@@ -17,7 +17,7 @@ export class CreatureAsset extends SelectableAsset {
 
   public race?: Race;
   public attributes: Attributes;
-  public effects: Effect[];  
+  public effects: Effect[] = []
   public inventory: Array<Item>;
   public disabled: boolean;
 
@@ -25,13 +25,16 @@ export class CreatureAsset extends SelectableAsset {
 
   public savingThrow(DC: number, skill?: string): boolean {
     MasterLog.log('Perform Saving Throw?: yes');
+
     const dice = new Dice();
     const modifierAmount = this.attributes[`${skill}Modifier`];
     const result = dice.roll(`d20+${modifierAmount}`);
     const saved = result.modifiedRollValue >= DC;
     MasterLog.log(saved ? `${this.name} saved!` : `${this.name} failed!`);
     MasterLog.log(`Rolled ${result.modifiedRollValue}: Needed ${DC}!`);
+    MasterLog.log(`-------`);
     return result.modifiedRollValue >= DC;
+
   }
 
   public disarm(): Weapon {
@@ -47,6 +50,11 @@ export class CreatureAsset extends SelectableAsset {
     item.equipped = true;
 
     return weapon;
+  }
+
+  public rollInitiative(): number {
+    const roll = new Dice().roll(`d20+${this.attributes.dexterityModifier}`)
+    return roll.modifiedRollValue
   }
 
   public getSelectedItem(): Item {
@@ -73,17 +81,36 @@ export class CreatureAsset extends SelectableAsset {
     this.attributes.currentHitPoints = newHitPointsValue;
   }
 
+  public checkForConditionImmunities(name: string): boolean {
+    return !!this.attributes.immunities.find(i => i === name)
+  }
   
-  public checkForImmunities(name: string): boolean {
-    return !!this.attributes.immunities.find(a => a === name)
+  public checkForImmunities(weapon: Weapon): boolean {
+    return !!this.attributes.immunities.find(a => a === weapon.attackType || a === weapon.weaponType || a === weapon.damageType)
   }
 
-  public checkForResistances(name: string): string[] {
-    return this.attributes.resistances.filter(a => a === name)
+  public checkForResistances(weapon: Weapon): string[] {
+    return this.attributes.resistances.filter(r => r === weapon.attackType || r === weapon.weaponType || r === weapon.damageType)
   }
 
-  public checkForVulnerabilities(name: string): boolean {
-    return !!this.attributes.vulnerabilities.find(a => a === name)
+  public checkForVulnerabilities(weapon: Weapon): boolean {
+    return !!this.attributes.vulnerabilities.find(v => v === weapon.attackType || v === weapon.weaponType || v === weapon.damageType)
+  }
+
+  public executeAction(action: Action, creature: CreatureAsset): void {
+    action.execute(this, creature)
+  }
+
+  public applyReaction(weapon: Weapon, creature?: CreatureAsset, action?: Action): boolean {
+    return false
+  }
+
+  public applyEffects(effect: Effect): void {
+    this.effects.push(effect)
+  }
+
+  public modifyDamage(dice: Roll): Roll {
+    return null
   }
 }
 
@@ -93,9 +120,10 @@ export interface Effect {
   duration: number;
   startTime: string;
   endTime: string;
+  effects: string[];
 
-  applyRule: () => void
-  removeRule: () => void
+  applyRule: (attacker?: CreatureAsset, attackee?: CreatureAsset, action?: Action) => void
+  removeRule: (attacker?: CreatureAsset, attackee?: CreatureAsset, action?: Action) => void
   check: () => void
 }
 
@@ -137,9 +165,10 @@ export class Attributes {
   public skills: Array<any>;
   public strength: number;
   public strengthModifier: number;
-  public vulnerabilities: []
+  public vulnerabilities: string[]
   public weaponProficiencies: string[];
   public weight: number;
   public wisdom: number;
   public wisdomModifier: number;
+  public spells?: Spell[]
 }

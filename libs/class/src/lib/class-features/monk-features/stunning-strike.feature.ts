@@ -4,8 +4,6 @@ import { StunnedEffect, MonkFeature } from './monk.feature';
 import { MasterLog } from '@hive-force/log';
 import { Subject } from 'rxjs';
 import { Monk } from '../../monk.class';
-import { Weapon } from '@hive-force/items';
-import { Certificate } from 'crypto';
 
 export class StunningStrike extends MonkFeature {
   public name = 'Stunning Strike';
@@ -50,12 +48,6 @@ export class StunningStrike extends MonkFeature {
       return false;
     }
 
-    // checks to see if creature is immune to stunning
-    if(creature.checkForImmunities("stunning")) {
-      MasterLog.log("This creature Cannot be Stunned")
-      return false
-    }
-
     // Makes sure there was an attack action, If not it attacks for you.
     if (action && action.creaturesEffect.effected) {
       effectedCreature = action.creaturesEffect;
@@ -63,15 +55,23 @@ export class StunningStrike extends MonkFeature {
       // If at least one hit remains and no hit has taken place, it will perform an attack.
       MasterLog.log("Attack Action Required. Performing action for you")
       const attackAction = new AttackAction();
-      effectedCreature = attackAction.execute(player, creature, player.getSelectedItem() as Weapon);
+      effectedCreature = attackAction.execute(player, creature);
+      MasterLog.log("---------")
 
       if (
         !effectedCreature.effected &&
         player.attributes.attacksRemaining > 0
       ) {
         const attackAction2 = new AttackAction();
-        effectedCreature = attackAction2.execute(player, creature, player.getSelectedItem() as Weapon);
+        effectedCreature = attackAction2.execute(player, creature);
+        MasterLog.log("---------")
       }
+    }
+
+    // checks to see if creature is immune to stunning
+    if(creature.checkForConditionImmunities("stunning")) {
+      MasterLog.log("This creature Cannot be Stunned")
+      return false
     }
 
     if (!effectedCreature.effected) {

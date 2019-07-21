@@ -1,17 +1,29 @@
 <button (click)="onClick()">ROLL</button>
 <button (click)="addCharacter()">Add Character</button>
 
-<h1>Do your worst</h1>
 <div *ngFor="let player of players">
   <div *ngIf="player.id === activePlayer.id">
-    {{ player.name }} the {{ player.race.name }} {{ player.className }}
-    <button
-      *ngFor="let action of player.attributes?.actions"
-      [class.disabled]="action.disabled"
-      (click)="executeAction(player, action)"
-    >
-      <span> {{ action.name }} </span>
-    </button>
+    <h1>{{ player.name }} the {{ player.race.name }} {{ player.className }}</h1>
+    <div style="display: inline-flex">
+    <div *ngFor="let action of player.attributes?.actions">
+      
+          <button
+            [class.disabled]="action.disabled"
+            (click)="executeAction(player, action)"
+           >
+            {{ action.name }}
+          </button>
+          <div *ngFor="let subAction of action.subActions">
+            <button style="margin-left: 5px"
+              [class.selected]="subAction.selected"
+              (click)="action.onSubActionSelect(subAction)">
+              {{ subAction.name }}
+            </button>
+          </div>
+  
+      
+      </div>
+    </div>
     <button (click)="endTurn(player)">End Turn</button>
     <div>
       <span *ngFor="let item of player.inventory">
@@ -32,7 +44,7 @@
 
 <div style="margin-bottom: 15px"></div>
 
-<div *ngFor="let creature of creatures">
+<div *ngFor="let creature of creatures" style="margin: 4px;">
   <button
     [class.selected]="creature.selected"
     [class.dead]="creature.attributes.currentHitPoints <= 0"
@@ -41,10 +53,9 @@
   >
     {{ creature.name }}
   </button>
-  <span>hitpoints: </span>
+  <span style="margin: 10px">hitpoints: </span>
   <span>{{ creature.attributes.currentHitPoints }}</span>
 </div>
-<textarea #hey rows="13" cols="50">
+<textarea #hey rows="13" cols="100">
   {{ message }}
 </textarea>
-

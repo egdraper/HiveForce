@@ -4,10 +4,31 @@ import { MasterLog } from '@hive-force/log';
 
 export class Dice {
     public savedRoll: Array<DiceEquation> = [];
+    public withAdvantage = false
+    public withDisadvantage = false
   
     public roll(diceEquation: string): Roll {
-      const roll = new Roll();
+      
       this.parseEquation(diceEquation);
+
+      if(diceEquation.startsWith("d20") && (this.withAdvantage || this.withDisadvantage )) {
+        
+        const roll1 = this.performRoll()
+        const roll2 = this.performRoll()
+        if(this.withAdvantage) {
+          return roll1.modifiedRollValue >= roll2.modifiedRollValue ? roll1 : roll2
+        }
+
+        if(this.withDisadvantage) {
+          return roll1.modifiedRollValue <= roll2.modifiedRollValue ? roll2 : roll1
+        }
+      } else {
+        return this.performRoll()
+      }     
+    }
+
+    private performRoll(): Roll {
+      const roll = new Roll();
       this.savedRoll.forEach(sr => {
         for (let i = 0; i < sr.numberOfRolls; i++) {
           roll.actualRollValue = this.getRandomInt(sr.numberOfSides);
@@ -27,7 +48,7 @@ export class Dice {
       return roll;
     }
   
-    public getRandomInt(max) {
+    private getRandomInt(max) {
       return Math.floor(Math.random() * Math.floor(max) + 1);
     }
   

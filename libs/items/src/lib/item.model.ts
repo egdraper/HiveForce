@@ -1,6 +1,5 @@
 import { Rollable } from '@hive-force/dice';
 import { CreatureAsset } from '@hive-force/assets';
-import { createReadStream } from 'fs';
 
 export class Item {
   public id: string;
@@ -16,14 +15,37 @@ export class RollableItem extends Item implements Rollable {
 }
 
 export class Weapon extends RollableItem {
-  public type?: 'Versatile' | 'Ranged' | 'Finesse' | 'Brute';
+  public weaponType?: 
+    'versatile' | 
+    'ranged' | 
+    'finesse' | 
+    'heavy' |
+    'light' |
+    'ammunition' |
+    'loading' |
+    'rang' |
+    'reach' |
+    'special' |
+    'twoHanded' |
+    'improvised' |
+    'silvered' |
+    'lance' |
+    'net' |
+    'none'
   public damageType?: "Slashing" | "Bludgeoning" | "Piercing" | "Magical"
-  public overcomes?: string[];
+  public attackType?: "magical" | "nonmagical"
+  public overcomes?: string[] = []
+  public ranged?: boolean
+  public modifier?: string
 
-  public checkIfOvercomes(name: string, creature: CreatureAsset): boolean {
-    const immunity = creature.attributes.immunities.find(i => i === name);
-    const resistance = creature.attributes.resistances.find(r => r === name);
+  public checkIfOvercomes(creature: CreatureAsset): boolean {
+    let immunity
+    let resistance
+    this.overcomes.forEach(overcome => {
+      immunity = creature.attributes.immunities.find(i => i === overcome);
+      resistance = creature.attributes.resistances.find(r => r === overcome);
+    })
 
-    return (immunity || resistance) === name;
+    return immunity || resistance;
   }
 }

@@ -5,6 +5,7 @@ import { Dice } from "@hive-force/dice"
 import { CreatureAsset } from '@hive-force/assets'
 import { Monk } from '@hive-force/class';
 import { Action } from '@hive-force/actions';
+import { CreaturesList } from './creatures';
 
 @Component({
   selector: 'hive-force-root',
@@ -17,7 +18,7 @@ export class AppComponent {
   public title = 'hive-force';
   public totalRollAmount = 0;
   public players: Array<CreatureAsset> = []
-  public creatures: Array<CreatureAsset> = [];
+  public creatures: Array<CreatureAsset>
   public activePlayer: CreatureAsset
   public playerIndex = 0
   public numberOfPlayers = 0
@@ -28,8 +29,11 @@ export class AppComponent {
     this.players.push(this.createCreature("Quantis"));
     this.players.push(this.createCreature("Tavios"));
     this.players.push(this.createCreature("Argus"));
+    
     this.activePlayer = this.players[this.playerIndex]
     this.numberOfPlayers = this.players.length
+    this.creatures = new CreaturesList().creatures
+
     MasterLog.subscribe((m) => {
       this.message = m
       setTimeout(()=> {
@@ -49,12 +53,16 @@ export class AppComponent {
   }
 
   public createCreature(name?: string): CreatureAsset {
-    const creature = new Monk(6, name)
+    const creature = new Monk(10, name, "Way of the Open Hand")
     return creature;
   }
   
   public selectCharacter(character: CreatureAsset): void {
     character.selected = !character.selected;
+  }
+
+  public onSubActionSelect(subAction: Action): void {
+
   }
   
   public getSelectedCreatures(): Array<CreatureAsset> {
@@ -63,7 +71,8 @@ export class AppComponent {
 
   public executeAction(player: CreatureAsset, action: Action): void { 
     this.getSelectedCreatures().forEach(selectedCreature => {
-      action.execute(player, selectedCreature)
+      player.executeAction(action, selectedCreature)
+      MasterLog.log("\n")
     });
   }
 

@@ -3,12 +3,17 @@ import { MasterLog } from '@hive-force/log';
 import { Item } from '@hive-force/items';
 
 export class Action {
-  public name: string;
+  public name: string
   public creaturesEffect: CreaturesEffect
-  public requiresAttackAction: boolean;
-  public executeAsBonusAction: boolean;
-  public disabled: boolean;
-  public overcomes: string[];
+  public requiresAttackAction: boolean
+  public executeAsBonusAction: boolean
+  public disabled: boolean
+  public actionType: string
+  public overcomes: string[]
+  public selected: boolean
+  public subActions: Array<Action> = []
+
+  constructor(public usedFor?: string) { }
 
   public execute(
     player?: CreatureAsset,
@@ -30,6 +35,13 @@ export class Action {
       MasterLog.log('You have no Bonus Action Remaining!!!');
       return;
     }
+  }
+
+  public onSubActionSelect(subAction: Action): void {
+    this.subActions.forEach(a => {
+      a.selected = false
+    })
+    subAction.selected = true
   }
 }
 

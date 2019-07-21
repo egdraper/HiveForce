@@ -1,26 +1,31 @@
-import { Attributes, CreatureAsset } from '@hive-force/assets';
+import { Attributes, CreatureAsset, Effect } from '@hive-force/assets';
 import { Class } from './base.class';
 import { Action, AttackAction } from '@hive-force/actions';
 import { StunningStrike } from './class-features/monk-features/stunning-strike.feature';
-import { FurryOFBlows } from './class-features/monk-features/furry-of-blows.feature';
+import { FurryOFBlows, KnockProne, DisableReaction, KnockBack } from './class-features/monk-features/furry-of-blows.feature';
 import { Weapon, Item } from '@hive-force/items';
-import { UnarmoredDefense } from './class-features/monk-features';
+import { UnarmoredDefense, StillnessOfMind } from './class-features/monk-features';
 import { UnarmedStrike } from './class-features/monk-features/unarmed-strike.feature';
 import { Subject } from 'rxjs';
 import { HillDwarf } from '@hive-force/race';
+import { Roll, Dice } from '@hive-force/dice';
+import { MasterLog } from '@hive-force/log';
 
 export class Monk extends Class {
   public className = 'Monk';
   public ki = 2;
 
-  constructor(public level: number = 1, public name: string) {
+  constructor(public level: number = 1, public name: string, public archetype: string) {
     super();
 
     this.createClass();
-    for (let i = 1; i < level; i++) {
+    this.level = level
+    
+    for (let i = 1; i <= this.level; i++) {
       this.levelUp[`toLevel${i.toString()}`]();
     }
   }
+
 
   public levelUp = {
     toLevel1: () => {
@@ -32,7 +37,15 @@ export class Monk extends Class {
       this.attributes.actions.push(new UnarmedStrike(this.actionPerformed));
     },
     toLevel3:() => {
-      this.attributes.actions.push(new FurryOFBlows(this.actionPerformed));
+      const furryOfBlows = new FurryOFBlows(this.actionPerformed)
+      
+      if(this.archetype === "Way of the Open Hand") {
+        furryOfBlows.subActions.push(new KnockProne())
+        furryOfBlows.subActions.push(new DisableReaction())
+        furryOfBlows.subActions.push(new KnockBack())
+      }
+
+      this.attributes.actions.push(furryOfBlows);
     },
     toLevel4:() => {
 
@@ -43,15 +56,100 @@ export class Monk extends Class {
     },
     toLevel6:() => {
       const unarmedWeapon = this.inventory.find(a => a.name === "Fist") as Weapon
-      unarmedWeapon.overcomes.push("nonmagical attack")
-      unarmedWeapon.overcomes.push("nonmagical damage")
+      unarmedWeapon.overcomes.push("nonmagical")
+    },
+    toLevel7:() => {
+       this.attributes.actions.push(new StillnessOfMind())
+    },
+    toLevel8:() => {
+
+    },
+    toLevel9:() => {
+
+    },
+    toLevel10:() => {
+      this.attributes.immunities.push("disease")
+      this.attributes.immunities.push("poison")
+    },
+    toLevel11:() => {
+
+    },
+    toLevel12:() => {
+
+    },
+    toLevel13:() => {
+
+    },
+    toLevel14:() => {
+
+    },
+    toLevel15:() => {
+
+    },
+    toLevel16:() => {
+
+    },
+    toLevel17:() => {
+
+    },
+    toLevel18:() => {
+
+    },
+    toLevel19:() => {
+
+    },
+    toLevel20:() => {
+
+    },
+  }
+
+  public rollInitiative(): number {
+    const roll = new Dice().roll(`d20+${this.attributes.dexterityModifier}`)
+
+    if(this.level >= 20 && this.ki === 0) {
+      this.ki = 4
+    }
+
+    return roll.modifiedRollValue
+  }
+
+  public applyEffects(effect: Effect): void {
+    if(this.level >= 10 && effect.name === "Poison" || effect.name === "Disease") {
+      return
+    }
+
+    if(this.level >= 15 && effect.name === "Age") {
+      return
+    }
+
+    this.effects.push(effect)
+  }
+
+  public executeAction(action: Action, creature: CreatureAsset): void {
+    action.execute(this, creature)
+  }
+
+  public applyReaction(weapon: Weapon, creature: CreatureAsset, action: AttackAction): boolean {
+    if(weapon.ranged) {
+      action.creatureModifiesDamage = true
+      return false
     }
   }
 
-  public attack(): void {
+  public modifyDamage(damageRoll: Roll): Roll {
+    if(this.level < 3) { return damageRoll }
     
+    MasterLog.log(`${this.name} used Deflect Missiles` )
+    const saveRoll = new Dice().roll(`1d10+${this.attributes.dexterityModifier + this.level}`)
+    
+    damageRoll.modifiedRollValue -= saveRoll.modifiedRollValue
+    if(damageRoll.modifiedRollValue <= 0 ) {
+      damageRoll.modifiedRollValue = 0
+      MasterLog.log("The damage was Reduced to 0")
+      // TODO: Monk needs to perform an action here 
+    }
+    return damageRoll
   }
-
 
   public createClass(): void {
     this.createBaseCreature();
@@ -64,49 +162,36 @@ export class Monk extends Class {
 
   // for demo purposes
   private getItems(): Array<Weapon> {
-    return [
-      {
-        description: 'Strong Weapon',
-        diceEquation: '2d8',
-        id: '1234',
-        name: 'Mace',
-        use: 'Weapon',
-        equipped: true,
-        selected: true,
-        type: 'Brute'
-      },
-      {
-        description: 'Small and Pokey',
-        diceEquation: '1d4',
-        id: '1237',
-        name: 'Short Sword',
-        use: 'Weapon',
-        equipped: false,
-        selected: false,
-        type: 'Versatile'
-      },
-      {
-        description: 'Fists of Fury',
-        diceEquation: '1d6',
-        id: '1235',
-        equipped: true,
-        name: 'Fist',
-        use: 'Weapon',
-        selected: false,
-        type: 'Finesse',
-        overcomes: []
-      },
-      {
-        description: 'Long Bow',
-        diceEquation: '1d12',
-        id: '1236',
-        name: 'Silver Bow',
-        use: 'Weapon',
-        equipped: false,
-        selected: true,
-        type: 'Ranged'
-      }
-    ];
+    const items: Array<Weapon> = []
+      const shortSword = new Weapon()
+      shortSword.description = 'Small and Pokey',
+      shortSword.diceEquation = '1d4',
+      shortSword.id = '1237',
+      shortSword.name = 'Short Sword',
+      shortSword.use = 'Weapon',
+      shortSword.equipped = true,
+      shortSword.selected = true,
+      shortSword.weaponType = 'finesse'
+      shortSword.damageType = "Slashing"
+      shortSword.attackType = "nonmagical"
+      shortSword.ranged = false
+      shortSword.modifier = "strength"
+      
+      const fist = new Weapon()
+      fist.description = 'Fists of Fury'
+      fist.diceEquation = '1d6'
+      fist.id = '1235'
+      fist.equipped = true
+      fist.selected = false
+      fist.name = 'Fist'
+      fist.use = 'Weapon'
+      fist.weaponType = 'none'
+      fist.damageType = "Bludgeoning"
+      fist.attackType = "nonmagical"
+      fist.ranged = false
+      fist.modifier = "strength"  
+
+      return [fist, shortSword]
   }
 
   public createBaseCreature(): void {
@@ -165,37 +250,4 @@ export class Monk extends Class {
     hillDwarf.buildCharacter();
     this.race = hillDwarf;
   }
-
-
-
-  public ToLevel3() {
-
-  }
-
-  public ToLevel4() {
-    // Slow Fall
-  }
-
-  public ToLevel5() {
-
-  }
-
-  public ToLevel6() {
-  
-  }
-
-  public ToLevel7() {}
-  public ToLevel8() {}
-  public ToLevel9() {}
-  public ToLevel10() {}
-  public ToLevel11() {}
-  public ToLevel12() {}
-  public ToLevel13() {}
-  public ToLevel14() {}
-  public ToLevel15() {}
-  public ToLevel16() {}
-  public ToLevel17() {}
-  public ToLevel18() {}
-  public ToLevel19() {}
-  public ToLevel20() {}
 }

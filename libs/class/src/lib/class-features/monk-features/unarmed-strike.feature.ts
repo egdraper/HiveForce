@@ -39,9 +39,12 @@ export class UnarmedStrike extends MonkFeature implements ClassFeature {
     );
 
     if (!action) {
-        MasterLog.log('Attack action required for Unarmed Strike. Performing attack action');
+        MasterLog.log('Attack action required for Unarmed Strike. Performing attack action\n');
         new AttackAction().execute(player, creature);
+        MasterLog.log("-------")
     }
+
+    player.effects.forEach()
 
     return true
   }
@@ -53,7 +56,7 @@ export class UnarmedStrike extends MonkFeature implements ClassFeature {
     const unarmed = player.inventory.find(a => a.name === 'Fist');
     const mainWeapon = player.selectItem(unarmed as Weapon);
     
-    const attack1 = new AttackAction();
+    const attack1 = new AttackAction("Unarmed Strike");
     attack1.executeAsBonusAction = true;
     attack1.execute(player, creature);
     player.attributes.bonusActionsRemaining --
