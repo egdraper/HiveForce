@@ -1,9 +1,7 @@
-import { Spell } from "@hive-force/spells"
-import { Item } from "@hive-force/items"
-
 export class Asset {
-    id: string;
-    name: string;
+    public id: string;
+    public name: string;
+    public update() { }
   }
   
   export class MapAsset extends Asset {

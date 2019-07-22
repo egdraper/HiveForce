@@ -1,6 +1,3 @@
-import { Rollable } from '@hive-force/dice';
-import { CreatureAsset } from '@hive-force/assets';
-
 export class Item {
   public id: string;
   public name: string;
@@ -10,7 +7,7 @@ export class Item {
   public selected?: boolean;
 }
 
-export class RollableItem extends Item implements Rollable {
+export class RollableItem extends Item {
   public diceEquation: string;
 }
 
@@ -37,15 +34,4 @@ export class Weapon extends RollableItem {
   public overcomes?: string[] = []
   public ranged?: boolean
   public modifier?: string
-
-  public checkIfOvercomes(creature: CreatureAsset): boolean {
-    let immunity
-    let resistance
-    this.overcomes.forEach(overcome => {
-      immunity = creature.attributes.immunities.find(i => i === overcome);
-      resistance = creature.attributes.resistances.find(r => r === overcome);
-    })
-
-    return immunity || resistance;
-  }
 }

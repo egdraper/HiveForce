@@ -147,33 +147,6 @@
       },
       "schematics": {}
     },
-    "race": {
-      "projectType": "library",
-      "root": "libs/race",
-      "sourceRoot": "libs/race/src",
-      "prefix": "hive-force",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "libs/race/tsconfig.lib.json",
-              "libs/race/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/race/jest.config.js",
-            "tsConfig": "libs/race/tsconfig.spec.json",
-            "setupFile": "libs/race/src/test-setup.ts"
-          }
-        }
-      },
-      "schematics": {}
-    },
     "architype": {
       "projectType": "library",
       "root": "libs/architype",
@@ -412,33 +385,6 @@
             "jestConfig": "libs/assets/jest.config.js",
             "tsConfig": "libs/assets/tsconfig.spec.json",
             "setupFile": "libs/assets/src/test-setup.ts"
-          }
-        }
-      },
-      "schematics": {}
-    },
-    "actions": {
-      "projectType": "library",
-      "root": "libs/actions",
-      "sourceRoot": "libs/actions/src",
-      "prefix": "hive-force",
-      "architect": {
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "libs/actions/tsconfig.lib.json",
-              "libs/actions/tsconfig.spec.json"
-            ],
-            "exclude": ["**/node_modules/**"]
-          }
-        },
-        "test": {
-          "builder": "@nrwl/jest:jest",
-          "options": {
-            "jestConfig": "libs/actions/jest.config.js",
-            "tsConfig": "libs/actions/tsconfig.spec.json",
-            "setupFile": "libs/actions/src/test-setup.ts"
           }
         }
       },

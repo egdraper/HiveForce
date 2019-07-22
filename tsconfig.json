@@ -17,7 +17,6 @@
     "baseUrl": ".",
     "paths": {
       "@hive-force/user": ["libs/user/src/index.ts"],
-      "@hive-force/race": ["libs/race/src/index.ts"],
       "@hive-force/architype": ["libs/architype/src/index.ts"],
       "@hive-force/feit": ["libs/feit/src/index.ts"],
       "@hive-force/class": ["libs/class/src/index.ts"],
@@ -27,7 +26,6 @@
       "@hive-force/log": ["libs/log/src/index.ts"],
       "@hive-force/dice": ["libs/dice/src/index.ts"],
       "@hive-force/assets": ["libs/assets/src/index.ts"],
-      "@hive-force/actions": ["libs/actions/src/index.ts"],
       "@hive-force/maps": ["libs/maps/src/index.ts"]
     }
   },

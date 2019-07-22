@@ -1,6 +1,11 @@
-<button (click)="onClick()">ROLL</button>
-<button (click)="addCharacter()">Add Character</button>
+<app-grid></app-grid>
 
+<button (click)="onClick()">ROLL</button>
+
+<button (click)="addCharacter()">Add Character</button>
+<creature-asset
+  [creatureAsset]="activePlayer">
+</creature-asset>
 <div *ngFor="let player of players">
   <div *ngIf="player.id === activePlayer.id">
     <h1>{{ player.name }} the {{ player.race.name }} {{ player.className }}</h1>

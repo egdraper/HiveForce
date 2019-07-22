@@ -1,9 +1,10 @@
-import { CreatureAsset } from '@hive-force/assets';
-import { AttackAction } from '@hive-force/actions';
+import { CreatureAsset, AttackAction } from '@hive-force/assets';
 import { Weapon } from '@hive-force/items';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 export class CreaturesList {
   public creatures: CreatureAsset[] = [];
+  public xIndex = 0
 
   constructor() {
     const steve = this.createAttributes("Steve")
@@ -25,6 +26,9 @@ export class CreaturesList {
 
   createAttributes(name: string): CreatureAsset {
     const zombieFred = new CreatureAsset();
+    this.xIndex += 55
+    zombieFred.positionX = 55
+    zombieFred.positionY = 65
     zombieFred.name = `Zombie ${name}`;
     zombieFred.level = 1;
     zombieFred.inventory = [];
@@ -82,7 +86,7 @@ export class CreaturesList {
     claw.use = 'Weapon',
     claw.equipped = false,
     claw.selected = false,
-    claw.weaponType = 'Versatile'
+    claw.weaponType = 'versatile'
 
     const bite = new Weapon()
     bite.description = 'Teath',
@@ -92,7 +96,7 @@ export class CreaturesList {
     bite.use = 'Weapon',
     bite.equipped = false,
     bite.selected = false,
-    bite.weaponType = 'Versatile'
+    bite.weaponType = 'versatile'
 
     zombieFred.inventory.push(claw, bite)
     return zombieFred

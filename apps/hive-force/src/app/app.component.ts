@@ -2,10 +2,9 @@
 import { Component, ViewChild } from '@angular/core'
 import { MasterLog } from "@hive-force/log"
 import { Dice } from "@hive-force/dice"
-import { CreatureAsset } from '@hive-force/assets'
-import { Monk } from '@hive-force/class';
-import { Action } from '@hive-force/actions';
+import { CreatureAsset, Action, Monk } from '@hive-force/assets';
 import { CreaturesList } from './creatures';
+import { Engine } from './engine';
 
 @Component({
   selector: 'hive-force-root',
@@ -23,16 +22,21 @@ export class AppComponent {
   public playerIndex = 0
   public numberOfPlayers = 0
   public id = 0
+  public creaturesClass = new CreaturesList()
 
   public ngOnInit(): void {
+    const engine = new Engine()
     this.players.push(this.createCreature("Jahml"));
     this.players.push(this.createCreature("Quantis"));
     this.players.push(this.createCreature("Tavios"));
     this.players.push(this.createCreature("Argus"));
-    
     this.activePlayer = this.players[this.playerIndex]
+    this.activePlayer.selected = true
     this.numberOfPlayers = this.players.length
-    this.creatures = new CreaturesList().creatures
+    this.creatures = this.creaturesClass.creatures
+    engine.assets = new Array<CreatureAsset>() 
+    engine.assets.push(this.activePlayer)
+    engine.run()
 
     MasterLog.subscribe((m) => {
       this.message = m
