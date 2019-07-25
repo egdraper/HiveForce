@@ -7,17 +7,24 @@ import { SelectableAsset } from '../assets.model';
 import { Race } from './race/base.race';
 import { Effect } from './effects/effects.model';
 import { Action } from './actions/action.model';
+import { Cell } from '../model';
 
 
 export class CreatureAsset extends SelectableAsset {
+  public startPos = Math.floor(Math.random() * Math.floor(15) + 1)
   public id: string;
   public name: string;
   public level: number;
+  public imagePath: string;
+  public imageHeight: number;
+  public imageWidth: number;
+  public zIndex = this.startPos
   public nonPlayableCharacter: boolean;
-  public positionX = 10;
-  public positionY = 10;
-  public readyPositionX = 10;
-  public readyPositionY = 10; 
+  public positionX = this.startPos * 50;
+  public positionY = this.startPos * 50;
+  public readyPositionX = this.startPos * 50 ;
+  public readyPositionY = this.startPos * 50 ;
+  public locationCell: Cell = {x: this.startPos  , y: this.startPos , obstacle: false}
 
   public race?: Race;
   public attributes: Attributes;
@@ -140,6 +147,10 @@ export class CreatureAsset extends SelectableAsset {
 
     return immunity || resistance;
   }
+
+ public detectCollision(nearByCreature: CreatureAsset ) {
+   debugger
+ }
 }
 
 export class Attributes {

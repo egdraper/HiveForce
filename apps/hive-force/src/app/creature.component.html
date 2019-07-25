@@ -1,4 +1,18 @@
-<div class="creature-attributes" 
+<div 
+  class="creature-attributes" 
+  (click)="onCreatureSelect()"
   [style.left]="creatureAsset.positionX + 'px'"
-  [style.top]="creatureAsset.positionY + 'px'">
+  [style.top]="creatureAsset.positionY + 'px'"
+  [class.selected]="creatureAsset.selected">
+  <div 
+    [style.z-index]="creatureAsset.zIndex"
+    class="character-image"
+    [ngStyle]="{'background-image': 'url(../assets/ghost1.png)'}"
+    [style.width.px]="20" 
+    [style.height.px]="20"
+    [style.background-position.px]="10"
+    [style.top.px]="15"
+    [style.left.px]="0"
+    >
+  </div>
 </div>

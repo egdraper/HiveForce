@@ -5,13 +5,10 @@
       (cellClick)="cellClick($event)">
     </app-row>
   
-    <!-- <div
-      *ngFor="let char of characters"
-      class="character"
-      [style.left]="char.leftPosition + 'px'"
-      [style.top]="char.topPosition + 'px'"
-      [class.selected]="char.isSelected"
-      (click)="charSelect(char)"
 
-    ></div> -->
+    <creature-asset *ngFor="let creature of creatures"
+      [creatureAsset]="creature"
+      [grid]="grid"
+      [gridCreatures]="creatures"
+    ></creature-asset>
   </div>

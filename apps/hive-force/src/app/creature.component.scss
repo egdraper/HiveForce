@@ -1,6 +1,20 @@
 .creature-attributes {
     height: 48px;
     width: 48px;
-    position: absolute;        
-    background-color: red;
+    position: absolute; 
+    background-image: url('../assets/zombie1.png');
+}
+
+.character-image {
+    position: absolute;
+    bottom: 4px;
+  
+}
+
+.selected {
+    border: solid green;
+}
+
+.bgimg {
+    background-image: url('../assets/zombie1.png');
 }

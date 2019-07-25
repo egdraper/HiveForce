@@ -27,15 +27,16 @@ export class AppComponent {
   public ngOnInit(): void {
     const engine = new Engine()
     this.players.push(this.createCreature("Jahml"));
-    this.players.push(this.createCreature("Quantis"));
-    this.players.push(this.createCreature("Tavios"));
-    this.players.push(this.createCreature("Argus"));
+    // this.players.push(this.createCreature("Quantis"));
+    // this.players.push(this.createCreature("Tavios"));
+    // this.players.push(this.createCreature("Argus"));
     this.activePlayer = this.players[this.playerIndex]
-    this.activePlayer.selected = true
+
     this.numberOfPlayers = this.players.length
+    this.creaturesClass.creatures.forEach(a => this.players.push(a) )
     this.creatures = this.creaturesClass.creatures
     engine.assets = new Array<CreatureAsset>() 
-    engine.assets.push(this.activePlayer)
+    engine.assets = this.players
     engine.run()
 
     MasterLog.subscribe((m) => {
@@ -58,6 +59,9 @@ export class AppComponent {
 
   public createCreature(name?: string): CreatureAsset {
     const creature = new Monk(10, name, "Way of the Open Hand")
+    creature.imagePath = "../assets/lich.gif"
+    creature.imageWidth = 100
+    creature.imageHeight = 130
     return creature;
   }
   

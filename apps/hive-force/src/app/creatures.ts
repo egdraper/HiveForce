@@ -7,26 +7,29 @@ export class CreaturesList {
   public xIndex = 0
 
   constructor() {
-    const steve = this.createAttributes("Steve")
+    const steve = this.createAttributes("Steve", "../assets/zombie1.png")
     steve.attributes.immunities.push("stunning")
     this.creatures.push(steve);
-    this.creatures.push(this.createAttributes("Allen"));
-    this.creatures.push(this.createAttributes("Martha"));
-    const bobby = this.createAttributes("Bobby")
+    this.creatures.push(this.createAttributes("Allen", "../assets/zombie1.png"));
+    this.creatures.push(this.createAttributes("Martha" ,"../assets/zombie1.png"));
+    const bobby = this.createAttributes("Bobby", "../assets/Axion_Dragon.png", 115, 100)
     bobby.attributes.resistances.push("nonmagical")
     this.creatures.push(bobby);
   }
 
   public addCreature(name: string, hp: number = 66) {
-    const newCreature = this.createAttributes(name)
+    const newCreature = this.createAttributes(name, "../asset/zombie1.png")
     newCreature.attributes.maxHitPoints = hp
     newCreature.attributes.currentHitPoints = hp
     this.creatures.push()
   }
 
-  createAttributes(name: string): CreatureAsset {
+  createAttributes(name: string, imagePath: string, height = 75, width = 50 ): CreatureAsset {
     const zombieFred = new CreatureAsset();
     this.xIndex += 55
+    zombieFred.imagePath = imagePath
+    zombieFred.imageHeight = height
+    zombieFred.imageWidth = width
     zombieFred.positionX = 55
     zombieFred.positionY = 65
     zombieFred.name = `Zombie ${name}`;

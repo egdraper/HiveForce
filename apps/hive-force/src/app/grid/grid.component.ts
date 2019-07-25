@@ -1,7 +1,5 @@
-import { Component, ViewChild, HostListener, ElementRef, ChangeDetectorRef } from "@angular/core";
-// import { Character } from "app/character/character";
-// import { ShortestPath } from "app/path/shortest-path";
-// import { Cell } from "app/model/cell";
+import { Component, ViewChild, HostListener, ElementRef, ChangeDetectorRef, Input } from "@angular/core";
+import { CreatureAsset, Cell } from '@hive-force/assets';
 
 @Component({
   selector: "app-grid",
@@ -9,12 +7,11 @@ import { Component, ViewChild, HostListener, ElementRef, ChangeDetectorRef } fro
   styleUrls: ["./grid.component.scss"]
 })
 export class GridComponent {
-  // public characters: Character[] = []
-  public grid: {[cell: string]: any } = { };
+  @Input() creatures: Array<CreatureAsset>
+  public grid: {[cell: string]: Cell } = { };
   public gridDisplay: any[][] = [];
 
   constructor() {
-    // this.characters.push(new Character());
     this.generateGrid();
   }
 
@@ -24,7 +21,6 @@ export class GridComponent {
   }
 
   public cellClick(e: any): void {
-    debugger 
     if (e.x === 150 && e.y === 0) {
       // this.characters.push(new Character());
     } else {
@@ -32,28 +28,19 @@ export class GridComponent {
     }
   }
 
-  public requestToMoveCharacter() {
-    // this.characters.filter(c => c.isSelected && c.isControllable).forEach(char => {
-    //   const posX = char.leftPosition / 50;
-    //   const posY = char.topPosition / 50;
-    //   const path = this.shortestPath.find(this.grid[`x${posX}:y${posY}`], toLocation);
-    //   char.startMovement(path);
-    // })
-  }
-
   private generateGrid() {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 15; i++) {
       this.gridDisplay[i] = [];
 
-      for (let l = 0; l < 100; l++ ) {
+      for (let l = 0; l < 20; l++ ) {
         const obstacle = ((i % 3 === 0 && l % 10 === 0) || (i % 10 === 0 && l === 3) || (i % 6 && l === 2));
         this.grid[`x${l}:y${i}`] = { x: l, y: i, posX: l * 50, posY: i * 50, obstacle, };
         this.gridDisplay[i][l] = this.grid[`x${l}:y${i}`];
       }
     }
 
-    for (let i = 0; i < 100; i++) {
-      for (let l = 0; l < 100; l++ ) {
+    for (let i = 0; i < 15; i++) {
+      for (let l = 0; l < 20; l++ ) {
         const cell = this.grid[`x${l}:y${i}`];
         cell.neighbors = [];
         cell.neighbors[5] = this.grid[`x${l + 1}:y${i + 1}`];
