@@ -59,9 +59,11 @@ export class AppComponent {
 
   public createCreature(name?: string): CreatureAsset {
     const creature = new Monk(10, name, "Way of the Open Hand")
-    creature.imagePath = "../assets/lich.gif"
-    creature.imageWidth = 100
-    creature.imageHeight = 130
+    creature.imgSource = "../assets/motw.png"
+    creature.imageAdjustment["down"] = { order: [0,1,2,1], sprite: [{x: 0, y: -9}, {x: -52, y: -9 }, {x: -104, y: -9 }] }
+    creature.imageAdjustment["left"] = { order: [0,1,2,1], sprite: [{x: 0, y: -80}, {x: -52, y: -80 }, {x: -104, y: -80 }] }
+    creature.imageAdjustment["up"] = { order: [0,1,2,1], sprite: [{x: 0, y: -220}, {x: -52, y: -220 }, {x: -104, y: -220 }] }
+    creature.imageAdjustment["right"] = { order: [0,1,2,1], sprite: [{x: 0, y: -150}, {x: -52, y: -150 }, {x: -104, y: -150 }] }
     return creature;
   }
   

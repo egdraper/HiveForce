@@ -34,7 +34,7 @@ export class GridComponent {
 
       for (let l = 0; l < 20; l++ ) {
         const obstacle = ((i % 3 === 0 && l % 10 === 0) || (i % 10 === 0 && l === 3) || (i % 6 && l === 2));
-        this.grid[`x${l}:y${i}`] = { x: l, y: i, posX: l * 50, posY: i * 50, obstacle, };
+        this.grid[`x${l}:y${i}`] = { x: l, y: i, posX: l * 50, posY: i * 50, obstacle, id: `x${l}:y${i}` };
         this.gridDisplay[i][l] = this.grid[`x${l}:y${i}`];
       }
     }

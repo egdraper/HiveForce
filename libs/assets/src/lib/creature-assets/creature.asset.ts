@@ -9,33 +9,63 @@ import { Effect } from './effects/effects.model';
 import { Action } from './actions/action.model';
 import { Cell } from '../model';
 
+export class SpriteSection { 
+  order: number[]
+  sprite: Array<{x: number, y: number}>
+} 
 
 export class CreatureAsset extends SelectableAsset {
   public startPos = Math.floor(Math.random() * Math.floor(15) + 1)
   public id: string;
   public name: string;
   public level: number;
-  public imagePath: string;
-  public imageHeight: number;
-  public imageWidth: number;
-  public zIndex = this.startPos
-  public nonPlayableCharacter: boolean;
-  public positionX = this.startPos * 50;
-  public positionY = this.startPos * 50;
-  public readyPositionX = this.startPos * 50 ;
-  public readyPositionY = this.startPos * 50 ;
-  public locationCell: Cell = {x: this.startPos  , y: this.startPos , obstacle: false}
-
+  public nonPlayableCharacter: boolean;  
   public race?: Race;
   public attributes: Attributes;
   public effects: Effect[] = []
   public inventory: Array<Item>;
   public disabled: boolean;
-  public p = true
+  
+  // sprite info
+  public containerWidth? = 50;
+  public containerHeight? = 75;
+  public imgSource? = "../assets/motw.png";
+  public imgSheetWidth? = "";
+  public imgSpriteTopOffset? = -9;
+  public imgSpriteLeftOffset? = -1;
+  public imgBottomOffset? = 0;
+  public imageHeight? = "auto";
+  public imageWidth?= "100%";
+  // up, down, left, right, die, fly.., attack.., 
+  public imageAdjustment?: {[section: string]: SpriteSection} = {}
+  public direction = "down"
 
+  // player grid position info
+  public zIndex = this.startPos
+  public positionX = this.startPos * 50;
+  public positionY = this.startPos * 50;
+  public readyPositionX = this.startPos * 50 ;
+  public readyPositionY = this.startPos * 50 ;
+  public cell: Cell = {x: this.startPos, y: this.startPos, obstacle: false , id: `x${this.startPos}:y${this.startPos}`}
+  
   public actionPerformed = new Subject<Action[]>()
+  public p = true
+  public count = 0
 
+  private movementNumber = 0
+  
   public update(): void {
+      this.count >= 60 ? this.count = 0 : this.count++
+
+      if(this.count === 0 || this.count === 20 || this.count === 40) {  
+        if(this.imageAdjustment && this.imageAdjustment[this.direction]) {      
+          const a = this.imageAdjustment[this.direction]
+          this.movementNumber >= a.order.length - 1 ? this.movementNumber = 0 : this.movementNumber++
+          this.imgSpriteLeftOffset = a.sprite[a.order[this.movementNumber]].x
+          this.imgSpriteTopOffset = a.sprite[a.order[this.movementNumber]].y
+        }
+      }
+
       if(this.p) {
         console.log(`X: ${this.readyPositionX}`)
         console.log(`Y: ${this.readyPositionY}`)
@@ -149,7 +179,6 @@ export class CreatureAsset extends SelectableAsset {
   }
 
  public detectCollision(nearByCreature: CreatureAsset ) {
-   debugger
  }
 }
 

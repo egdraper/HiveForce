@@ -12,7 +12,7 @@ export class CreaturesList {
     this.creatures.push(steve);
     this.creatures.push(this.createAttributes("Allen", "../assets/zombie1.png"));
     this.creatures.push(this.createAttributes("Martha" ,"../assets/zombie1.png"));
-    const bobby = this.createAttributes("Bobby", "../assets/Axion_Dragon.png", 115, 100)
+    const bobby = this.createAttributes("Bobby", "../assets/Axion_Dragon.png", "115", "100")
     bobby.attributes.resistances.push("nonmagical")
     this.creatures.push(bobby);
   }
@@ -21,18 +21,20 @@ export class CreaturesList {
     const newCreature = this.createAttributes(name, "../asset/zombie1.png")
     newCreature.attributes.maxHitPoints = hp
     newCreature.attributes.currentHitPoints = hp
-    this.creatures.push()
+   
+    this.creatures.push(newCreature)
   }
 
-  createAttributes(name: string, imagePath: string, height = 75, width = 50 ): CreatureAsset {
+  createAttributes(name: string, imagePath: string, height = "75", width = "50" ): CreatureAsset {
     const zombieFred = new CreatureAsset();
     this.xIndex += 55
-    zombieFred.imagePath = imagePath
-    zombieFred.imageHeight = height
-    zombieFred.imageWidth = width
-    zombieFred.positionX = 55
-    zombieFred.positionY = 65
+    zombieFred.imgSource = "../assets/motw.png"
+    zombieFred.imageAdjustment["down"]  = { order: [0,1,2,1], sprite: [{x: -313, y: -2},   {x: -365, y: -2 },   {x: -417, y: -2 }] }
+    zombieFred.imageAdjustment["left"]  = { order: [0,1,2,1], sprite: [{x: -313, y: -75},  {x: -365,  y: -75 },  {x: -417, y: -75 }] }
+    zombieFred.imageAdjustment["right"]    = { order: [0,1,2,1], sprite: [{x: -313, y: -147}, {x: -365,  y: -147 }, {x: -417, y: -147 }] }
+    zombieFred.imageAdjustment["up"] = { order: [0,1,2,1], sprite: [{x: -313, y: -221}, {x: -365,  y: -221 }, {x: -417, y: -221 }] }
     zombieFred.name = `Zombie ${name}`;
+    zombieFred.imgBottomOffset = 5;
     zombieFred.level = 1;
     zombieFred.inventory = [];
     zombieFred.nonPlayableCharacter = true;

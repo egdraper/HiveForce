@@ -1,18 +1,41 @@
-<div 
-  class="creature-attributes" 
+<div
+  class="creature-attributes"
   (click)="onCreatureSelect()"
   [style.left]="creatureAsset.positionX + 'px'"
   [style.top]="creatureAsset.positionY + 'px'"
-  [class.selected]="creatureAsset.selected">
-  <div 
+  [class.selected]="creatureAsset.selected"
+>
+  <div
     [style.z-index]="creatureAsset.zIndex"
-    class="character-image"
-    [ngStyle]="{'background-image': 'url(../assets/ghost1.png)'}"
-    [style.width.px]="20" 
-    [style.height.px]="20"
-    [style.background-position.px]="10"
-    [style.top.px]="15"
-    [style.left.px]="0"
-    >
+    [style.width.px]="creatureAsset.containerWidth"
+    [style.height.px]="creatureAsset.containerHeight"
+    [style.bottom.px]= "creatureAsset.imgBottomOffset"
+    [style.position]= "'absolute'"
+    [style.overflow]="'hidden'">
+    <img
+      src="{{ creatureAsset.imgSource }}"
+      [style.width]="creatureAsset.imgSheetWidth"
+      [style.height.px]="'auto'"
+      [style.top.px]="creatureAsset.imgSpriteTopOffset"
+      [style.left.px]="creatureAsset.imgSpriteLeftOffset"
+      [style.position]="'relative'"/>
   </div>
+</div>
+
+<div
+  [style.width.px]="38"
+  [style.height.px]="50"
+  [style.overflow]="'hidden'"
+  [style.margin]="0"
+
+>
+  <img
+    src="../assets/ghost1.png"
+    [style.width]="'352.777%'"
+    [style.height.px]="'auto'"
+    [style.top.px]="-74"
+    [style.left.px]="2"
+    [style.position]="'relative'"
+  />
+  }
 </div>

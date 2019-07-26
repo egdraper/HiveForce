@@ -17,54 +17,58 @@ export class CreatureAssetComponent {
   @HostListener('document:keypress', ['$event'])
   public move(event): void {
     if (this.creatureAsset.selected) {
-      const x = this.creatureAsset.locationCell.x
-      const y = this.creatureAsset.locationCell.y
+      const x = this.creatureAsset.cell.x
+      const y = this.creatureAsset.cell.y
 
       // Up
-      if (event.code === 'KeyW' && this.creatureAsset.locationCell.y > 0) {
+      if (event.code === 'KeyW' && this.creatureAsset.cell.y > 0) {
         const cell = this.grid[`x${x}:y${y - 1}`]
+        this.creatureAsset.direction = "up"
         if (cell.obstacle) {
           return;
         }
         this.creatureAsset.zIndex --
-        this.creatureAsset.locationCell = cell
-        this.creatureAsset.readyPositionY = this.creatureAsset.locationCell.y * 50 + 2;
+        this.creatureAsset.cell = cell
+        this.creatureAsset.readyPositionY = this.creatureAsset.cell.y * 50 + 2;
         this.checkSurroundings(cell);
       }
 
       // Left
-      if (event.code === 'KeyA' && this.creatureAsset.locationCell.x > 0) {
+      if (event.code === 'KeyA' && this.creatureAsset.cell.x > 0) {
+        this.creatureAsset.direction = "left"
         const cell = this.grid[`x${x - 1}:y${y}`]
         if (cell.obstacle) {
           return;
         }
-        this.creatureAsset.locationCell = cell;
-        this.creatureAsset.readyPositionX = this.creatureAsset.locationCell.x * 50 + 2;
+        this.creatureAsset.cell = cell;
+        this.creatureAsset.readyPositionX = this.creatureAsset.cell.x * 50 + 2;
         this.checkSurroundings(cell);
       }
 
       // Right
-      if (event.code === 'KeyD' && this.creatureAsset.locationCell.x < 100) {
+      if (event.code === 'KeyD' && this.creatureAsset.cell.x < 100) {
+        this.creatureAsset.direction = "right"
         const cell = this.grid[`x${x + 1}:y${y}`]
         if (cell.obstacle) {
           return;
         }
-        this.creatureAsset.locationCell = cell;
+        this.creatureAsset.cell = cell;
         this.creatureAsset.readyPositionX =
-          this.creatureAsset.locationCell.x * 50 + 2;
+          this.creatureAsset.cell.x * 50 + 2;
           this.checkSurroundings(cell);
       }
 
       // Down
-      if (event.code === 'KeyS' && this.creatureAsset.locationCell.y < 100) {
+      if (event.code === 'KeyS' && this.creatureAsset.cell.y < 100) {
+        this.creatureAsset.direction = "down"
         const cell = this.grid[`x${x}:y${y + 1}`]
         if (cell.obstacle) {
           return;
         }
         this.creatureAsset.zIndex ++
-        this.creatureAsset.locationCell = cell;
+        this.creatureAsset.cell = cell;
         this.creatureAsset.readyPositionY =
-          this.creatureAsset.locationCell.y * 50 + 2;
+          this.creatureAsset.cell.y * 50 + 2;
           this.checkSurroundings(cell);
       }
     }
@@ -76,9 +80,8 @@ export class CreatureAssetComponent {
 
   public checkSurroundings(cell: Cell): void {    // looks for other creatures within 5 feet
     this.gridCreatures.forEach(a => {
-      this.creatureAsset.locationCell.neighbors.forEach(c => {
-        if(c.x === a.locationCell.x && c.y === a.locationCell.y) {
-          debugger
+      this.creatureAsset.cell.neighbors.forEach(c => {
+        if(c.id === a.cell.id) {
         }
       })
     })

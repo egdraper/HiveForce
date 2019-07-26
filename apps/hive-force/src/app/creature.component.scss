@@ -2,17 +2,19 @@
     height: 48px;
     width: 48px;
     position: absolute; 
-    background-image: url('../assets/zombie1.png');
+
 }
 
 .character-image {
     position: absolute;
     bottom: 4px;
-  
+    background-size: cover;
+    background-repeat: no-repeat;  
 }
 
 .selected {
     border: solid green;
+    
 }
 
 .bgimg {
