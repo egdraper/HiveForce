@@ -15,6 +15,7 @@ export class Asset {
 
   export class SelectableAsset extends Asset {
     selected = false
+    activePlayer = false
   }
   
   export class TurrainAsset extends MapAsset {}

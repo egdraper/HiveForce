@@ -118,11 +118,36 @@ export class DisableReaction extends Action {
 export class KnockBack extends Action {
   public name = "Knock Back"
   execute(player: CreatureAsset, creature: CreatureAsset): void {
-    const saved = creature.savingThrow(10 + player.attributes.wisdomModifier + player.attributes.dexterityModifier, "strength")
+    const saved = creature.savingThrow(100 + player.attributes.wisdomModifier + player.attributes.dexterityModifier, "strength")
 
     if(!saved) {
+      if(player.cell.x === creature.cell.x) {
+        if(player.cell.y > creature.cell.y) {
+          this.moveBack(creature, "up", "down")
+        }
+        if(player.cell.y < creature.cell.y) {
+          this.moveBack(creature, "down", "up")
+        }
+      }
+      if(player.cell.y === creature.cell.y) {
+        if(player.cell.x > creature.cell.x) {
+          this.moveBack(creature, "left", "right")
+        }
+        if(player.cell.x < creature.cell.x) {
+          this.moveBack(creature, "right", "left")
+        }
+      }
+      if(player.cell.y !== creature.cell.y && player.cell.x !== creature.cell.x) {
+        
+      }
       MasterLog.log("Creature was knocked Back")
     }
+  }
+
+  private moveBack(creature: CreatureAsset, direction: string, creatureFacing: string): void {
+    for(let i = 0; i < 3; i++) {
+      creature.moveCharacter(direction, creature.cell.neighbors[0], [], creatureFacing)
+    }         
   }
 }
 

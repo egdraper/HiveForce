@@ -30,7 +30,7 @@ export class AppComponent {
     // this.players.push(this.createCreature("Quantis"));
     // this.players.push(this.createCreature("Tavios"));
     // this.players.push(this.createCreature("Argus"));
-    this.activePlayer = this.players[this.playerIndex]
+    this.players[this.playerIndex].activePlayer = true
 
     this.numberOfPlayers = this.players.length
     this.creaturesClass.creatures.forEach(a => this.players.push(a) )
@@ -66,10 +66,6 @@ export class AppComponent {
     creature.imageAdjustment["right"] = { order: [0,1,2,1], sprite: [{x: 0, y: -150}, {x: -52, y: -150 }, {x: -104, y: -150 }] }
     return creature;
   }
-  
-  public selectCharacter(character: CreatureAsset): void {
-    character.selected = !character.selected;
-  }
 
   public onSubActionSelect(subAction: Action): void {
 
@@ -87,13 +83,15 @@ export class AppComponent {
   }
 
   public endTurn(player: CreatureAsset): void {
+    player.activePlayer = false
     player.attributes.attacksRemaining = 2
     player.attributes.actionsPerformed = []
     player.attributes.actionsRemaining = 2
     player.attributes.actionsQueued = []
     player.attributes.actions.forEach(a => a.disabled = false)
 
-    this.activePlayer = this.getNextPlayer()
+    const newPlayer = this.getNextPlayer()
+    newPlayer.activePlayer = true
   }
 
   private getNextPlayer(): CreatureAsset {

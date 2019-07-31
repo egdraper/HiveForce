@@ -1,12 +1,10 @@
-  <app-grid [creatures]="players"></app-grid>
+<app-grid [creatures]="players"></app-grid>
 
-<button (click)="onClick()">ROLL</button>
-
-<button (click)="addCharacter()">Add Character</button>
 
 <div *ngFor="let player of players">
-  <div *ngIf="player.selected">
+  <div *ngIf="player.activePlayer">
     <h1>{{ player.name }} the {{ player?.race?.name }} {{ player?.className }}</h1>
+    <h1> {{player.attributes.currentHitPoints }} </h1>
     <div style="display: inline-flex">
     <div *ngFor="let action of player.attributes?.actions">
       

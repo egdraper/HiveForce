@@ -9,6 +9,7 @@ export class Action {
   public creaturesEffect: CreaturesEffect
   public requiresAttackAction: boolean
   public executeAsBonusAction: boolean
+  public executeAsReaction: boolean
   public disabled: boolean
   public actionType: string
   public overcomes: string[]

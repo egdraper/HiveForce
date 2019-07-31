@@ -5,9 +5,6 @@ import { NgModule } from "@angular/core";
 import { SquareComponent } from "./square.component";
 
 @NgModule({
-    imports: [
-
-    ],
     declarations: [
         SquareComponent,
     ],

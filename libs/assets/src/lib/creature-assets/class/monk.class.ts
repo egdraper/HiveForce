@@ -163,7 +163,6 @@ export class Monk extends Class {
 
   // for demo purposes
   private getItems(): Array<Weapon> {
-    const items: Array<Weapon> = []
       const shortSword = new Weapon()
       shortSword.description = 'Small and Pokey',
       shortSword.diceEquation = '1d4',

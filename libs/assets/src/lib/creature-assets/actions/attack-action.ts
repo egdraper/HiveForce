@@ -17,6 +17,7 @@ export class AttackAction extends Action {
   public name = 'Attack';
   public disabled = false;
   public executeAsBonusAction = false;
+  public executeAsReaction = false;
   public damageStatus: DamageStatus = DamageStatus.regular;
   public creatureModifiesDamage = false;  
   
@@ -38,7 +39,7 @@ export class AttackAction extends Action {
     const results = this.performAction(player, creature, weapon);
 
     // disables the attack button
-    if (!this.executeAsBonusAction) {
+    if (!this.executeAsBonusAction && !this.executeAsReaction) {
       player.attributes.actionsPerformed.push(cloneDeep(this));
       player.attributes.attacksRemaining--;
     }

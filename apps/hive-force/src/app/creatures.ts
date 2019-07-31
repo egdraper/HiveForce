@@ -1,6 +1,8 @@
 import { CreatureAsset, AttackAction } from '@hive-force/assets';
 import { Weapon } from '@hive-force/items';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { setTestabilityGetter } from '@angular/core';
+import { bindNodeCallback } from 'rxjs';
 
 export class CreaturesList {
   public creatures: CreatureAsset[] = [];
@@ -9,6 +11,7 @@ export class CreaturesList {
   constructor() {
     const steve = this.createAttributes("Steve", "../assets/zombie1.png")
     steve.attributes.immunities.push("stunning")
+    steve.aggressive = true
     this.creatures.push(steve);
     this.creatures.push(this.createAttributes("Allen", "../assets/zombie1.png"));
     this.creatures.push(this.createAttributes("Martha" ,"../assets/zombie1.png"));
@@ -28,6 +31,7 @@ export class CreaturesList {
   createAttributes(name: string, imagePath: string, height = "75", width = "50" ): CreatureAsset {
     const zombieFred = new CreatureAsset();
     this.xIndex += 55
+    zombieFred.id = `Zombie${name}`
     zombieFred.imgSource = "../assets/motw.png"
     zombieFred.imageAdjustment["down"]  = { order: [0,1,2,1], sprite: [{x: -313, y: -2},   {x: -365, y: -2 },   {x: -417, y: -2 }] }
     zombieFred.imageAdjustment["left"]  = { order: [0,1,2,1], sprite: [{x: -313, y: -75},  {x: -365,  y: -75 },  {x: -417, y: -75 }] }
@@ -36,6 +40,7 @@ export class CreaturesList {
     zombieFred.name = `Zombie ${name}`;
     zombieFred.imgBottomOffset = 5;
     zombieFred.level = 1;
+    zombieFred.aggressive = true
     zombieFred.inventory = [];
     zombieFred.nonPlayableCharacter = true;
     zombieFred.attributes = {
@@ -89,9 +94,11 @@ export class CreaturesList {
     claw.id = '12373',
     claw.name = 'Claw',
     claw.use = 'Weapon',
-    claw.equipped = false,
-    claw.selected = false,
+    claw.equipped = true,
+    claw.selected = true,
     claw.weaponType = 'versatile'
+    claw.modifier = "strength"
+    claw.overcomes = []
 
     const bite = new Weapon()
     bite.description = 'Teath',
@@ -102,6 +109,7 @@ export class CreaturesList {
     bite.equipped = false,
     bite.selected = false,
     bite.weaponType = 'versatile'
+    bite.overcomes = []
 
     zombieFred.inventory.push(claw, bite)
     return zombieFred

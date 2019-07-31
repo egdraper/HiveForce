@@ -4,6 +4,7 @@
   [style.left]="creatureAsset.positionX + 'px'"
   [style.top]="creatureAsset.positionY + 'px'"
   [class.selected]="creatureAsset.selected"
+  [class.active]="creatureAsset.activePlayer"
 >
   <div
     [style.z-index]="creatureAsset.zIndex"
@@ -20,22 +21,4 @@
       [style.left.px]="creatureAsset.imgSpriteLeftOffset"
       [style.position]="'relative'"/>
   </div>
-</div>
-
-<div
-  [style.width.px]="38"
-  [style.height.px]="50"
-  [style.overflow]="'hidden'"
-  [style.margin]="0"
-
->
-  <img
-    src="../assets/ghost1.png"
-    [style.width]="'352.777%'"
-    [style.height.px]="'auto'"
-    [style.top.px]="-74"
-    [style.left.px]="2"
-    [style.position]="'relative'"
-  />
-  }
 </div>
