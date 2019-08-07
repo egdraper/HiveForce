@@ -368,7 +368,7 @@ export class Movement {
   }
 
   public checkForCreatureAtCell(cell: Cell, creaturesOnGrid: Array<CreatureAsset>): CreatureAsset {
-    const creature = creaturesOnGrid.find(a => a.location.cell.id === cell.id)
+    const creature = creaturesOnGrid.find(a => a.location.cell.id === cell.id && a.id !== this.player.id)
     return creature
   }
 
@@ -394,7 +394,7 @@ export class Movement {
       // this.doImageAdjustment()
 
       this.nextCell = this.path.pop();
-      
+      this.player.location.cell = this.nextCell
       if(this.nextCell.x !== this.player.location.cell.x) {
         this.player.sprite.direction = this.nextCell.x > this.player.location.cell.x ? "right" : "left"
       } else if ( this.nextCell.y !== this.player.location.cell.y ) {
@@ -443,7 +443,7 @@ export class Movement {
       }
   
       if (xArrived && yArrived) {
-        this.player.location.cell = this.nextCell
+ 
         this.player.location.zIndex = this.player.location.cell.y
         this.checkSurroundings(this.nextCell, this.player.location.creaturesOnGrid);
 

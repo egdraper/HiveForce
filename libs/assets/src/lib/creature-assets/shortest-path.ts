@@ -11,10 +11,15 @@ export class ShortestPath {
     this.grid = grid;
   }
   
-  public find(start: Cell, end: Cell, creaturesOnGrid: Array<CreatureAsset> ) {
+  public find(start: Cell, end: Cell, creaturesOnGrid: Array<CreatureAsset> ): Cell[] {
     this.creaturesOnGrid = creaturesOnGrid
     end.destination = true; // css styling
+    end = this.verifyClosetLocation(start, end)
+    return this.start(start, end)
 
+  }
+
+  private start(start: Cell, end: Cell): Cell[] {
     const visited = { };
     visited[`x${start.x}:y${start.y}`] = { cell: start, distance: 0 };
 
@@ -93,5 +98,30 @@ export class ShortestPath {
       visited[visitedCell].checked = true;
     });
     this.visitedNow(endingPoint, visited);
+  }
+
+  public verifyClosetLocation(start: Cell, end: Cell): Cell {
+    if(this.isBadLocation(end)) { 
+      const possibleAlternatives = end.neighbors.filter(a => !this.isBadLocation(a))
+      if(possibleAlternatives) {
+        let newEndCell
+        let shortest = 1000000
+        possibleAlternatives.forEach(a => {
+          const path = this.start(start, a)
+          if(path.length < shortest) {
+            shortest = path.length
+            newEndCell = path[0]
+          }
+        }) 
+        return newEndCell             
+      } else {
+        return undefined
+      }
+    }
+    return end
+  }
+
+  public isBadLocation(end: Cell): boolean {
+    return end.obstacle || this.creaturesOnGrid.find(a => a.location.cell.id === end.id) 
   }
 }
