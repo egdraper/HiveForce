@@ -1,15 +1,18 @@
 import { Injectable } from "@angular/core";
 import { Cell, Visited } from '../model';
+import { CreatureAsset } from './creature.asset';
 
 @Injectable()
 export class ShortestPath {
   public grid: {[cell: string]: any } = { };
+  public creaturesOnGrid = []
    
   public setGrid(grid: {[cell: string]: any }) {
     this.grid = grid;
   }
-
-  public find(start: Cell, end: Cell ) {
+  
+  public find(start: Cell, end: Cell, creaturesOnGrid: Array<CreatureAsset> ) {
+    this.creaturesOnGrid = creaturesOnGrid
     end.destination = true; // css styling
 
     const visited = { };
@@ -45,7 +48,9 @@ export class ShortestPath {
               return;
             }
 
-            if (!cell.obstacle && !store.some(i => index === i)) {
+            const creatureOnSquare = this.creaturesOnGrid.find(a => a.location.cell.id === cell.id)
+
+            if ((!cell.obstacle && !creatureOnSquare) && !store.some(i => index === i)) {
               if (!visited[`x${cell.x}:y${cell.y}`]) {
                 visited[`x${cell.x}:y${cell.y}`] = {
                   cell,

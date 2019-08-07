@@ -6,8 +6,8 @@ export interface Cell {
     posY?: number;
     obstacle?: boolean;
     neighbors?: Cell[];
-    destination?: true;
-  }
+    destination?: boolean;
+  } 
   
   export interface Neighbor {
     cell: Cell;

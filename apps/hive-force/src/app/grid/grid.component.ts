@@ -10,9 +10,25 @@ export class GridComponent {
   @Input() creatures: Array<CreatureAsset>
   public grid: {[cell: string]: Cell } = { };
   public gridDisplay: any[][] = [];
+  
+  private index = 5
 
   constructor() {
     this.generateGrid();
+  }
+  
+  public ngOnInit(): void {
+    this.creatures.forEach(a => {
+      a.location.cell = this.grid[`x${this.index}:y${this.index}`]
+      a.location.positionX = a.location.cell.posX
+      a.location.positionY = a.location.cell.posY
+      a.location.readyPositionX = a.location.cell.posX
+      a.location.readyPositionY = a.location.cell.posY
+      a.location.grid = this.grid
+      a.location.creaturesOnGrid = this.creatures
+      this.index++
+    })
+      this.index = 5
   }
 
   public charSelect() {
@@ -24,8 +40,15 @@ export class GridComponent {
     if (e.x === 150 && e.y === 0) {
       // this.characters.push(new Character());
     } else {
-      // this.requestToMoveCharacter(e.input);
+      this.requestToMoveCharacter(e.input);
     }
+  }
+
+  public requestToMoveCharacter(toLocation: Cell) {
+    this.creatures.filter(c => c.selected).forEach(a => {
+      a.movement.autoMove(toLocation)
+    })
+  
   }
 
   private generateGrid() {

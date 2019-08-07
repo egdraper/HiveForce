@@ -121,23 +121,23 @@ export class KnockBack extends Action {
     const saved = creature.savingThrow(100 + player.attributes.wisdomModifier + player.attributes.dexterityModifier, "strength")
 
     if(!saved) {
-      if(player.cell.x === creature.cell.x) {
-        if(player.cell.y > creature.cell.y) {
+      if(player.location.cell.x === creature.location.cell.x) {
+        if(player.location.cell.y > creature.location.cell.y) {
           this.moveBack(creature, "up", "down")
         }
-        if(player.cell.y < creature.cell.y) {
+        if(player.location.cell.y < creature.location.cell.y) {
           this.moveBack(creature, "down", "up")
         }
       }
-      if(player.cell.y === creature.cell.y) {
-        if(player.cell.x > creature.cell.x) {
+      if(player.location.cell.y === creature.location.cell.y) {
+        if(player.location.cell.x > creature.location.cell.x) {
           this.moveBack(creature, "left", "right")
         }
-        if(player.cell.x < creature.cell.x) {
+        if(player.location.cell.x < creature.location.cell.x) {
           this.moveBack(creature, "right", "left")
         }
       }
-      if(player.cell.y !== creature.cell.y && player.cell.x !== creature.cell.x) {
+      if(player.location.cell.y !== creature.location.cell.y && player.location.cell.x !== creature.location.cell.x) {
         
       }
       MasterLog.log("Creature was knocked Back")
@@ -146,7 +146,7 @@ export class KnockBack extends Action {
 
   private moveBack(creature: CreatureAsset, direction: string, creatureFacing: string): void {
     for(let i = 0; i < 3; i++) {
-      creature.moveCharacter(direction, creature.cell.neighbors[0], [], creatureFacing)
+      creature.movement.moveCharacter(direction, creature.location.cell.neighbors[0], [], creatureFacing)
     }         
   }
 }

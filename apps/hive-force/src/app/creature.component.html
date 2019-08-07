@@ -1,24 +1,24 @@
 <div
   class="creature-attributes"
   (click)="onCreatureSelect()"
-  [style.left]="creatureAsset.positionX + 'px'"
-  [style.top]="creatureAsset.positionY + 'px'"
+  [style.left]="creatureAsset.location.positionX + 'px'"
+  [style.top]="creatureAsset.location.positionY + 'px'"
   [class.selected]="creatureAsset.selected"
   [class.active]="creatureAsset.activePlayer"
 >
   <div
-    [style.z-index]="creatureAsset.zIndex"
-    [style.width.px]="creatureAsset.containerWidth"
-    [style.height.px]="creatureAsset.containerHeight"
-    [style.bottom.px]= "creatureAsset.imgBottomOffset"
+    [style.z-index]="creatureAsset.location.zIndex"
+    [style.width.px]="creatureAsset.sprite.containerWidth"
+    [style.height.px]="creatureAsset.sprite.containerHeight"
+    [style.bottom.px]= "creatureAsset.sprite.imgBottomOffset"
     [style.position]= "'absolute'"
     [style.overflow]="'hidden'">
     <img
-      src="{{ creatureAsset.imgSource }}"
-      [style.width]="creatureAsset.imgSheetWidth"
+      src="{{ creatureAsset.sprite.imgSource }}"
+      [style.width]="creatureAsset.sprite.imgSheetWidth"
       [style.height.px]="'auto'"
-      [style.top.px]="creatureAsset.imgSpriteTopOffset"
-      [style.left.px]="creatureAsset.imgSpriteLeftOffset"
+      [style.top.px]="creatureAsset.sprite.imgSpriteTopOffset"
+      [style.left.px]="creatureAsset.sprite.imgSpriteLeftOffset"
       [style.position]="'relative'"/>
   </div>
 </div>

@@ -9,6 +9,7 @@ import { Effect } from './effects/effects.model';
 import { Action } from './actions/action.model';
 import { Cell } from '../model';
 import { cloneDeep, remove } from "lodash"
+import { ShortestPath } from './shortest-path';
 
 export class SpriteSection {
   order: number[];
@@ -28,81 +29,62 @@ export class CreatureAsset extends SelectableAsset {
   public disabled: boolean;
   public aggressive = false;
   public inInitiative = false;
+  public actionPerformed = new Subject<Action[]>();
 
   // battle
   public engagedWith: Array<CreatureAsset> = [];
+  
+  // visual attritubes
+  public location = new PlayerLocationService()
+  public movement = new Movement(this)
+  public sprite = new Sprite()
 
-  // sprite info
-  public containerWidth? = 50;
-  public containerHeight? = 75;
-  public imgSource? = '../assets/motw.png';
-  public imgSheetWidth? = '';
-  public imgSpriteTopOffset? = -9;
-  public imgSpriteLeftOffset? = -1;
-  public imgBottomOffset? = 0;
-  public imageHeight? = 'auto';
-  public imageWidth? = '100%';
-  // up, down, left, right, die, fly.., attack..,
-  public imageAdjustment?: { [section: string]: SpriteSection } = {};
-  public direction = 'down';
 
-  // player grid position info
-  public zIndex = this.startPos;
-  public positionX = this.startPos * 50;
-  public positionY = this.startPos * 50;
-  public readyPositionX = this.startPos * 50;
-  public readyPositionY = this.startPos * 50;
-  public cell: Cell = {
-    x: this.startPos,
-    y: this.startPos,
-    obstacle: false,
-    id: `x${this.startPos}:y${this.startPos}`
-  };
 
-  public actionPerformed = new Subject<Action[]>();
-  public p = true;
-  public count = 0;
 
-  private movementNumber = 0;
-  private moving = false
-  private path: any
-  private destinationCell: Cell
+  public frameDelay = true;
+  public frame = 0;
+
 
   public update(): void {
-    this.count >= 60 ? (this.count = 0) : this.count++;
-
-    if (this.count === 0 || this.count === 20 || this.count === 40) {
-      this.doImageAdjustment()
-    }
+    this.frame >= 60 ? (this.frame = 0) : this.frame++;
 
 
-    // debugging purposes 
-    if (this.p) {
-      console.log(`X: ${this.readyPositionX}`);
-      console.log(`Y: ${this.readyPositionY}`);
-      console.log(`xZ: ${this.positionY}`);
-      console.log(`xZ: ${this.positionY}`);
-      this.positionX = this.readyPositionX;
-      this.positionY = this.readyPositionY;
+
+    // updates the sprite image 3 times a second.
+    if (this.movement.moving && (
+      this.frame === 0  || 
+      this.frame === 10 || 
+      this.frame === 20 || 
+      this.frame === 30 ||
+      this.frame === 40 ||
+      this.frame === 50)) 
+      {
+      this.sprite.doImageAdjustment()
+    } else if(this.frame === 0 || this.frame === 20 || this.frame === 40 ){
       
-      if(this.moving) {
-        debugger
-        this.move(this.destinationCell.posX, this.destinationCell.posY, this.path)
+    }
+    
+    
+
+
+    // Update is called 60 times a second. For animation we want 30 times a second. This only runs every other update for graphics.
+    if (this.frameDelay) {
+      this.location.positionX = this.location.readyPositionX;
+      this.location.positionY = this.location.readyPositionY;
+      
+      if(this.movement.moving) {
+        this.movement.move(this.movement.nextCell.posX, this.movement.nextCell.posY)
       }
     }
-    this.p = !this.p;
+    this.frameDelay = !this.frameDelay;
   }
 
-  public doImageAdjustment(): void {
-    if (this.imageAdjustment && this.imageAdjustment[this.direction]) {
-      const a = this.imageAdjustment[this.direction];
-      this.movementNumber >= a.order.length - 1
-        ? (this.movementNumber = 0)
-        : this.movementNumber++;
-      this.imgSpriteLeftOffset = a.sprite[a.order[this.movementNumber]].x;
-      this.imgSpriteTopOffset = a.sprite[a.order[this.movementNumber]].y;
-    }
+
+  public onCreatureSelect(): void {    
+    this.selected = !this.selected;
   }
+
 
   public savingThrow(DC: number, skill?: string): boolean {
     MasterLog.log('Perform Saving Throw?: yes');
@@ -236,175 +218,7 @@ export class CreatureAsset extends SelectableAsset {
     MasterLog.log('-------');
   }
 
-  public moveCharacter(direction: string, cell: Cell, creaturesOnGrid: Array<CreatureAsset>, creatureFacingOverride?: string): void {
-    // creatureFacingOverride prevents the creature from turning around when knocked back
-    
-    if(this.attributes.currentHitPoints <= 0) { 
-      return 
-    }
-    
-    if (this.selected || this.activePlayer) {
-      this.direction = creatureFacingOverride || direction
-
-
-      // Up
-      if (direction === "up" && this.cell.y > 0) {
-        if (cell.obstacle || !!this.checkForCreatureAtCell(cell, creaturesOnGrid)) {
-          return;
-        }
-        this.zIndex --
-        this.cell = cell
-        this.readyPositionY = this.cell.y * 50;
-        this.checkSurroundings(cell, creaturesOnGrid);
-      }
-
-      // Left
-      if (direction === "left" && this.cell.x > 0) {
-        if (cell.obstacle || !!this.checkForCreatureAtCell(cell, creaturesOnGrid)) {
-          return;
-        }
-        this.cell = cell;
-        this.readyPositionX = this.cell.x * 50;
-        this.checkSurroundings(cell, creaturesOnGrid);
-      }
-
-      // Right
-      if (direction === "right"  && this.cell.x < 15) {
-        if (cell.obstacle || !!this.checkForCreatureAtCell(cell, creaturesOnGrid)) {
-          return;
-        }
-        this.cell = cell;
-        this.readyPositionX =
-          this.cell.x * 50;
-          this.checkSurroundings(cell, creaturesOnGrid);
-      }
-
-      // Down
-      if (direction === "down" && this.cell.y < 15) {
-        if (cell.obstacle || !!this.checkForCreatureAtCell(cell, creaturesOnGrid)) {
-          return;
-        }
-        this.zIndex ++
-        this.cell = cell;
-        this.readyPositionY =
-          this.cell.y * 50;
-          this.checkSurroundings(cell, creaturesOnGrid);
-      }
-    }
-
-  
-  }
-
-  public onCreatureSelect(): void {
-    this.selected = !this.selected;
-  }
-
-  public checkSurroundings(cell: Cell, creaturesOnGrid: Array<CreatureAsset> ): void {    // looks for other creatures within 5 feet
-    let engagedWith 
-    const enemies: CreatureAsset[] = [] 
-    this.engagedWith.forEach(a => enemies.push(a))
-    
-    this.engagedWith.forEach(a => {  
-      engagedWith = a.engagedWith.find(d => d.id === this.id)
-      remove(a.engagedWith, d => d.id === this.id )
-    })
-   
-    this.engagedWith = []
-
-    this.cell.neighbors.forEach(a => {
-      const enemy = creaturesOnGrid.find(c => c.cell.id === a.id)
-
-      this.engagedWith.forEach(e => {
-        
-      })
-
-      if(enemy && (enemy.aggressive !== this.aggressive)) { 
-        enemy.engagedWith.push(this)
-        this.engagedWith.push(enemy)
-      }
-
-    })
-    
-    enemies.forEach(a => {
-      if(!this.engagedWith.find(c => c.id === a.id)) {
-        a.opportunityAttack(this)
-      }
-    })
-
-  }
-
-  public checkForCreatureAtCell(cell: Cell, creaturesOnGrid: Array<CreatureAsset>): CreatureAsset {
-    const creature = creaturesOnGrid.find(a => a.cell.id === cell.id)
-    return creature
-  }
-
-
-  public startMovement(path: Cell[]) {
-
-    if(this.activePlayer) {
-      this.moving = true
-      this.path = path
-      const startingPoint = path.pop();
-
-      // if (!!this.timer && this.timer.state === "scheduled") {
-      //   this.redirect.path = path;
-      // } else {
-        this.moveCreature(path, "up");
-      // }
-    }
-  }
-
-    private moveCreature(path: Cell[], direction: string): void {
-      this.direction = direction
-      this.doImageAdjustment()
-
-        this.destinationCell = path.pop();
-        if (this.destinationCell) {          
-          this.move(this.destinationCell.posX, this.destinationCell.posY, path);
-        }
-    }
-  
-    private move(x: number, y: number, path: Cell[]) {
-      if (this.positionX % 50 === 0 && this.positionY % 50 === 0) {
-  
-        // if (this.redirect) {
-        //   clearTimeout(this.timer);
-        //   x = this.redirect.x;
-        //   y = this.redirect.y;
-        //   this.redirect = null;
-        //  // this.startMovement(redirect.pathx, y);
-        // }
-      }
-  
-      const xMove = ((this.positionX - x) < 0) ? 5 : -5;
-      const yMove = ((this.positionY - y) < 0) ? 5 : -5;
-  
-      const xDistance = Math.ceil((x - this.positionX) / 2);
-      const yDistance = Math.ceil((y - this.positionY) / 2);
-      let xArrived = false;
-      let yArrived = false;
-  
-      if (xDistance >= 1 || xDistance <= -1) {
-        this.readyPositionX += xMove;
-      } else {
-        xArrived = true;
-      }
-  
-      if (yDistance >= 1 || yDistance <= -1) {
-        this.readyPositionY += yMove;
-      } else {
-        yArrived = true;
-      }
-  
-      if (!xArrived || !yArrived) {
-        // this.timer = setTimeout(() => {
-        // }, 10);
-      } else {
-        this.cell = this.destinationCell
-        this.moving = false
-        this.moveCreature(path, "up");
-      }
-    }
+ 
 }
 
 export class Attributes {
@@ -451,4 +265,268 @@ export class Attributes {
   public wisdom: number;
   public wisdomModifier: number;
   public spells?: Spell[];
+}
+
+export class Movement {
+  public moving = false
+  public path: any
+  public nextCell: Cell
+  public redirect: any
+
+  constructor(
+    public player: CreatureAsset) {}
+
+  public moveCharacter(direction: string, cell: Cell, creaturesOnGrid: Array<CreatureAsset>, creatureFacingOverride?: string): void {
+    // creatureFacingOverride prevents the creature from turning around when knocked back
+    
+    if(this.player.attributes.currentHitPoints <= 0) { 
+      return 
+    }
+    
+    if (this.player.activePlayer) {
+      this.player.sprite.direction = creatureFacingOverride || direction
+
+
+      // Up
+      if (direction === "up" && this.player.location.cell.y > 0) {
+        if (cell.obstacle || !!this.checkForCreatureAtCell(cell, creaturesOnGrid)) {
+          return;
+        }
+        this.player.location.zIndex --
+        this.player.location.cell = cell
+        this.player.location.readyPositionY = this.player.location.cell.y * 50;
+        this.checkSurroundings(cell, creaturesOnGrid);
+      }
+
+      // Left
+      if (direction === "left" && this.player.location.cell.x > 0) {
+        if (cell.obstacle || !!this.checkForCreatureAtCell(cell, creaturesOnGrid)) {
+          return;
+        }
+        this.player.location.cell = cell;
+        this.player.location.readyPositionX = this.player.location.cell.x * 50;
+        this.checkSurroundings(cell, creaturesOnGrid);
+      }
+
+      // Right
+      if (direction === "right"  && this.player.location.cell.x < 15) {
+        if (cell.obstacle || !!this.checkForCreatureAtCell(cell, creaturesOnGrid)) {
+          return;
+        }
+        this.player.location.cell = cell;
+        this.player.location.readyPositionX =
+          this.player.location.cell.x * 50;
+          this.checkSurroundings(cell, creaturesOnGrid);
+      }
+
+      // Down
+      if (direction === "down" && this.player.location.cell.y < 15) {
+        if (cell.obstacle || !!this.checkForCreatureAtCell(cell, creaturesOnGrid)) {
+          return;
+        }
+        this.player.location.zIndex ++
+        this.player.location.cell = cell;
+        this.player.location.readyPositionY =
+          this.player.location.cell.y * 50;
+          this.checkSurroundings(cell, creaturesOnGrid);
+      }
+    }  
+  }
+
+  public checkSurroundings(cell: Cell, creaturesOnGrid: Array<CreatureAsset> ): void {    // looks for other creatures within 5 feet
+    let engagedWith 
+    const enemies: CreatureAsset[] = [] 
+    this.player.engagedWith.forEach(a => enemies.push(a))
+    
+    this.player.engagedWith.forEach(a => {  
+      engagedWith = a.engagedWith.find(d => d.id === this.player.id)
+      remove(a.engagedWith, d => d.id === this.player.id )
+    })
+   
+    this.player.engagedWith = []
+
+    this.player.location.cell.neighbors.forEach(a => {
+      const enemy = creaturesOnGrid.find(c => c.location.cell.id === a.id)
+
+      this.player.engagedWith.forEach(e => {
+        
+      })
+
+      if(enemy && (enemy.aggressive !== this.player.aggressive)) { 
+        enemy.engagedWith.push(this.player)
+        this.player.engagedWith.push(enemy)
+      }
+
+    })
+    
+    enemies.forEach(a => {
+      if(!this.player.engagedWith.find(c => c.id === a.id)) {
+        a.opportunityAttack(this.player)
+      }
+    })
+
+  }
+
+  public checkForCreatureAtCell(cell: Cell, creaturesOnGrid: Array<CreatureAsset>): CreatureAsset {
+    const creature = creaturesOnGrid.find(a => a.location.cell.id === cell.id)
+    return creature
+  }
+
+  public autoMove(end: Cell): void {
+      const shortestPath = new ShortestPath()
+      const path = shortestPath.find(this.player.location.cell, end, this.player.location.creaturesOnGrid)
+      this.startMovement("left", path )
+  }
+
+
+  public startMovement(direction: string, path: Cell[]) {
+    if((this.player.activePlayer || this.player.selected) && !this.moving) {
+      this.path = path
+      const startingPoint = this.path.pop();
+      // this.redirect.path = path;
+      this.moveCreature(direction);
+    }
+  }
+
+    public moveCreature(direction: string): void {
+
+      this.player.sprite.direction = direction
+      // this.doImageAdjustment()
+
+      this.nextCell = this.path.pop();
+      
+      if(this.nextCell.x !== this.player.location.cell.x) {
+        this.player.sprite.direction = this.nextCell.x > this.player.location.cell.x ? "right" : "left"
+      } else if ( this.nextCell.y !== this.player.location.cell.y ) {
+        this.player.sprite.direction = this.nextCell.y > this.player.location.cell.y ? "down" : "up"
+      }
+      
+      if (this.nextCell && (!this.nextCell.obstacle && !this.checkForCreatureAtCell(this.nextCell, this.player.location.creaturesOnGrid))) { 
+          this.moving = true     
+          this.move(this.nextCell.posX, this.nextCell.posY);
+        } 
+    }
+
+
+    public move(x: number, y: number) {
+      // if (this.player.location.positionX % 50 === 0 && this.player.location.positionY % 50 === 0) {
+      //   if (this.redirect) {
+      //     x = this.redirect.x;
+      //     y = this.redirect.y;
+      //     this.redirect = null;
+      //     this.startMovement(redirect.pathx, y);
+      //   }
+
+      //   if (this.stop) {
+      //     this.moving = false
+      //   }
+      // }
+  
+      const xMove = ((this.player.location.positionX - x) < 0) ? 5 : -5;
+      const yMove = ((this.player.location.positionY - y) < 0) ? 5 : -5;
+  
+      const xDistance = Math.ceil((x - this.player.location.positionX) / 2);
+      const yDistance = Math.ceil((y - this.player.location.positionY) / 2);
+      let xArrived = false;
+      let yArrived = false;
+  
+      if (xDistance >= 1 || xDistance <= -1) {
+        this.player.location.readyPositionX += xMove;
+      } else {
+        xArrived = true;
+      }
+  
+      if (yDistance >= 1 || yDistance <= -1) {
+        this.player.location.readyPositionY += yMove;
+      } else {
+        yArrived = true;
+      }
+  
+      if (xArrived && yArrived) {
+        this.player.location.cell = this.nextCell
+        this.player.location.zIndex = this.player.location.cell.y
+        this.checkSurroundings(this.nextCell, this.player.location.creaturesOnGrid);
+
+        if(this.path.length !== 0) {
+          // starts redirect if creature moves into path
+          let creatureInPath = false
+          let creatureAtDest = false
+          this.path.forEach((b, i) => {
+            const foundCreature = this.player.location.creaturesOnGrid.find( c => c.location.cell.id === b.id)
+            
+            if(foundCreature && i !== 0) { creatureInPath = true }
+            if(i === 0 && !!foundCreature) { creatureAtDest = true}
+          })
+
+          // creatures a new path
+          if(creatureInPath){
+            this.getNewShortestPath()
+          }
+
+          if(creatureAtDest){
+            if(this.path.length > 1){
+              this.path.shift()
+              // TODO find a closer cell
+            } else {
+              this.player.sprite.direction = "down"
+              this.moving = false
+            }
+          }
+
+          this.moveCreature(this.player.sprite.direction);
+        } else {
+          this.player.sprite.direction = "down"
+          this.moving = false
+        }
+      }
+    }
+
+    private getNewShortestPath(): void {
+      const newShortestPath = new ShortestPath()
+      newShortestPath.setGrid(this.player.location.grid)
+      this.path = newShortestPath.find(this.player.location.cell, this.path[0], this.player.location.creaturesOnGrid)
+      this.path.pop()
+    }
+}
+
+
+export class PlayerLocationService {
+  // player grid position info
+
+  public zIndex = 7;
+  public positionX = 7 * 50;
+  public positionY = 7 * 50;
+  public readyPositionX = 7 * 50;
+  public readyPositionY = 7 * 50;
+  public grid: { [cell: string]: Cell }
+  public cell: Cell
+  public creaturesOnGrid: Array<CreatureAsset>
+}
+
+export class Sprite {
+  // sprite info
+  public containerWidth? = 50;
+  public containerHeight? = 75;
+  public imgSource? = '../assets/motw.png';
+  public imgSheetWidth? = '';
+  public imgSpriteTopOffset? = -9;
+  public imgSpriteLeftOffset? = -1;
+  public imgBottomOffset? = 0;
+  public imageHeight? = 'auto';
+  public imageWidth? = '100%';
+  // up, down, left, right, die, fly.., attack..,
+  public imageAdjustment?: { [section: string]: SpriteSection } = {};
+  public direction = 'down';
+  public positionNumber = 0
+
+  public doImageAdjustment(): void {
+    if (this.imageAdjustment && this.imageAdjustment[this.direction]) {
+      const a = this.imageAdjustment[this.direction];
+      this.positionNumber >= a.order.length - 1
+        ? (this.positionNumber = 0)
+        : this.positionNumber++;
+      this.imgSpriteLeftOffset = a.sprite[a.order[this.positionNumber]].x;
+      this.imgSpriteTopOffset = a.sprite[a.order[this.positionNumber]].y;
+    }
+  }
 }

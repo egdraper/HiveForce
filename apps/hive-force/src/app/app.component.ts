@@ -2,7 +2,7 @@
 import { Component, ViewChild } from '@angular/core'
 import { MasterLog } from "@hive-force/log"
 import { Dice } from "@hive-force/dice"
-import { CreatureAsset, Action, Monk } from '@hive-force/assets';
+import { CreatureAsset, Action, Monk, Sprite } from '@hive-force/assets';
 import { CreaturesList } from './creatures';
 import { Engine } from './engine';
 
@@ -27,15 +27,12 @@ export class AppComponent {
   public ngOnInit(): void {
     const engine = new Engine()
     this.players.push(this.createCreature("Jahml"));
-    // this.players.push(this.createCreature("Quantis"));
-    // this.players.push(this.createCreature("Tavios"));
-    // this.players.push(this.createCreature("Argus"));
+
     this.players[this.playerIndex].activePlayer = true
 
     this.numberOfPlayers = this.players.length
     this.creaturesClass.creatures.forEach(a => this.players.push(a) )
     this.creatures = this.creaturesClass.creatures
-    engine.assets = new Array<CreatureAsset>() 
     engine.assets = this.players
     engine.run()
 
@@ -59,11 +56,13 @@ export class AppComponent {
 
   public createCreature(name?: string): CreatureAsset {
     const creature = new Monk(10, name, "Way of the Open Hand")
-    creature.imgSource = "../assets/motw.png"
-    creature.imageAdjustment["down"] = { order: [0,1,2,1], sprite: [{x: 0, y: -9}, {x: -52, y: -9 }, {x: -104, y: -9 }] }
-    creature.imageAdjustment["left"] = { order: [0,1,2,1], sprite: [{x: 0, y: -80}, {x: -52, y: -80 }, {x: -104, y: -80 }] }
-    creature.imageAdjustment["up"] = { order: [0,1,2,1], sprite: [{x: 0, y: -220}, {x: -52, y: -220 }, {x: -104, y: -220 }] }
-    creature.imageAdjustment["right"] = { order: [0,1,2,1], sprite: [{x: 0, y: -150}, {x: -52, y: -150 }, {x: -104, y: -150 }] }
+    const sprite = new Sprite()
+    sprite.imgSource = "../assets/motw.png"
+    sprite.imageAdjustment["down"] = { order: [0,1,2,1], sprite: [{x: 0, y: -9}, {x: -52, y: -9 }, {x: -104, y: -9 }] }
+    sprite.imageAdjustment["left"] = { order: [0,1,2,1], sprite: [{x: 0, y: -80}, {x: -52, y: -80 }, {x: -104, y: -80 }] }
+    sprite.imageAdjustment["up"] = { order: [0,1,2,1], sprite: [{x: 0, y: -220}, {x: -52, y: -220 }, {x: -104, y: -220 }] }
+    sprite.imageAdjustment["right"] = { order: [0,1,2,1], sprite: [{x: 0, y: -150}, {x: -52, y: -150 }, {x: -104, y: -150 }] }
+    creature.sprite = sprite
     return creature;
   }
 

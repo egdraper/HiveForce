@@ -1,4 +1,4 @@
-import { CreatureAsset, AttackAction } from '@hive-force/assets';
+import { CreatureAsset, AttackAction, Sprite, Cell } from '@hive-force/assets';
 import { Weapon } from '@hive-force/items';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { setTestabilityGetter } from '@angular/core';
@@ -32,13 +32,18 @@ export class CreaturesList {
     const zombieFred = new CreatureAsset();
     this.xIndex += 55
     zombieFred.id = `Zombie${name}`
-    zombieFred.imgSource = "../assets/motw.png"
-    zombieFred.imageAdjustment["down"]  = { order: [0,1,2,1], sprite: [{x: -313, y: -2},   {x: -365, y: -2 },   {x: -417, y: -2 }] }
-    zombieFred.imageAdjustment["left"]  = { order: [0,1,2,1], sprite: [{x: -313, y: -75},  {x: -365,  y: -75 },  {x: -417, y: -75 }] }
-    zombieFred.imageAdjustment["right"]    = { order: [0,1,2,1], sprite: [{x: -313, y: -147}, {x: -365,  y: -147 }, {x: -417, y: -147 }] }
-    zombieFred.imageAdjustment["up"] = { order: [0,1,2,1], sprite: [{x: -313, y: -221}, {x: -365,  y: -221 }, {x: -417, y: -221 }] }
+    
+    const sprite = new Sprite()
+    sprite.imageAdjustment = {
+      down: { order: [0,1,2,1], sprite: [{x: -313, y: -2},   {x: -365, y: -2 },   {x: -417, y: -2 }] },
+      left: { order: [0,1,2,1], sprite: [{x: -313, y: -75},  {x: -365,  y: -75 },  {x: -417, y: -75 }] },
+      right: { order: [0,1,2,1], sprite: [{x: -313, y: -147}, {x: -365,  y: -147 }, {x: -417, y: -147 }] },
+      up: { order: [0,1,2,1], sprite: [{x: -313, y: -221}, {x: -365,  y: -221 }, {x: -417, y: -221 }] }
+    }
+    sprite.imgSource = "../assets/motw.png"
+    sprite.imgBottomOffset = 5;
+    zombieFred.sprite = sprite;
     zombieFred.name = `Zombie ${name}`;
-    zombieFred.imgBottomOffset = 5;
     zombieFred.level = 1;
     zombieFred.aggressive = true
     zombieFred.inventory = [];
