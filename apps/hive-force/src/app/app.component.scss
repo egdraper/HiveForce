@@ -10,3 +10,16 @@
     color: grey
 }
 
+.box {
+    height: 47px;
+    width: 100%;
+    background-color: black;
+    position: fixed;
+    bottom: 0px;
+}
+
+.game-space {
+    height: calc(100vh - 47px);
+    background-color: green;
+    overflow: auto;
+}

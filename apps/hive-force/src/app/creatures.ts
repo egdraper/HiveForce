@@ -7,6 +7,7 @@ import { bindNodeCallback } from 'rxjs';
 export class CreaturesList {
   public creatures: CreatureAsset[] = [];
   public xIndex = 0
+  public motionIndex = 3
 
   constructor() {
     const steve = this.createAttributes("Steve", "../assets/zombie1.png")
@@ -31,6 +32,8 @@ export class CreaturesList {
   createAttributes(name: string, imagePath: string, height = "75", width = "50" ): CreatureAsset {
     const zombieFred = new CreatureAsset();
     this.xIndex += 55
+    this.motionIndex += 3
+    zombieFred.frame = this.motionIndex
     zombieFred.id = `Zombie${name}`
     
     const sprite = new Sprite()

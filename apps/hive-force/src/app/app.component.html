@@ -1,62 +1,73 @@
-<app-grid [creatures]="players"></app-grid>
-
-
-<div *ngFor="let player of players">
-  <div *ngIf="player.activePlayer">
-    <h1>{{ player.name }} the {{ player?.race?.name }} {{ player?.className }}</h1>
-    <h1> {{player.attributes.currentHitPoints }} </h1>
-    <div style="display: inline-flex">
-    <div *ngFor="let action of player.attributes?.actions">
-      
-          <button
-            [class.disabled]="action.disabled"
-            (click)="executeAction(player, action)"
-           >
-            {{ action.name }}
-          </button>
-          <div *ngFor="let subAction of action.subActions">
-            <button style="margin-left: 5px"
-              [class.selected]="subAction.selected"
-              (click)="action.onSubActionSelect(subAction)">
-              {{ subAction.name }}
-            </button>
+<div class="game-canvas">
+  <div class="game-space">
+      <div>
+          <div>
+            <app-grid [creatures]="players"></app-grid>
           </div>
-  
-      
-      </div>
-    </div>
-    <button (click)="endTurn(player)">End Turn</button>
-    <div>
-      <span *ngFor="let item of player.inventory">
-        <button
-          *ngIf="item.equipped"
-          [class.selected]="item.selected"
-          (click)="player.selectItem(item)"
-        >
-          {{ item.name }}
-        </button>
-      </span>
-      <div *ngFor="let actions of player.attributes.actionsPerformed">
-        {{ actions.name }}
-      </div>
-    </div>
   </div>
-</div>
+  <div class="box">hi</div>
 
-<div style="margin-bottom: 15px"></div>
 
-<div *ngFor="let creature of creatures" style="margin: 4px;">
-  <button
-    [class.selected]="creature.selected"
-    [class.dead]="creature.attributes.currentHitPoints <= 0"
-    [class.disabled]="creature.disabled"
-    (click)="selectCharacter(creature)"
-  >
-    {{ creature.name }}
-  </button>
-  <span style="margin: 10px">hitpoints: </span>
-  <span>{{ creature.attributes.currentHitPoints }}</span>
-</div>
-<textarea #hey rows="13" cols="100">
+    <!-- <div *ngFor="let player of players">
+      <div *ngIf="player.activePlayer">
+        <h1>
+          {{ player.name }} the {{ player?.race?.name }} {{ player?.className }}
+        </h1>
+        <h1>{{ player.attributes.currentHitPoints }}</h1>
+        <div style="display: inline-flex">
+          <div *ngFor="let action of player.attributes?.actions">
+            <button
+            [class.disabled]="action.disabled"
+              (click)="executeAction(player, action)"
+            >
+            {{ action.name }}
+            </button>
+            <div *ngFor="let subAction of action.subActions">
+              <button
+              style="margin-left: 5px"
+                [class.selected]="subAction.selected"
+                (click)="action.onSubActionSelect(subAction)"
+              >
+              {{ subAction.name }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <button (click)="endTurn(player)">End Turn</button>
+        <div>
+          <span *ngFor="let item of player.inventory">
+            <button
+              *ngIf="item.equipped"
+              [class.selected]="item.selected"
+              (click)="player.selectItem(item)"
+              >
+              {{ item.name }}
+            </button>
+          </span>
+          <div *ngFor="let actions of player.attributes.actionsPerformed">
+            {{ actions.name }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 15px"></div>
+
+    <div *ngFor="let creature of creatures" style="margin: 4px;">
+      <button
+      [class.selected]="creature.selected"
+        [class.dead]="creature.attributes.currentHitPoints <= 0"
+        [class.disabled]="creature.disabled"
+        (click)="selectCharacter(creature)"
+        >
+        {{ creature.name }}
+      </button>
+      <span style="margin: 10px">hitpoints: </span>
+      <span>{{ creature.attributes.currentHitPoints }}</span>
+    </div>
+    <textarea #hey rows="13" cols="100">
   {{ message }}
-</textarea>
+  </textarea
+    > -->
+    <!-- </div> -->
+  </div>

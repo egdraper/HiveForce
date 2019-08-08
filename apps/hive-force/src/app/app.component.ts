@@ -56,6 +56,7 @@ export class AppComponent {
 
   public createCreature(name?: string): CreatureAsset {
     const creature = new Monk(10, name, "Way of the Open Hand")
+    creature.frame = 5
     const sprite = new Sprite()
     sprite.imgSource = "../assets/motw.png"
     sprite.imageAdjustment["down"] = { order: [0,1,2,1], sprite: [{x: 0, y: -9}, {x: -52, y: -9 }, {x: -104, y: -9 }] }

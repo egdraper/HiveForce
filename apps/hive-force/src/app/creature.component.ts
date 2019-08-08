@@ -45,23 +45,37 @@ export class CreatureAssetComponent {
 
     if (event.code === 'KeyW') {      
       // this.creatureAsset.moveCharacter("up", this.grid[`x${x}:y${y - 1}`], this.gridCreatures)
-      this.creatureAsset.movement.startMovement("up", this.creatureAsset.movement.path = [this.grid[`x${x}:y${y-1}`], this.grid[`x${x}:y${y}`]])
+      this.creatureAsset.movement.startMovement(
+        "up", 
+        this.creatureAsset.movement.path = [this.grid[`x${x}:y${y-1}`], this.grid[`x${x}:y${y}`]],
+        true,
+        )
     }
 
     if (event.code === 'KeyA') {
       // this.creatureAsset.movement.moveCharacter("left", this.grid[`x${x - 1}:y${y}`], this.gridCreatures)
-      this.creatureAsset.movement.startMovement("left", this.creatureAsset.movement.path = [this.grid[`x${x - 1}:y${y}`], this.grid[`x${x}:y${y}`]])
+      this.creatureAsset.movement.startMovement(
+        "left",
+        this.creatureAsset.movement.path = [this.grid[`x${x - 1}:y${y}`], this.grid[`x${x}:y${y}`]],
+        true,
+      )
     }
     
     if (event.code === 'KeyD') {
       // this.creatureAsset.movement.moveCharacter("right", this.grid[`x${x + 1}:y${y}`], this.gridCreatures)
-      this.creatureAsset.movement.startMovement("right", this.creatureAsset.movement.path = [this.grid[`x${x + 1}:y${y}`], this.grid[`x${x}:y${y}`]]
+      this.creatureAsset.movement.startMovement(
+        "right",
+        this.creatureAsset.movement.path = [this.grid[`x${x + 1}:y${y}`], this.grid[`x${x}:y${y}`]],
+        true,
       )
     }
     
     if (event.code === 'KeyS') {
       // this.creatureAsset.movement.moveCharacter("down", this.grid[`x${x}:y${y + 1}`], this.gridCreatures)
-      this.creatureAsset.movement.startMovement("down", this.creatureAsset.movement.path = [this.grid[`x${x}:y${y + 1}`], this.grid[`x${x}:y${y}`]]
+      this.creatureAsset.movement.startMovement(
+        "down",
+        this.creatureAsset.movement.path = [this.grid[`x${x}:y${y + 1}`], this.grid[`x${x}:y${y}`]],
+        true,
       )
     }
   }

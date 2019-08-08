@@ -6,6 +6,9 @@ import { CreatureAsset } from './creature.asset';
 export class ShortestPath {
   public grid: {[cell: string]: any } = { };
   public creaturesOnGrid = []
+  public maxSearchRange = 1000
+  public searchIndex = 0
+  
    
   public setGrid(grid: {[cell: string]: any }) {
     this.grid = grid;
@@ -20,6 +23,7 @@ export class ShortestPath {
   }
 
   private start(start: Cell, end: Cell): Cell[] {
+    this.searchIndex = 0
     const visited = { };
     visited[`x${start.x}:y${start.y}`] = { cell: start, distance: 0 };
 
@@ -40,9 +44,11 @@ export class ShortestPath {
   }
 
   private visitedNow(endingPoint: Cell, visited: Visited) {
-    if (visited[`x${endingPoint.x}:y${endingPoint.y}`] && visited[`x${endingPoint.x}:y${endingPoint.y}`].cell === endingPoint) {
+    
+    if ((visited[`x${endingPoint.x}:y${endingPoint.y}`] && visited[`x${endingPoint.x}:y${endingPoint.y}`].cell === endingPoint)) {
       return;
     }
+    
 
     Object.keys(visited).forEach(visitedCell => {
         if (!visited[visitedCell].checked) {

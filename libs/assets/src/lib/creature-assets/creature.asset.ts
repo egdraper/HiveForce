@@ -62,7 +62,7 @@ export class CreatureAsset extends SelectableAsset {
       {
       this.sprite.doImageAdjustment()
     } else if(this.frame === 0 || this.frame === 20 || this.frame === 40 ){
-      
+      this.sprite.doImageAdjustment()
     }
     
     
@@ -379,7 +379,7 @@ export class Movement {
   }
 
 
-  public startMovement(direction: string, path: Cell[]) {
+  public startMovement(direction: string, path: Cell[], manual: boolean = false) {
     if((this.player.activePlayer || this.player.selected) && !this.moving) {
       this.path = path
       const startingPoint = this.path.pop();
@@ -394,7 +394,6 @@ export class Movement {
       // this.doImageAdjustment()
 
       this.nextCell = this.path.pop();
-      this.player.location.cell = this.nextCell
       if(this.nextCell.x !== this.player.location.cell.x) {
         this.player.sprite.direction = this.nextCell.x > this.player.location.cell.x ? "right" : "left"
       } else if ( this.nextCell.y !== this.player.location.cell.y ) {
@@ -402,6 +401,7 @@ export class Movement {
       }
       
       if (this.nextCell && (!this.nextCell.obstacle && !this.checkForCreatureAtCell(this.nextCell, this.player.location.creaturesOnGrid))) { 
+          this.player.location.cell = this.nextCell
           this.moving = true     
           this.move(this.nextCell.posX, this.nextCell.posY);
         } 
@@ -465,17 +465,14 @@ export class Movement {
 
           if(creatureAtDest){
             if(this.path.length > 1){
-              this.path.shift()
-              // TODO find a closer cell
+              this.getNewShortestPath()
             } else {
-              this.player.sprite.direction = "down"
               this.moving = false
             }
           }
 
           this.moveCreature(this.player.sprite.direction);
         } else {
-          this.player.sprite.direction = "down"
           this.moving = false
         }
       }
@@ -485,7 +482,7 @@ export class Movement {
       const newShortestPath = new ShortestPath()
       newShortestPath.setGrid(this.player.location.grid)
       this.path = newShortestPath.find(this.player.location.cell, this.path[0], this.player.location.creaturesOnGrid)
-      this.path.pop()
+      this.nextCell = this.path.pop()
     }
 }
 
@@ -505,7 +502,7 @@ export class PlayerLocationService {
 
 export class Sprite {
   // sprite info
-  public containerWidth? = 50;
+  public containerWidth? = 50;  
   public containerHeight? = 75;
   public imgSource? = '../assets/motw.png';
   public imgSheetWidth? = '';
@@ -514,6 +511,7 @@ export class Sprite {
   public imgBottomOffset? = 0;
   public imageHeight? = 'auto';
   public imageWidth? = '100%';
+
   // up, down, left, right, die, fly.., attack..,
   public imageAdjustment?: { [section: string]: SpriteSection } = {};
   public direction = 'down';

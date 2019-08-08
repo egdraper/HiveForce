@@ -1,4 +1,4 @@
-import { Component, ViewChild, HostListener, ElementRef, ChangeDetectorRef, Input } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { CreatureAsset, Cell } from '@hive-force/assets';
 
 @Component({
@@ -52,18 +52,18 @@ export class GridComponent {
   }
 
   private generateGrid() {
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 40; i++) {
       this.gridDisplay[i] = [];
 
-      for (let l = 0; l < 20; l++ ) {
+      for (let l = 0; l < 60; l++ ) {
         const obstacle = ((i % 3 === 0 && l % 10 === 0) || (i % 10 === 0 && l === 3) || (i % 6 && l === 2));
         this.grid[`x${l}:y${i}`] = { x: l, y: i, posX: l * 50, posY: i * 50, obstacle, id: `x${l}:y${i}` };
         this.gridDisplay[i][l] = this.grid[`x${l}:y${i}`];
       }
     }
 
-    for (let i = 0; i < 15; i++) {
-      for (let l = 0; l < 20; l++ ) {
+    for (let i = 0; i < 40; i++) {
+      for (let l = 0; l < 60; l++ ) {
         const cell = this.grid[`x${l}:y${i}`];
         cell.neighbors = [];
         cell.neighbors[5] = this.grid[`x${l + 1}:y${i + 1}`];
