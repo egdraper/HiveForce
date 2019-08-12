@@ -94,6 +94,20 @@ export class AppComponent {
     newPlayer.activePlayer = true
   }
 
+  public selectAction(activePlayer: CreatureAsset, action: Action): void {
+    activePlayer.attributes.actions.forEach(a => a.selected = false)
+    action.selected = true
+  }
+
+  public onExecute(activePlayer: CreatureAsset): void {
+    const action = activePlayer.attributes.actions.find(a => a.selected)
+    this.creatures.forEach(creature => {
+      if(creature.selected) {
+        action.execute(activePlayer, creature)
+      }
+    })
+  }
+
   private getNextPlayer(): CreatureAsset {
     (this.playerIndex === this.players.length - 1) ? this.playerIndex = 0 : this.playerIndex++
       

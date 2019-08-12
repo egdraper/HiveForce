@@ -1,5 +1,5 @@
 // tslint:disable: radix
-import { Component, Input, HostListener } from '@angular/core';
+import { Component, Input, HostListener, Renderer2 } from '@angular/core';
 import { CreatureAsset, Cell } from '@hive-force/assets';
 import { SquareComponent } from './grid/square/square.component';
 import { remove, cloneDeep } from "lodash"
@@ -16,19 +16,23 @@ export class CreatureAssetComponent {
   @Input() public grid: { [cell: string]: any };
 
   private ctrIsHeld = false
+  // private listener
+
+  // public constructor(private renderer: Renderer2) {}
 
   public ngOnInit(): void {
     this.creatureAsset.location.grid = this.grid
     this.creatureAsset.location.creaturesOnGrid = this.gridCreatures
     this.creatureAsset.sprite.doImageAdjustment()
+    // this.listener = this.renderer.listen('document', 'keydown', this.move.bind(this) )
   }
 
-  @HostListener("document:keydown", ["$event"]) 
-  public keydown(event): void {
-    if(event.key === "Control") {
-      this.ctrIsHeld = true
-    }
-  }
+  // @HostListener("document:keydown", ["$event"]) 
+  // public keydown(event): void {
+  //   if(event.key === "Control") {
+  //     this.ctrIsHeld = true
+  //   }
+  // }
 
   
   @HostListener("document:keyup", ["$event"]) 
@@ -36,55 +40,45 @@ export class CreatureAssetComponent {
     if(event.key === "Control") {
       this.ctrIsHeld = false
     }
+    // this.listener = this.renderer.listen('document', 'keydown', this.move.bind(this) )
   }
 
-  @HostListener('document:keypress', ['$event'])
-  public move(event): void {
-    const x = this.creatureAsset.location.cell.x
-    const y = this.creatureAsset.location.cell.y
+  // private index = 0
+  @HostListener("document:keydown", ["$event"]) 
+  public async move(event): Promise<void> {
+    if(event.key === "Control") {
+      this.ctrIsHeld = true
+    }
+  
+    if(!this.creatureAsset.activePlayer) { return }
 
-    if (event.code === 'KeyW') {      
-      // this.creatureAsset.moveCharacter("up", this.grid[`x${x}:y${y - 1}`], this.gridCreatures)
-      this.creatureAsset.movement.startMovement(
-        "up", 
-        this.creatureAsset.movement.path = [this.grid[`x${x}:y${y-1}`], this.grid[`x${x}:y${y}`]],
-        true,
-        )
+    if (event.code === 'KeyW') {
+      this.creatureAsset.sprite.direction = "up"  
+      this.creatureAsset.sprite.doImageAdjustment() 
     }
 
     if (event.code === 'KeyA') {
-      // this.creatureAsset.movement.moveCharacter("left", this.grid[`x${x - 1}:y${y}`], this.gridCreatures)
-      this.creatureAsset.movement.startMovement(
-        "left",
-        this.creatureAsset.movement.path = [this.grid[`x${x - 1}:y${y}`], this.grid[`x${x}:y${y}`]],
-        true,
-      )
+      this.creatureAsset.sprite.direction = "left"  
+      this.creatureAsset.sprite.doImageAdjustment() 
     }
     
     if (event.code === 'KeyD') {
-      // this.creatureAsset.movement.moveCharacter("right", this.grid[`x${x + 1}:y${y}`], this.gridCreatures)
-      this.creatureAsset.movement.startMovement(
-        "right",
-        this.creatureAsset.movement.path = [this.grid[`x${x + 1}:y${y}`], this.grid[`x${x}:y${y}`]],
-        true,
-      )
+      this.creatureAsset.sprite.direction = "right"  
+      this.creatureAsset.sprite.doImageAdjustment() 
     }
     
     if (event.code === 'KeyS') {
-      // this.creatureAsset.movement.moveCharacter("down", this.grid[`x${x}:y${y + 1}`], this.gridCreatures)
-      this.creatureAsset.movement.startMovement(
-        "down",
-        this.creatureAsset.movement.path = [this.grid[`x${x}:y${y + 1}`], this.grid[`x${x}:y${y}`]],
-        true,
-      )
+      this.creatureAsset.sprite.direction = "down"  
+      this.creatureAsset.sprite.doImageAdjustment() 
     }
   }
+  
   
   public onCreatureSelect(): void {
     if(!this.ctrIsHeld) {
       this.gridCreatures.forEach(a => a.selected = false)
     }
 
-    this.creatureAsset.selected = true
+    this.creatureAsset.selected = !this.creatureAsset.selected
   }
 }

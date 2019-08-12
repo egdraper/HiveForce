@@ -7,6 +7,7 @@ export class StillnessOfMind extends MonkFeature
   public name = 'Stillness Of Mind';
   public disabled = true;
   public startLevel = 7;
+  public iconUrl = "../assets/mind.png"
 
   public execute(player: CreatureAsset) {
     player.attributes.actionsRemaining = 0

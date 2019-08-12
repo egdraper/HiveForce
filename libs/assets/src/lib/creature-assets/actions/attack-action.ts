@@ -20,6 +20,7 @@ export class AttackAction extends Action {
   public executeAsReaction = false;
   public damageStatus: DamageStatus = DamageStatus.regular;
   public creatureModifiesDamage = false;  
+  public iconUrl = "../assets/attack.png"
   
   private halvedTimes = 1
   constructor(public usedFor: string = "Regular Attack") {

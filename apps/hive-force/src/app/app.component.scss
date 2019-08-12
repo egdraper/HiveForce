@@ -11,15 +11,37 @@
 }
 
 .box {
-    height: 47px;
+    height: 50px;
     width: 100%;
     background-color: black;
     position: fixed;
     bottom: 0px;
+    text-align: center;
 }
 
 .game-space {
-    height: calc(100vh - 47px);
+    height: calc(100vh - 50px);
     background-color: green;
-    overflow: auto;
+}
+
+.option-box-container {
+    display: inline-flex;
+
+    .option-box {
+      border: 1px solid #333333;
+      margin-top: 5px;
+      display: inline-flex;
+      width: 40px;
+      height: 40px;
+      background-color: #556b2f
+    }
+  
+    .option-box:hover {
+      background-color: #553333
+    }
+
+    .selected {
+      background-color: #aa3333
+    }
+  
 }

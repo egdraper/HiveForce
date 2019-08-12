@@ -1,14 +1,34 @@
-<div class="rows">
-    <app-row
-      *ngFor="let r of gridDisplay" 
-      [squares]="r"
-      (cellClick)="cellClick($event)">
-    </app-row>
-  
+<div 
+  class="rows"
+  *ngFor="let row of gridDisplay">
 
-    <creature-asset *ngFor="let creature of creatures"
-      [creatureAsset]="creature"
-      [grid]="grid"
-      [gridCreatures]="creatures"
-    ></creature-asset>
+  <div 
+    class="cell"
+     *ngFor="let cell of row">
+
+    <div
+      (click)="cellClick(cell)"
+      class="back-ground"
+      [class.obstacle]="cell.obstacle"
+      [class.path]="cell.path"
+      [class.destination]="cell.destination">
+      
+      <img
+        src="{{
+          cell.obstacle
+            ? '../../../assets/lava.png'
+            : '../../../assets/cave-floor.jpg'
+        }}"
+        width="48"
+        height="48"/>
+
+    </div>
   </div>
+</div>
+
+<creature-asset
+  *ngFor="let creature of creatures"
+  [creatureAsset]="creature"
+  [grid]="grid"
+  [gridCreatures]="creatures">
+</creature-asset>

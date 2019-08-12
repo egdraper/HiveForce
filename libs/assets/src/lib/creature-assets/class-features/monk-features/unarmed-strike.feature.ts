@@ -12,6 +12,7 @@ export class UnarmedStrike extends MonkFeature implements ClassFeature {
   public name = 'Unarmed Strike';
   public startLevel = 1;
   public disabled = false;
+  public iconUrl = "../assets/fist-punch.png"
 
   constructor(private performance: Subject<Action[]>) {
       super()

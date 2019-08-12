@@ -10,11 +10,13 @@ export class Action {
   public requiresAttackAction: boolean
   public executeAsBonusAction: boolean
   public executeAsReaction: boolean
+  public executeWithoutAction: boolean
   public disabled: boolean
   public actionType: string
   public overcomes: string[]
   public selected: boolean
   public subActions: Array<Action> = []
+  public iconUrl: string
 
   constructor(public usedFor?: string) { }
 

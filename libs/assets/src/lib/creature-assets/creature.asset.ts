@@ -254,6 +254,7 @@ export class Attributes {
   public proficiencyBonus: number;
   public resistances: string[];
   public senses: Array<any>;
+  public selectedAction: Action;
   public size: 'small' | 'medium' | 'large';
   public skillProficiencies: Array<{ skill: string; specialization?: string }>;
   public skills: Array<any>;
@@ -271,7 +272,7 @@ export class Movement {
   public moving = false
   public path: any
   public nextCell: Cell
-  public redirect: any
+  public redirect: any  
 
   constructor(
     public player: CreatureAsset) {}
@@ -380,7 +381,7 @@ export class Movement {
 
 
   public startMovement(direction: string, path: Cell[], manual: boolean = false) {
-    if((this.player.activePlayer || this.player.selected) && !this.moving) {
+      if((this.player.activePlayer || this.player.selected) && !this.moving) {
       this.path = path
       const startingPoint = this.path.pop();
       // this.redirect.path = path;

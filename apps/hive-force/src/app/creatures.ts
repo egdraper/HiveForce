@@ -1,4 +1,4 @@
-import { CreatureAsset, AttackAction, Sprite, Cell } from '@hive-force/assets';
+import { CreatureAsset, AttackAction, Sprite, Cell, MoveAction } from '@hive-force/assets';
 import { Weapon } from '@hive-force/items';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { setTestabilityGetter } from '@angular/core';
@@ -51,12 +51,13 @@ export class CreaturesList {
     zombieFred.aggressive = true
     zombieFred.inventory = [];
     zombieFred.nonPlayableCharacter = true;
+    const moveAction = new MoveAction()
     zombieFred.attributes = {
       attacksRemaining: 2,
       numberOfAttacksAllowed: 2,
       hasAdvantage: false,
       hasDisadvantage: false,
-      actions: [ new AttackAction() ],
+      actions: [ moveAction , new AttackAction() ],
       actionsPerformed: [],
       actionsQueued: [],
       actionsRemaining: 2,
@@ -83,6 +84,7 @@ export class CreaturesList {
       maxHitPoints: 66,
       proficiencyBonus: 0,
       senses: ["blood"],
+      selectedAction: moveAction,
       size: 'medium',
       skills: [],
       skillProficiencies: [],

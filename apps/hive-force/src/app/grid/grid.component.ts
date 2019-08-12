@@ -31,39 +31,29 @@ export class GridComponent {
       this.index = 5
   }
 
-  public charSelect() {
-    // this.characters.forEach(c => c.isSelected = false);
-    // char.select();
-  }
-
-  public cellClick(e: any): void {
-    if (e.x === 150 && e.y === 0) {
-      // this.characters.push(new Character());
-    } else {
-      this.requestToMoveCharacter(e.input);
-    }
-  }
-
-  public requestToMoveCharacter(toLocation: Cell) {
-    this.creatures.filter(c => c.selected).forEach(a => {
-      a.movement.autoMove(toLocation)
+  public cellClick(cell: Cell): void {
+    const creature = this.creatures.find(c => c.activePlayer)
+ 
+    creature.attributes.actions.forEach(a => {
+      if(a.name === "Move" && a.selected) {
+        creature.movement.autoMove(cell)
+      }
     })
-  
   }
 
   private generateGrid() {
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 50; i++) {
       this.gridDisplay[i] = [];
 
-      for (let l = 0; l < 60; l++ ) {
+      for (let l = 0; l < 50; l++ ) {
         const obstacle = ((i % 3 === 0 && l % 10 === 0) || (i % 10 === 0 && l === 3) || (i % 6 && l === 2));
         this.grid[`x${l}:y${i}`] = { x: l, y: i, posX: l * 50, posY: i * 50, obstacle, id: `x${l}:y${i}` };
         this.gridDisplay[i][l] = this.grid[`x${l}:y${i}`];
       }
     }
 
-    for (let i = 0; i < 40; i++) {
-      for (let l = 0; l < 60; l++ ) {
+    for (let i = 0; i < 50; i++) {
+      for (let l = 0; l < 50; l++ ) {
         const cell = this.grid[`x${l}:y${i}`];
         cell.neighbors = [];
         cell.neighbors[5] = this.grid[`x${l + 1}:y${i + 1}`];

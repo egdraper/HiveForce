@@ -12,6 +12,7 @@ export class StunningStrike extends MonkFeature {
   public name = 'Stunning Strike';
   public startLevel = 5;
   public disabled = false;
+  public iconUrl = "../assets/stun.png"
 
   constructor(private performance: Subject<Action[]>) {
     super();

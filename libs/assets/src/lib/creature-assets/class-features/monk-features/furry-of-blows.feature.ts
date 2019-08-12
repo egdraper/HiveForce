@@ -13,6 +13,7 @@ export class FurryOFBlows extends MonkFeature {
   public name = 'Furry of Blows';
   public startLevel = 3;
   public executeAsBonusAction = true;
+  public iconUrl = "../assets/two-fist-punch.png"
 
   private alreadyUsedOpenHandAsBonusAction = false
 

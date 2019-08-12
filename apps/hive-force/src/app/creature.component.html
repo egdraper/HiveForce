@@ -6,14 +6,16 @@
   [class.selected]="creatureAsset.selected"
   [class.active]="creatureAsset.activePlayer"
 >
-  <div
+  <div class="no-event"
     [style.z-index]="creatureAsset.location.zIndex"
     [style.width.px]="creatureAsset.sprite.containerWidth"
     [style.height.px]="creatureAsset.sprite.containerHeight"
     [style.bottom.px]= "creatureAsset.sprite.imgBottomOffset"
     [style.position]= "'absolute'"
     [style.overflow]="'hidden'">
+    
     <img
+      class="no-event"
       src="{{ creatureAsset.sprite.imgSource }}"
       [style.width]="creatureAsset.sprite.imgSheetWidth"
       [style.height.px]="'auto'"

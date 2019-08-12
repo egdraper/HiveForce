@@ -12,6 +12,7 @@ import { CreatureAsset } from '../creature.asset';
 import { Action } from '../actions/action.model';
 import { HillDwarf } from '../race/dwarf.race';
 import { Class } from './base.class';
+import { MoveAction } from '../actions/move-action';
 
 export class Monk extends Class {
   public className = 'Monk';
@@ -26,10 +27,13 @@ export class Monk extends Class {
     for (let i = 1; i <= this.level; i++) {
       this.levelUp[`toLevel${i.toString()}`]();
     }
+
+    this.attributes.selectedAction = this.attributes.actions[0]
   }
 
   public levelUp = {
     toLevel1: () => {
+      this.attributes.actions.push(new MoveAction())
       this.attributes.actions.push(new AttackAction());
       const unarmored = new UnarmoredDefense();
       unarmored.execute(this);
@@ -232,6 +236,7 @@ export class Monk extends Class {
       maxHitPoints: 35,
       proficiencyBonus: 2,
       senses: [],
+      selectedAction: undefined,
       size: "medium",
       skills: [],
       skillProficiencies: [],
