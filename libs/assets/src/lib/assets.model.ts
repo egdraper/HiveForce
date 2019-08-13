@@ -1,7 +1,10 @@
-export class Asset {
+export class GameComponents {
+  public update() { }
+}
+
+export class Asset extends GameComponents{
     public id: string;
     public name: string;
-    public update() { }
   }
   
   export class MapAsset extends Asset {

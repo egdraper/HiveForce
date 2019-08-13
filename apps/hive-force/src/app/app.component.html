@@ -1,76 +1,9 @@
 <div class="game-canvas">
   <div class="game-space">
-    <app-grid [creatures]="players"></app-grid>
-  </div>
-  <div class="box">
-    <div *ngFor="let player of players">     
-      <div class="option-box-container" *ngIf="player.activePlayer">
-          <div
-          class="option-box"
-          (click)="onExecute(player)"
-        >
-          <img
-            class="no-event"
-            src="../assets/execute.ico"
-            [style.width.px]="41"
-            [style.height.px]="41"
-            [style.top.px]="0"
-            [style.left.px]="0"
-            [style.position]="'relative'"
-          />
-        </div>
-        <div
-          class="option-box"
-          style="width: 20px; background-color: black"
-        ></div>
-        <div
-          class="someClass"
-          *ngFor="let action of player.attributes?.actions"
-        >
-          <div
-            class="option-box"
-            *ngIf="action.executeWithoutAction"
-            [class.selected]="action.selected"
-            (click)="selectAction(player, action)"
-          >
-            <img
-              class="no-event"
-              src="{{ action.iconUrl }}"
-              [style.width.px]="41"
-              [style.height.px]="41"
-              [style.top.px]="0"
-              [style.left.px]="0"
-              [style.position]="'relative'"
-            />
-          </div>
-        </div>
-        <div
-          class="option-box"
-          style="width: 20px; background-color: black"
-        ></div>
-        <div
-          class="someClass"
-          *ngFor="let action of player.attributes?.actions"
-        >
-          <div
-            *ngIf="!action.executeWithoutAction"
-            class="option-box"
-            [class.selected]="action.selected"
-            (click)="selectAction(player, action)"
-          >
-            <img
-              class="no-event"
-              src="{{ action.iconUrl }}"
-              [style.width.px]="41"
-              [style.height.px]="41"
-              [style.top.px]="0"
-              [style.left.px]="0"
-              [style.position]="'relative'"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+    <app-grid
+      [creatures]="players"
+      [engine]="engine">
+    </app-grid>
   </div>
 
   <div *ngFor="let player of players">

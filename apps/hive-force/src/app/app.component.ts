@@ -23,9 +23,13 @@ export class AppComponent {
   public numberOfPlayers = 0
   public id = 0
   public creaturesClass = new CreaturesList()
+  public engine: Engine
+
+  public constructor() {
+    this.engine = new Engine()
+  }
 
   public ngOnInit(): void {
-    const engine = new Engine()
     this.players.push(this.createCreature("Jahml"));
 
     this.players[this.playerIndex].activePlayer = true
@@ -33,8 +37,8 @@ export class AppComponent {
     this.numberOfPlayers = this.players.length
     this.creaturesClass.creatures.forEach(a => this.players.push(a) )
     this.creatures = this.creaturesClass.creatures
-    engine.assets = this.players
-    engine.run()
+    this.players.forEach(p => this.engine.assets.push(p))
+    this.engine.run()
 
     MasterLog.subscribe((m) => {
       this.message = m
@@ -92,11 +96,6 @@ export class AppComponent {
 
     const newPlayer = this.getNextPlayer()
     newPlayer.activePlayer = true
-  }
-
-  public selectAction(activePlayer: CreatureAsset, action: Action): void {
-    activePlayer.attributes.actions.forEach(a => a.selected = false)
-    action.selected = true
   }
 
   public onExecute(activePlayer: CreatureAsset): void {

@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { CreatureAsset, Cell } from '@hive-force/assets';
+import { Engine } from '../engine';
 
 @Component({
   selector: "app-grid",
@@ -7,7 +8,8 @@ import { CreatureAsset, Cell } from '@hive-force/assets';
   styleUrls: ["./grid.component.scss"]
 })
 export class GridComponent {
-  @Input() creatures: Array<CreatureAsset>
+  @Input() public creatures: Array<CreatureAsset>
+  @Input() public engine: Engine
   public grid: {[cell: string]: Cell } = { };
   public gridDisplay: any[][] = [];
   

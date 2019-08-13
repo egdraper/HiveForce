@@ -1,8 +1,10 @@
 // tslint:disable: radix
 import { Component, Input, HostListener, Renderer2 } from '@angular/core';
-import { CreatureAsset, Cell } from '@hive-force/assets';
+import { CreatureAsset, Cell, Action, GameComponents } from '@hive-force/assets';
 import { SquareComponent } from './grid/square/square.component';
 import { remove, cloneDeep } from "lodash"
+import { Engine } from './engine';
+import { MasterLog } from '@hive-force/log';
 
 
 @Component({
@@ -10,10 +12,12 @@ import { remove, cloneDeep } from "lodash"
   templateUrl: './creature.component.html',
   styleUrls: ['./creature.component.scss']
 })
-export class CreatureAssetComponent {
+export class CreatureAssetComponent implements GameComponents{
   @Input() public creatureAsset: CreatureAsset;
   @Input() public gridCreatures: Array<CreatureAsset>;
   @Input() public grid: { [cell: string]: any };
+  @Input() public engine: Engine
+  @Input() public creaturesAreSelected = false
 
   private ctrIsHeld = false
   // private listener
@@ -24,7 +28,19 @@ export class CreatureAssetComponent {
     this.creatureAsset.location.grid = this.grid
     this.creatureAsset.location.creaturesOnGrid = this.gridCreatures
     this.creatureAsset.sprite.doImageAdjustment()
+
     // this.listener = this.renderer.listen('document', 'keydown', this.move.bind(this) )
+  }
+
+  public ngAfterViewInit(): void {
+    this.engine.assets.push(this)
+  }
+
+  public update(): void {
+   
+   this.creaturesAreSelected = this.gridCreatures.filter(gc => gc.selected).length > 0
+   // TODO Update actionList depending on selected creature
+
   }
 
   // @HostListener("document:keydown", ["$event"]) 
@@ -75,10 +91,36 @@ export class CreatureAssetComponent {
   
   
   public onCreatureSelect(): void {
+    const wasSelected = this.creatureAsset.selected
+    
     if(!this.ctrIsHeld) {
       this.gridCreatures.forEach(a => a.selected = false)
     }
-
-    this.creatureAsset.selected = !this.creatureAsset.selected
+    
+    this.creatureAsset.selected = !wasSelected
+    
+    if(this.creatureAsset.selected) {
+      this.gridCreatures.filter(a => a.selected)
+    }
   }
+  
+  public selectAction(action: Action, event: any): void {
+    event.stopPropagation()
+    this.creatureAsset.attributes.actions.forEach(a => a.selected = false)
+    action.selected = true
+  }
+
+  public getSelectedCreatures(): Array<CreatureAsset> {
+    return this.gridCreatures.filter(c => c.selected) || []
+  }
+
+  public executeAction(action: Action): void { 
+    this.getSelectedCreatures().forEach(selectedCreature => {
+      this.creatureAsset.executeAction(action, selectedCreature)
+      MasterLog.log("\n")
+    });
+
+    this.creatureAsset.attributes.actions.forEach(a => a.selected = false)
+  }
+
 }

@@ -5,6 +5,14 @@
 
 }
 
+.creature-effect-area {
+    height: 48px;
+    width: 48px;
+    position: absolute;
+    pointer-events: none;
+    border: 1px solid  rgba(255,255,255,.025);
+}
+
 .character-image {
     position: absolute;
     bottom: 4px;
@@ -13,8 +21,20 @@
 }
 
 .selected {
-    border: solid red;
-    
+    border: solid red; 
+}
+
+.execute {
+    position: absolute;
+    left: 48px;
+    top: 11px;
+    width: 85px;
+    background-color: beige;
+    cursor: pointer;
+}
+
+.execute:hover {
+    background-color: red
 }
 
 .active {
@@ -28,3 +48,43 @@
 .no-event{
     pointer-events: none;
 }
+
+
+///////// 
+
+.speed-dial {
+    position: relative;
+    top: -85px;
+    left: 85px;
+    width: 40px;
+    height: 40px;
+    background-color: bisque;
+    opacity: .2;
+    margin: 5px;
+    z-index: 1000;
+
+
+    .selected {
+        background-color: brown;
+    }
+}
+
+.speed-dial:hover {
+    background-color: brown;
+    
+}
+
+.speed-dial-container:hover {
+   .speed-dial {
+    opacity: .5
+   }       
+}
+
+
+    .option-box {
+      border: 1px solid #333333;
+      display: inline-flex;
+      width: 40px;
+      height: 40px;
+      background-color: #556b2f
+    }
