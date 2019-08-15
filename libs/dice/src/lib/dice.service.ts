@@ -20,7 +20,7 @@ export class Dice {
         }
 
         if(this.withDisadvantage) {
-          return roll1.modifiedRollValue <= roll2.modifiedRollValue ? roll2 : roll1
+          return roll1.modifiedRollValue <= roll2.modifiedRollValue ? roll1 : roll2
         }
       } else {
         return this.performRoll()
