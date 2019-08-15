@@ -3,6 +3,7 @@ import { Effect } from '../effects/effects.model';
 import { MasterLog } from '@hive-force/log';
 import { Item } from '@hive-force/items';
 import { CreatureAsset } from '../creature.asset';
+import { ActionAnimation } from '../animation/actionAnimation';
 
 export class Action {
   public name: string
@@ -17,6 +18,8 @@ export class Action {
   public selected: boolean
   public subActions: Array<Action> = []
   public iconUrl: string
+  public performanceAnimation: ActionAnimation
+  public effectAnimation: ActionAnimation
 
   constructor(public usedFor?: string) { }
 

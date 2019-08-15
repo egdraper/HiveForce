@@ -1,6 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { CreatureAsset, Cell } from '@hive-force/assets';
-import { Engine } from '../engine';
+import { CreatureAsset, Cell, Engine } from '@hive-force/assets';
 
 @Component({
   selector: "app-grid",
@@ -34,13 +33,19 @@ export class GridComponent {
   }
 
   public cellClick(cell: Cell): void {
-    const creature = this.creatures.find(c => c.activePlayer)
+    const creatures = this.creatures.filter(c => c.selected)
  
-    creature.attributes.actions.forEach(a => {
-      if(a.name === "Move" && a.selected) {
+    creatures.forEach(creature => {
         creature.movement.autoMove(cell)
-      }
     })
+
+    // const creature = this.creatures.find(c => c.activePlayer ||)
+ 
+    // creature.attributes.actions.forEach(a => {
+    //   if(a.name === "Move" && a.selected) {
+    //     creature.movement.autoMove(cell)
+    //   }
+    // })
   }
 
   private generateGrid() {

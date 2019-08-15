@@ -5,6 +5,7 @@ import { Weapon } from '@hive-force/items';
 import { MasterLog } from '@hive-force/log';
 import { cloneDeep } from 'lodash';
 import { CreatureAsset } from '../creature.asset';
+import { ActionAnimation } from '../animation/actionAnimation';
 
 export enum DamageStatus {
   doubled,
@@ -21,6 +22,8 @@ export class AttackAction extends Action {
   public damageStatus: DamageStatus = DamageStatus.regular;
   public creatureModifiesDamage = false;  
   public iconUrl = "../assets/attack.png"
+  public performanceAnimation: ActionAnimation
+  public effectAnimation: ActionAnimation
   
   private halvedTimes = 1
   constructor(public usedFor: string = "Regular Attack") {
@@ -32,6 +35,8 @@ export class AttackAction extends Action {
     creature: CreatureAsset
   ): CreaturesEffect {
     const weapon = player.getSelectedItem() as Weapon
+    this.performanceAnimation = weapon.strikeAnimation
+    this.effectAnimation = weapon.hitAnimation
     
     if (!this.checkDependencies(player, creature, weapon)) {
       return;
@@ -41,7 +46,7 @@ export class AttackAction extends Action {
 
     // disables the attack button
     if (!this.executeAsBonusAction && !this.executeAsReaction) {
-      player.attributes.actionsPerformed.push(cloneDeep(this));
+      // player.attributes.actionsPerformed.push(cloneDeep(this));
       player.attributes.attacksRemaining--;
     }
 

@@ -2,9 +2,8 @@
 import { Component, ViewChild } from '@angular/core'
 import { MasterLog } from "@hive-force/log"
 import { Dice } from "@hive-force/dice"
-import { CreatureAsset, Action, Monk, Sprite } from '@hive-force/assets';
+import { CreatureAsset, Action, Monk, Sprite, Engine } from '@hive-force/assets';
 import { CreaturesList } from './creatures';
-import { Engine } from './engine';
 
 @Component({
   selector: 'hive-force-root',

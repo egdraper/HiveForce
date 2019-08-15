@@ -1,6 +1,7 @@
 import { Race } from './base.race';
 import { StoneCunning } from './racial-traits/dwarf.traits';
-import { Attributes } from '../creature.asset';
+import { Attributes } from '../attributes/attributes';
+
 
 export class Dwarf extends Race {
     public name = "Dwarf"

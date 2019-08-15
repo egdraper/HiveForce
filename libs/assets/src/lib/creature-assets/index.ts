@@ -3,5 +3,6 @@ export * from "./class-features/index"
 export * from "./effects/index"
 export * from "./race/index"
 export * from "./class/index"
-
+export * from "./creature-view"
 export * from "./creature.asset"
+export * from "./animation"

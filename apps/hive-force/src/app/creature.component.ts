@@ -1,11 +1,8 @@
 // tslint:disable: radix
-import { Component, Input, HostListener, Renderer2 } from '@angular/core';
-import { CreatureAsset, Cell, Action, GameComponents } from '@hive-force/assets';
-import { SquareComponent } from './grid/square/square.component';
-import { remove, cloneDeep } from "lodash"
-import { Engine } from './engine';
+import { Component, Input, HostListener} from '@angular/core';
+import { CreatureAsset, Action, GameComponents, Engine, SlashAnimation } from '@hive-force/assets';
 import { MasterLog } from '@hive-force/log';
-
+import { ActionAnimation } from 'libs/assets/src/lib/creature-assets/animation/actionAnimation';
 
 @Component({
   selector: 'creature-asset',
@@ -18,6 +15,9 @@ export class CreatureAssetComponent implements GameComponents{
   @Input() public grid: { [cell: string]: any };
   @Input() public engine: Engine
   @Input() public creaturesAreSelected = false
+
+  public actionAnimation: ActionAnimation
+  public sideBarOn = true
 
   private ctrIsHeld = false
   // private listener
@@ -66,7 +66,7 @@ export class CreatureAssetComponent implements GameComponents{
       this.ctrIsHeld = true
     }
   
-    if(!this.creatureAsset.activePlayer) { return }
+    if(!this.creatureAsset.activePlayer || !this.creatureAsset.selected) { return }
 
     if (event.code === 'KeyW') {
       this.creatureAsset.sprite.direction = "up"  
@@ -116,11 +116,14 @@ export class CreatureAssetComponent implements GameComponents{
 
   public executeAction(action: Action): void { 
     this.getSelectedCreatures().forEach(selectedCreature => {
-      this.creatureAsset.executeAction(action, selectedCreature)
-      MasterLog.log("\n")
+      debugger
+      const results = this.creatureAsset.executeAction(action, selectedCreature)
+      
+      this.actionAnimation = action.performanceAnimation
+      this.actionAnimation.run(this.engine, this.creatureAsset.location.cell, selectedCreature.location.cell)
+          MasterLog.log("\n")
     });
 
     this.creatureAsset.attributes.actions.forEach(a => a.selected = false)
   }
-
 }

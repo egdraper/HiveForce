@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Cell, Visited } from '../model';
-import { CreatureAsset } from './creature.asset';
+import { Cell, Visited } from '../../model';
+import { CreatureAsset } from '../creature.asset';
 
 @Injectable()
 export class ShortestPath {
@@ -8,8 +8,7 @@ export class ShortestPath {
   public creaturesOnGrid = []
   public maxSearchRange = 1000
   public searchIndex = 0
-  
-   
+     
   public setGrid(grid: {[cell: string]: any }) {
     this.grid = grid;
   }

@@ -1,3 +1,5 @@
+import { ActionAnimation } from 'libs/assets/src/lib/creature-assets/animation/actionAnimation';
+
 export class Item {
   public id: string;
   public name: string;
@@ -34,4 +36,6 @@ export class Weapon extends RollableItem {
   public overcomes?: string[] = []
   public ranged?: boolean
   public modifier?: string
+  public strikeAnimation?: ActionAnimation
+  public hitAnimation?: ActionAnimation
 }

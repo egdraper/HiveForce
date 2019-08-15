@@ -22,6 +22,8 @@
     [style.position]="'absolute'"
     [style.overflow]="'hidden'">
 
+  
+
     <img
       class="no-event"
       src="{{ creatureAsset.sprite.imgSource }}"
@@ -32,7 +34,9 @@
       [style.position]="'relative'"/>
   </div>
 
-  <div class="speed-dial-container" *ngIf="creatureAsset.activePlayer && creaturesAreSelected">
+  <div
+    class="speed-dial-container"
+    *ngIf="creatureAsset.activePlayer && creaturesAreSelected && !creatureAsset.movement.moving && sideBarOn">
 
     <div
       class="speed-dial"
@@ -41,8 +45,8 @@
       <div
         [class.selected]="action.selected"
         (click)="selectAction(action, $event)">
-
-        <div
+       
+         <div
           (click)="executeAction(action)"
           class="execute"
           *ngIf="action.selected">
@@ -61,3 +65,20 @@
     </div>
   </div>
 </div>
+
+
+
+<img
+src="../assets//quick-slash.png"
+class="action-animation"
+*ngIf="actionAnimation && actionAnimation?.animationFrame"
+[style.position]="'absolute'"
+[style.top.px]="actionAnimation.animationFrame.locY"
+[style.left.px]="actionAnimation.animationFrame.locX" 
+[style.width.px]="actionAnimation.animationFrame.width"
+[style.height.px]="actionAnimation.animationFrame.width"
+[style.opacity]="actionAnimation.animationFrame.opacity"
+[style.zIndex]="'1000'"
+>
+
+

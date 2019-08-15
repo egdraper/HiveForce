@@ -13,6 +13,7 @@ import { Action } from '../actions/action.model';
 import { HillDwarf } from '../race/dwarf.race';
 import { Class } from './base.class';
 import { MoveAction } from '../actions/move-action';
+import { SlashAnimation } from '../animation';
 
 export class Monk extends Class {
   public className = 'Monk';
@@ -180,6 +181,8 @@ export class Monk extends Class {
       shortSword.attackType = "nonmagical"
       shortSword.ranged = false
       shortSword.modifier = "strength"
+      shortSword.strikeAnimation = new SlashAnimation()
+      shortSword.hitAnimation = new SlashAnimation()
       
       const fist = new Weapon()
       fist.description = 'Fists of Fury'
@@ -194,6 +197,8 @@ export class Monk extends Class {
       fist.attackType = "nonmagical"
       fist.ranged = false
       fist.modifier = "strength"  
+      shortSword.strikeAnimation = new SlashAnimation()
+      shortSword.hitAnimation = new SlashAnimation()
 
       return [fist, shortSword]
   }
