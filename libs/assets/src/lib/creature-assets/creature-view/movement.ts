@@ -20,7 +20,7 @@ export class Movement {
       }
       
       if (this.player.activePlayer) {
-        this.player.sprite.direction = creatureFacingOverride || direction
+        this.player.sprite.key = creatureFacingOverride || direction
   
   
         // Up
@@ -126,14 +126,14 @@ export class Movement {
   
       public moveCreature(direction: string): void {
   
-        this.player.sprite.direction = direction
+        this.player.sprite.key = direction
         // this.doImageAdjustment()
   
         this.nextCell = this.path.pop();
         if(this.nextCell.x !== this.player.location.cell.x) {
-          this.player.sprite.direction = this.nextCell.x > this.player.location.cell.x ? "right" : "left"
+          this.player.sprite.key = this.nextCell.x > this.player.location.cell.x ? "right" : "left"
         } else if ( this.nextCell.y !== this.player.location.cell.y ) {
-          this.player.sprite.direction = this.nextCell.y > this.player.location.cell.y ? "down" : "up"
+          this.player.sprite.key = this.nextCell.y > this.player.location.cell.y ? "down" : "up"
         }
         
         if (this.nextCell && (!this.nextCell.obstacle && !this.checkForCreatureAtCell(this.nextCell, this.player.location.creaturesOnGrid))) { 
@@ -207,7 +207,7 @@ export class Movement {
               }
             }
   
-            this.moveCreature(this.player.sprite.direction);
+            this.moveCreature(this.player.sprite.key);
           } else {
             this.moving = false
           }

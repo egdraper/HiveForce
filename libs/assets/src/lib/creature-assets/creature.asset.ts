@@ -5,7 +5,7 @@ import { MasterLog } from '@hive-force/log';
 import { SelectableAsset } from '../assets.model';
 import { Race } from './race/base.race';
 import { Effect } from './effects/effects.model';
-import { Action } from './actions/action.model';
+import { Action, CreaturesEffect } from './actions/action.model';
 import { Movement } from './creature-view/movement';
 import { Sprite } from './creature-view/sprite';
 import { PlayerLocationService } from './creature-view/location';
@@ -157,8 +157,9 @@ export class CreatureAsset extends SelectableAsset {
     );
   }
 
-  public executeAction(action: Action, creature: CreatureAsset): void {
-    action.execute(this, creature);
+  public executeAction(action: Action, creature: CreatureAsset): boolean | void | CreatureAsset | CreaturesEffect | CreaturesEffect[] {
+    return action.execute(this, creature);
+   
   }
 
   public applyReaction(

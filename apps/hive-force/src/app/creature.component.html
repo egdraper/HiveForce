@@ -14,25 +14,26 @@
   [class.selected]="creatureAsset.selected"
   [class.active]="creatureAsset.activePlayer">
   <div
+  class="no-event"
+  [style.z-index]="creatureAsset.location.zIndex"
+  [style.width.px]="creatureAsset.sprite.containerWidth"
+  [style.height.px]="creatureAsset.sprite.containerHeight"
+  [style.bottom.px]="creatureAsset.sprite.imgBottomOffset"
+  [style.position]="'absolute'"
+  [style.overflow]="'hidden'">
+
+
+
+  <img
     class="no-event"
-    [style.z-index]="creatureAsset.location.zIndex"
-    [style.width.px]="creatureAsset.sprite.containerWidth"
-    [style.height.px]="creatureAsset.sprite.containerHeight"
-    [style.bottom.px]="creatureAsset.sprite.imgBottomOffset"
-    [style.position]="'absolute'"
-    [style.overflow]="'hidden'">
-
-  
-
-    <img
-      class="no-event"
-      src="{{ creatureAsset.sprite.imgSource }}"
-      [style.width]="creatureAsset.sprite.imgSheetWidth"
-      [style.height.px]="'auto'"
-      [style.top.px]="creatureAsset.sprite.imgSpriteTopOffset"
-      [style.left.px]="creatureAsset.sprite.imgSpriteLeftOffset"
-      [style.position]="'relative'"/>
-  </div>
+    src="{{ creatureAsset.sprite.imgSource }}"
+    [style.width]="creatureAsset.sprite.imgSheetWidth"
+    [style.height.px]="'auto'"
+    [style.top.px]="creatureAsset.sprite.imgSpriteTopOffset"
+    [style.left.px]="creatureAsset.sprite.imgSpriteLeftOffset"
+    [class.action-glow]="creatureAsset.sprite.performingAction"
+    [style.position]="'relative'"/>
+</div>
 
   <div
     class="speed-dial-container"
@@ -68,17 +69,38 @@
 
 
 
-<img
-src="../assets//quick-slash.png"
-class="action-animation"
-*ngIf="actionAnimation && actionAnimation?.animationFrame"
-[style.position]="'absolute'"
-[style.top.px]="actionAnimation.animationFrame.locY"
-[style.left.px]="actionAnimation.animationFrame.locX" 
-[style.width.px]="actionAnimation.animationFrame.width"
-[style.height.px]="actionAnimation.animationFrame.width"
-[style.opacity]="actionAnimation.animationFrame.opacity"
-[style.zIndex]="'1000'"
->
 
 
+<div
+    class="action-animation-container"
+    *ngIf="actionAnimation && actionAnimation?.sprite"
+    [style.zIndex]="'1000'"
+    [style.width.px]="actionAnimation.sprite.containerWidth"
+    [style.height.px]="actionAnimation.sprite.containerHeight"
+    [style.bottom.px]="actionAnimation.sprite.imgBottomOffset"
+    [style.top.px]="actionAnimation.sprite.locY"
+    [style.left.px]="actionAnimation.sprite.locX"
+    [style.position]="'absolute'"
+    [style.overflow]="'hidden'">
+
+    <img
+      class="no-event"
+      src="{{ actionAnimation.sprite.imgSource }}"
+      [style.width]="actionAnimation.sprite.imgSheetWidth"
+      [style.height.px]="'auto'"
+      [style.top.px]="actionAnimation.sprite.imgSpriteTopOffset"
+      [style.left.px]="actionAnimation.sprite.imgSpriteLeftOffset"
+      [style.position]="'relative'"/>
+  </div>
+
+<div
+  *ngIf="textAnimation && textAnimation.text"
+  [style.width]="textAnimation.width"
+  [style.height]="textAnimation.height"
+  [style.top.px]="textAnimation.locY"
+  [style.left.px]="textAnimation.locX"
+  [style.color]="textAnimation.color"
+  [style.position]="'absolute'"
+  [style.zIndex]="'1001'" >
+  {{ textAnimation.text }}
+</div>

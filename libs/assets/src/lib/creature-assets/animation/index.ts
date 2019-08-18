@@ -1,2 +1,5 @@
 export * from "./engine"
 export * from "./slash"
+export * from "./slash-hit"
+export * from "./textAnimation"
+export * from "./action-result-text-animation"

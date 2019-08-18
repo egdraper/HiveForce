@@ -13,7 +13,7 @@ import { Action } from '../actions/action.model';
 import { HillDwarf } from '../race/dwarf.race';
 import { Class } from './base.class';
 import { MoveAction } from '../actions/move-action';
-import { SlashAnimation } from '../animation';
+import { SlashAnimation, SlashHitAnimation } from '../animation';
 
 export class Monk extends Class {
   public className = 'Monk';
@@ -131,10 +131,6 @@ export class Monk extends Class {
     this.effects.push(effect)
   }
 
-  public executeAction(action: Action, creature: CreatureAsset): void {
-    action.execute(this, creature)
-  }
-
   public applyReaction(weapon: Weapon, creature: CreatureAsset, action: AttackAction): boolean {
     if(weapon.ranged) {
       action.creatureModifiesDamage = true
@@ -198,7 +194,7 @@ export class Monk extends Class {
       fist.ranged = false
       fist.modifier = "strength"  
       shortSword.strikeAnimation = new SlashAnimation()
-      shortSword.hitAnimation = new SlashAnimation()
+      shortSword.hitAnimation = new SlashHitAnimation()
 
       return [fist, shortSword]
   }

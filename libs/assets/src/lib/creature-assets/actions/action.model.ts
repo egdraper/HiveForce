@@ -4,6 +4,7 @@ import { MasterLog } from '@hive-force/log';
 import { Item } from '@hive-force/items';
 import { CreatureAsset } from '../creature.asset';
 import { ActionAnimation } from '../animation/actionAnimation';
+import { TextAnimation } from '../animation';
 
 export class Action {
   public name: string
@@ -57,6 +58,8 @@ export class CreaturesEffect {
   creature: CreatureAsset;
   effected: boolean;
   effect?: Effect;
+  animationText?: TextAnimation
+
 }
 
 export class ConsumableAction extends Action {

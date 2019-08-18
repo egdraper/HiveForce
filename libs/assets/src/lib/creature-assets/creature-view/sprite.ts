@@ -7,6 +7,8 @@ export class Sprite {
   // sprite info
   public containerWidth? = 50;
   public containerHeight? = 75;
+  public locY = 0
+  public locX = 0
   public imgSource? = '../assets/motw.png';
   public imgSheetWidth? = '';
   public imgSpriteTopOffset? = -9;
@@ -14,15 +16,16 @@ export class Sprite {
   public imgBottomOffset? = 0;
   public imageHeight? = 'auto';
   public imageWidth? = '100%';
+  public performingAction = false;
 
   // up, down, left, right, die, fly.., attack..,
   public imageAdjustment?: { [section: string]: SpriteSection } = {};
-  public direction = 'down';
+  public key = 'down';
   public positionNumber = 0;
 
   public doImageAdjustment(): void {
-    if (this.imageAdjustment && this.imageAdjustment[this.direction]) {
-      const a = this.imageAdjustment[this.direction];
+    if (this.imageAdjustment && this.imageAdjustment[this.key]) {
+      const a = this.imageAdjustment[this.key];
       this.positionNumber >= a.order.length - 1
         ? (this.positionNumber = 0)
         : this.positionNumber++;

@@ -37,6 +37,10 @@
     background-color: red
 }
 
+.action-glow {
+    filter: brightness(200%)
+}
+
 .active {
   background-color: rgba(255,255,255,.1);
 }
@@ -59,7 +63,7 @@
     width: 40px;
     height: 40px;
     background-color: bisque;
-    opacity: .2;
+    opacity: .05;
     margin: 5px;
     z-index: 1000;
 

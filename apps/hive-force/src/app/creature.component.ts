@@ -1,6 +1,6 @@
 // tslint:disable: radix
 import { Component, Input, HostListener} from '@angular/core';
-import { CreatureAsset, Action, GameComponents, Engine, SlashAnimation } from '@hive-force/assets';
+import { CreatureAsset, Action, GameComponents, Engine, SlashAnimation, TextAnimation, ActionResultTextAnimation, CreaturesEffect } from '@hive-force/assets';
 import { MasterLog } from '@hive-force/log';
 import { ActionAnimation } from 'libs/assets/src/lib/creature-assets/animation/actionAnimation';
 
@@ -17,6 +17,7 @@ export class CreatureAssetComponent implements GameComponents{
   @Input() public creaturesAreSelected = false
 
   public actionAnimation: ActionAnimation
+  public textAnimation: TextAnimation
   public sideBarOn = true
 
   private ctrIsHeld = false
@@ -69,22 +70,22 @@ export class CreatureAssetComponent implements GameComponents{
     if(!this.creatureAsset.activePlayer || !this.creatureAsset.selected) { return }
 
     if (event.code === 'KeyW') {
-      this.creatureAsset.sprite.direction = "up"  
+      this.creatureAsset.sprite.key = "up"  
       this.creatureAsset.sprite.doImageAdjustment() 
     }
 
     if (event.code === 'KeyA') {
-      this.creatureAsset.sprite.direction = "left"  
+      this.creatureAsset.sprite.key = "left"  
       this.creatureAsset.sprite.doImageAdjustment() 
     }
     
     if (event.code === 'KeyD') {
-      this.creatureAsset.sprite.direction = "right"  
+      this.creatureAsset.sprite.key = "right"  
       this.creatureAsset.sprite.doImageAdjustment() 
     }
     
     if (event.code === 'KeyS') {
-      this.creatureAsset.sprite.direction = "down"  
+      this.creatureAsset.sprite.key = "down"  
       this.creatureAsset.sprite.doImageAdjustment() 
     }
   }
@@ -116,12 +117,27 @@ export class CreatureAssetComponent implements GameComponents{
 
   public executeAction(action: Action): void { 
     this.getSelectedCreatures().forEach(selectedCreature => {
-      debugger
-      const results = this.creatureAsset.executeAction(action, selectedCreature)
-      
+      const results = this.creatureAsset.executeAction(action, selectedCreature) as CreaturesEffect
+
       this.actionAnimation = action.performanceAnimation
-      this.actionAnimation.run(this.engine, this.creatureAsset.location.cell, selectedCreature.location.cell)
-          MasterLog.log("\n")
+      this.creatureAsset.sprite.performingAction = true
+      this.actionAnimation.run(this.engine, this.creatureAsset.location.cell, this.creatureAsset.location.cell)
+        .then(() => {
+          this.creatureAsset.sprite.performingAction = false
+          // if(results) {
+          this.actionAnimation = action.effectAnimation
+          selectedCreature.sprite.performingAction = true
+          this.actionAnimation.run(this.engine, this.creatureAsset.location.cell, selectedCreature.location.cell)
+            .then(() => {
+              selectedCreature.sprite.performingAction = false  
+              this.textAnimation = results.animationText
+              this.textAnimation.locY = selectedCreature.location.cell.posY
+              results.animationText.run(this.engine, selectedCreature.location.cell)
+            })
+          // }
+        })       
+        
+      MasterLog.log("\n")
     });
 
     this.creatureAsset.attributes.actions.forEach(a => a.selected = false)
