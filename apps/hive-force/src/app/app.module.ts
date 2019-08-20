@@ -4,20 +4,17 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { CreatureAssetComponent } from './creature.component';
 import { GridComponent } from './grid/grid.component';
-import { SquareComponent } from './grid/square/square.component';
-import { RowModule } from './grid/row/row.module';
-import { SquareModule } from './grid/square/square.module';
+import { CreateCreatureComponent } from './home/create-creature/create-creature.component';
 
 @NgModule({
   declarations: [
     CreatureAssetComponent,
     AppComponent,
     GridComponent,
+    CreateCreatureComponent,
   ],
   imports: [
     BrowserModule,
-    SquareModule,
-    RowModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

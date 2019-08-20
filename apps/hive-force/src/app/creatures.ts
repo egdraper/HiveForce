@@ -111,7 +111,7 @@ export class CreaturesList {
     claw.overcomes = []
 
     const bite = new Weapon()
-    bite.description = 'Teath',
+    bite.description = 'Teeth',
     bite.diceEquation = '1d6',
     bite.id = '12373',
     bite.name = 'Bite',

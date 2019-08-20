@@ -33,19 +33,19 @@ export class GridComponent {
   }
 
   public cellClick(cell: Cell): void {
-    const creatures = this.creatures.filter(c => c.selected)
+    // const creatures = this.creatures.filter(c => c.selected)
  
-    creatures.forEach(creature => {
-        creature.movement.autoMove(cell)
-    })
-
-    // const creature = this.creatures.find(c => c.activePlayer ||)
- 
-    // creature.attributes.actions.forEach(a => {
-    //   if(a.name === "Move" && a.selected) {
+    // creatures.forEach(creature => {
     //     creature.movement.autoMove(cell)
-    //   }
     // })
+
+    const creature = this.creatures.find(c => c.activePlayer)
+ 
+    creature.attributes.actions.forEach(a => {
+      if(a.name === "Move" && a.selected) {
+        creature.movement.autoMove(cell)
+      }
+    })
   }
 
   private generateGrid() {

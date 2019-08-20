@@ -3,25 +3,62 @@ export class SpriteSection {
   sprite: Array<{ x: number; y: number }>;
 }
 
-export class Sprite {
-  // sprite info
-  public containerWidth? = 50;
-  public containerHeight? = 75;
-  public locY = 0
-  public locX = 0
-  public imgSource? = '../assets/motw.png';
-  public imgSheetWidth? = '';
-  public imgSpriteTopOffset? = -9;
-  public imgSpriteLeftOffset? = -1;
-  public imgBottomOffset? = 0;
-  public imageHeight? = 'auto';
-  public imageWidth? = '100%';
-  public performingAction = false;
+export interface SpriteModel {
+  name: string
+  containerWidth?: number
+  containerHeight?: number
+  locY?: number
+  locX?: number
+  imgSource?: string
+  imgSheetWidth?: string
+  imgSpriteTopOffset?: number
+  imgSpriteLeftOffset?: number  
+  imgBottomOffset?: number
+  imageHeight?: string
+  imageWidth?: string
+  performingAction: boolean
+  imageAdjustment?: { [section: string]: SpriteSection };
+  key: string;
+  positionNumber: number;
+}
 
-  // up, down, left, right, die, fly.., attack..,
-  public imageAdjustment?: { [section: string]: SpriteSection } = {};
-  public key = 'down';
-  public positionNumber = 0;
+export class Sprite implements SpriteModel {
+  // sprite info
+    public name = "Name"
+    public containerWidth = 50;
+    public containerHeight = 75;
+    public locY = 0
+    public locX = 0
+    public imgSource = '../assets/motw.png';
+    public imgSheetWidth = "";
+    public imgSpriteTopOffset = -9;
+    public imgSpriteLeftOffset = -1;
+    public imgBottomOffset = 0;
+    public imageHeight = 'auto';
+    public imageWidth = '100%';
+    public performingAction = false;
+    public imageAdjustment: { [section: string]: SpriteSection } = {};
+    public key = 'down';
+    public positionNumber = 0;
+
+  constructor(sprite: SpriteModel) {
+    this.name = sprite.name
+    this.containerWidth = sprite.containerWidth || this.containerWidth
+    this.containerHeight = sprite.containerHeight || this.containerHeight
+    this.locY = sprite.locY || this.locY
+    this.locX = sprite.locX || this.locX
+    this.imgSource = sprite.imgSource || this.imgSource
+    this.imgSheetWidth = sprite.imgSheetWidth || this.imgSheetWidth
+    this.imgSpriteTopOffset = sprite.imgSpriteTopOffset || this.imgSpriteTopOffset
+    this.imgSpriteLeftOffset = sprite.imgSpriteLeftOffset || this.imgSpriteLeftOffset
+    this.imgBottomOffset = sprite.imgBottomOffset || this.imgBottomOffset
+    this.imageHeight = sprite.imageHeight || this.imageHeight
+    this.imageWidth = sprite.imageWidth || this.imageWidth
+    this.performingAction = sprite.performingAction || this.performingAction
+    this.imageAdjustment = sprite.imageAdjustment || this.imageAdjustment
+    this.key = sprite.key || this.key
+    this.positionNumber = sprite.positionNumber || this.positionNumber
+  }
 
   public doImageAdjustment(): void {
     if (this.imageAdjustment && this.imageAdjustment[this.key]) {
