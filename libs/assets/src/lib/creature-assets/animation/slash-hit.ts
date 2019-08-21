@@ -14,12 +14,31 @@ export class SlashHitAnimation implements ActionAnimation {
     const promise = new Promise( (resolve) => { 
       this.resolve = resolve
       this.engine = engine;
-      this.sprite = this.getAnimationFrames()
-      this.sprite.locX = receivingCell.posX- 40,
-      this.sprite.locY = receivingCell.posY - 50,
-      this.sprite.containerWidth = 120
-      this.sprite.containerHeight = 120
-      this.sprite.key = "slashHit"
+      const spriteModel = {
+        locX: receivingCell.posX- 40,
+        locY: receivingCell.posY - 50,
+        containerWidth: 120,
+        containerHeight: 120,
+        key: "slashHit",
+        imgSource: "../assets/slash-blood-sparks-light.png",
+        imageAdjustment: {
+          slashHit: {
+            order: [0,1,2,3,4,5,6,7,8], 
+            sprite: [
+              {x: 0, y: -10},
+              {x: -120, y: -10},
+              {x: -240, y: -10},
+              {x: 0, y: -130},
+              {x: -120, y: -130},
+              {x: -240, y: -130},
+              {x: 0, y: -250},
+              {x: -120, y: -250},
+              {x: -240, y: -250},     
+            ]
+          }
+        }
+      }
+      this.sprite = new Sprite(spriteModel)      
       this.frame = 1    
       engine.assets.push(this);
     })
@@ -40,26 +59,5 @@ export class SlashHitAnimation implements ActionAnimation {
       this.sprite = null;
       this.resolve()
     }
-  }
-
-  private getAnimationFrames(): Sprite {
-    const sprite = new Sprite()
-    sprite.imgSource = "../assets/slash-blood-sparks-light.png"
-    sprite.imageAdjustment["slashHit"] = {
-      order: [0,1,2,3,4,5,6,7,8], 
-      sprite: [
-        {x: 0, y: -10},
-        {x: -120, y: -10},
-        {x: -240, y: -10},
-        {x: 0, y: -130},
-        {x: -120, y: -130},
-        {x: -240, y: -130},
-        {x: 0, y: -250},
-        {x: -120, y: -250},
-        {x: -240, y: -250},     
-      ]
-    }
-
-   return sprite
   }
 }

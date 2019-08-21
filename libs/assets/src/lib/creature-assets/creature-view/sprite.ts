@@ -4,7 +4,7 @@ export class SpriteSection {
 }
 
 export interface SpriteModel {
-  name: string
+  name?: string
   containerWidth?: number
   containerHeight?: number
   locY?: number
@@ -16,10 +16,10 @@ export interface SpriteModel {
   imgBottomOffset?: number
   imageHeight?: string
   imageWidth?: string
-  performingAction: boolean
+  performingAction?: boolean
   imageAdjustment?: { [section: string]: SpriteSection };
-  key: string;
-  positionNumber: number;
+  key?: string;
+  positionNumber?: number;
 }
 
 export class Sprite implements SpriteModel {

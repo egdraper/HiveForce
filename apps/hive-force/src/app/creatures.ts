@@ -1,8 +1,6 @@
 import { CreatureAsset, AttackAction, Sprite, Cell, MoveAction } from '@hive-force/assets';
 import { Weapon } from '@hive-force/items';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { setTestabilityGetter } from '@angular/core';
-import { bindNodeCallback } from 'rxjs';
+import { SpriteDB } from "./db/sprite.db"
 
 export class CreaturesList {
   public creatures: CreatureAsset[] = [];
@@ -10,13 +8,13 @@ export class CreaturesList {
   public motionIndex = 3
 
   constructor() {
-    const steve = this.createAttributes("Steve", "../assets/zombie1.png")
+    const steve = this.createAttributes("Steve", "basicSkeletonSprite")
     steve.attributes.immunities.push("stunning")
     steve.aggressive = true
     this.creatures.push(steve);
-    this.creatures.push(this.createAttributes("Allen", "../assets/zombie1.png"));
-    this.creatures.push(this.createAttributes("Martha" ,"../assets/zombie1.png"));
-    const bobby = this.createAttributes("Bobby", "../assets/Axion_Dragon.png", "115", "100")
+    this.creatures.push(this.createAttributes("Allen", "basicSkeletonSprite"));
+    this.creatures.push(this.createAttributes("Martha" ,"basicSkeletonSprite"));
+    const bobby = this.createAttributes("Bobby", "basicSkeletonSprite")
     bobby.attributes.resistances.push("nonmagical")
     this.creatures.push(bobby);
   }
@@ -29,22 +27,14 @@ export class CreaturesList {
     this.creatures.push(newCreature)
   }
 
-  createAttributes(name: string, imagePath: string, height = "75", width = "50" ): CreatureAsset {
+  createAttributes(name: string, creature: string, height = "75", width = "50" ): CreatureAsset {
     const zombieFred = new CreatureAsset();
     this.xIndex += 55
     this.motionIndex += 3
     zombieFred.frame = this.motionIndex
     zombieFred.id = `Zombie${name}`
     
-    const sprite = new Sprite()
-    sprite.imageAdjustment = {
-      down: { order: [0,1,2,1], sprite: [{x: -313, y: -2},   {x: -365, y: -2 },   {x: -417, y: -2 }] },
-      left: { order: [0,1,2,1], sprite: [{x: -313, y: -75},  {x: -365,  y: -75 },  {x: -417, y: -75 }] },
-      right: { order: [0,1,2,1], sprite: [{x: -313, y: -147}, {x: -365,  y: -147 }, {x: -417, y: -147 }] },
-      up: { order: [0,1,2,1], sprite: [{x: -313, y: -221}, {x: -365,  y: -221 }, {x: -417, y: -221 }] }
-    }
-    sprite.imgSource = "../assets/motw.png"
-    sprite.imgBottomOffset = 5;
+    const sprite = new Sprite(new SpriteDB().get(creature))
     zombieFred.sprite = sprite;
     zombieFred.name = `Zombie ${name}`;
     zombieFred.level = 1;

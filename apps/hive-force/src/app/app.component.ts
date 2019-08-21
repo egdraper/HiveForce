@@ -4,6 +4,7 @@ import { MasterLog } from "@hive-force/log"
 import { Dice } from "@hive-force/dice"
 import { CreatureAsset, Action, Monk, Sprite, Engine } from '@hive-force/assets';
 import { CreaturesList } from './creatures';
+import { SpriteDB } from "./db/sprite.db"
 
 @Component({
   selector: 'hive-force-root',
@@ -53,42 +54,21 @@ export class AppComponent {
   }
 
   public addCharacter(): void {
-    this.id++
-    this.creatures.push(this.createCreature("Steve" + this.id));
+    // this.id++
+    // this.creatures.push(this.createCreature("Steve" + this.id));
   }
 
-  public createCreature(name?: string): CreatureAsset {
+  public createCreature(name?: string): void {
     const creature = new Monk(10, name, "Way of the Open Hand")
     creature.frame = 5
-    const sprite = new Sprite()
+    const sprite = new Sprite(new SpriteDB().get("blondHuman"))
     sprite.imgSource = "../assets/motw.png"
-    sprite.imageAdjustment["down"] = { 
-      order: [0,1,2,1], 
-      sprite: [
-        {x: 0, y: -9},
-        {x: -52, y: -9 },
-        {x: -104, y: -9 }
-      ]
-    }
-    sprite.imageAdjustment["left"] = { 
-      order: [0,1,2,1],
-      sprite: [
-        {x: 0, y: -80},
-        {x: -52, y: -80 }, {x: -104, y: -80 }] }
-    sprite.imageAdjustment["up"] = { order: [0,1,2,1], sprite: [{x: 0, y: -220}, {x: -52, y: -220 }, {x: -104, y: -220 }] }
-    sprite.imageAdjustment["right"] = { order: [0,1,2,1], sprite: [{x: 0, y: -150}, {x: -52, y: -150 }, {x: -104, y: -150 }] }
     creature.sprite = sprite
     this.players.push(creature)
 
-    const creature2 = new Monk(10, name, "Way of the Open Hand")
+    const creature2 = new Monk(5, name + "1", "Way of the Open Hand")
     creature2.frame = 6
-    const sprite2 = new Sprite()
-    sprite2.imgSource = "../assets/motw.png"
-    sprite2.imageAdjustment["down"] = { order: [0,1,2,1], sprite: [{x: 0, y: -290}, {x: -52, y: -290 }, {x: -104, y: -290 }] }
-    sprite2.imageAdjustment["left"] = { order: [0,1,2,1], sprite: [{x: 0, y: -360}, {x: -52, y: -360 }, {x: -104, y: -360 }] }
-    sprite2.imageAdjustment["up"] = { order: [0,1,2,1], sprite: [{x: 0, y: -504}, {x: -52, y: -504 }, {x: -104, y: -504 }] }
-    sprite2.imageAdjustment["right"] = { order: [0,1,2,1], sprite: [{x: 0, y: -432}, {x: -52, y: -432 }, {x: -104, y: -432 }] }
-    sprite2.imgBottomOffset = 10
+    const sprite2 = new Sprite(new SpriteDB().get("halfElf"))
     creature2.sprite = sprite2
     this.players.push(creature2);
   }

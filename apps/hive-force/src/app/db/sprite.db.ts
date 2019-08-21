@@ -1,12 +1,12 @@
 import { SpriteModel } from '@hive-force/assets';
 
-export class DB {
+export class SpriteDB {
   public get(spriteName: string): SpriteModel {
-    return spriteDB[spriteName];
+    return spriteDBCollection[spriteName];
   }
 }
 
-const spriteDB: {[name: string]: SpriteModel } = {
+const spriteDBCollection: {[name: string]: SpriteModel } = {
  "halfElf": {
     name: 'Half Elf',
     imageAdjustment: {
@@ -33,7 +33,7 @@ const spriteDB: {[name: string]: SpriteModel } = {
     locY: 0,
     locX: 0,
     imgSource: '../assets/motw.png',
-    imgSheetWidth: '100%',
+    imgSheetWidth: '',
     imgSpriteTopOffset: -9,
     imgSpriteLeftOffset: -1,
     imageHeight: 'auto',
@@ -77,7 +77,7 @@ const spriteDB: {[name: string]: SpriteModel } = {
     key: 'down',
     positionNumber: 0
   },
-  "basicSkeleton": {
+  "basicSkeletonSprite": {
     name: 'Basic Skeleton',
     imageAdjustment: {  
       down: { 

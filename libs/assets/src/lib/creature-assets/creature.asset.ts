@@ -32,7 +32,7 @@ export class CreatureAsset extends SelectableAsset {
   // visual attributes
   public location = new PlayerLocationService()
   public movement = new Movement(this)
-  public sprite = new Sprite()
+  public sprite: Sprite
   public frameDelay = true;
   public frame = 0;
 
