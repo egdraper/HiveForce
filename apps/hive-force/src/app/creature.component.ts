@@ -1,6 +1,6 @@
 // tslint:disable: radix
 import { Component, Input, HostListener} from '@angular/core';
-import { CreatureAsset, Action, GameComponents, Engine, SlashAnimation, TextAnimation, ActionResultTextAnimation, CreaturesEffect } from '@hive-force/assets';
+import { CreatureAsset, Action, GameComponents, Engine, SlashAnimation, TextAnimation, ActionResultTextAnimation, CreaturesEffect, Cell, RelativePositionCell } from '@hive-force/assets';
 import { MasterLog } from '@hive-force/log';
 import { ActionAnimation } from 'libs/assets/src/lib/creature-assets/animation/actionAnimation';
 
@@ -19,6 +19,7 @@ export class CreatureAssetComponent implements GameComponents{
   public actionAnimation: ActionAnimation
   public textAnimation: TextAnimation
   public sideBarOn = true
+  public selectedAction: Action
 
   private ctrIsHeld = false
   // private listener
@@ -89,8 +90,11 @@ export class CreatureAssetComponent implements GameComponents{
       this.creatureAsset.sprite.doImageAdjustment() 
     }
   }
-  
-  
+
+  public highlight(action: Action) {
+    this.getCells(action, this.creatureAsset.location.cell.x, this.creatureAsset.location.cell.y)
+  }
+
   public onCreatureSelect(): void {
     const wasSelected = this.creatureAsset.selected
     
@@ -106,8 +110,15 @@ export class CreatureAssetComponent implements GameComponents{
   }
   
   public selectAction(action: Action, event: any): void {
+    this.selectedAction = action
+    if(!action.areaOfEffect || action.name !== "Move") {
+      action.areaOfEffect = {}
+      this.highlight(action)
+    } 
+
     event.stopPropagation()
     this.creatureAsset.attributes.actions.forEach(a => a.selected = false)
+    
     action.selected = true
   }
 
@@ -124,7 +135,7 @@ export class CreatureAssetComponent implements GameComponents{
       this.actionAnimation.run(this.engine, this.creatureAsset.location.cell, this.creatureAsset.location.cell)
         .then(() => {
           this.creatureAsset.sprite.performingAction = false
-          // if(results) {
+          if(results) {
           this.actionAnimation = action.effectAnimation
           selectedCreature.sprite.performingAction = true
           this.actionAnimation.run(this.engine, this.creatureAsset.location.cell, selectedCreature.location.cell)
@@ -134,12 +145,35 @@ export class CreatureAssetComponent implements GameComponents{
               this.textAnimation.locY = selectedCreature.location.cell.posY
               results.animationText.run(this.engine, selectedCreature.location.cell)
             })
-          // }
+          }
         })       
         
       MasterLog.log("\n")
     });
 
     this.creatureAsset.attributes.actions.forEach(a => a.selected = false)
+  }
+
+  public getCells(action: Action, x: number, y: number) {
+ 
+    action.areaOfEffect[`x${x}:y${y}`] = this.grid[`x${x}:y${y}`]
+    this.mapCells(action.range, x, y, action.areaOfEffect, true)
+  }
+
+  public mapCells(distance: number, x: number, y: number, selectedCells: {[key: string]: RelativePositionCell}, odd: boolean) {
+    if(distance < 0) { return }
+ 
+    for(let i = 0; i <= distance; i++) {
+      selectedCells[`x${x - i}:y${y}`] = this.grid[`x${x - i}:y${y}`]
+      selectedCells[`x${x}:y${y - i}`] = this.grid[`x${x}:y${y - i}`]
+      selectedCells[`x${x}:y${y + i}`] = this.grid[`x${x}:y${y + i}`]
+      selectedCells[`x${x + i}:y${y}`] = this.grid[`x${x + i}:y${y}`] 
+    }
+
+    const newDistance = odd ? distance - 1 : distance - 2
+    this.mapCells(newDistance, x - 1, y - 1, selectedCells, !odd) 
+    this.mapCells(newDistance, x + 1, y + 1, selectedCells, !odd) 
+    this.mapCells(newDistance, x - 1, y + 1, selectedCells, !odd) 
+    this.mapCells(newDistance, x + 1, y - 1, selectedCells, !odd) 
   }
 }

@@ -53,7 +53,7 @@
 
     <div *ngFor="let creature of creatures" style="margin: 4px;">
       <button
-      [class.selected]="creature.selected"
+        [class.selected]="creature.selected"
         [class.dead]="creature.attributes.currentHitPoints <= 0"
         [class.disabled]="creature.disabled"
         (click)="selectCharacter(creature)"

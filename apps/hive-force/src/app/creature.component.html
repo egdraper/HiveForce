@@ -1,10 +1,10 @@
 <div *ngIf="creatureAsset.activePlayer">
-  <div *ngFor="let cell of creatureAsset.location.cell.neighbors">
+  <!-- <div *ngFor="let cell of creatureAsset.location.cell.neighbors">
     <div *ngFor="let c of cell.neighbors"
-    class="creature-effect-area"
+    class="creature-effect-area grid-border"
     [style.left.px]="c.posX"
     [style.top.px]="c.posY"></div>
-  </div>
+  </div> -->
 </div>
 <div
   class="creature-attributes"
@@ -38,7 +38,7 @@
 
   <div
     class="speed-dial-container"
-    *ngIf="creatureAsset.activePlayer && creaturesAreSelected && !creatureAsset.movement.moving && sideBarOn">
+    *ngIf="creatureAsset.activePlayer && !creatureAsset.movement.moving && sideBarOn">
 
     <div
       class="speed-dial"
@@ -104,4 +104,12 @@
   [style.position]="'absolute'"
   [style.zIndex]="'1001'" >
   {{ textAnimation.text }}
+</div>
+
+<div 
+*ngFor="let cell of selectedAction?.areaOfEffect | keyvalue"
+[class.creature-effect-area]="selectedAction?.selected"
+[class.highlighted]="selectedAction?.selected"
+[style.left.px]="cell.value.posX"
+[style.top.px]="cell.value.posY">
 </div>

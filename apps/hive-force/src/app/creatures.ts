@@ -1,4 +1,5 @@
-import { CreatureAsset, AttackAction, Sprite, Cell, MoveAction } from '@hive-force/assets';
+import { CreatureAsset, AttackAction,
+  SlashAnimation, SlashHitAnimation, Sprite, Cell, MoveAction } from '@hive-force/assets';
 import { Weapon } from '@hive-force/items';
 import { SpriteDB } from "./db/sprite.db"
 
@@ -94,11 +95,15 @@ export class CreaturesList {
     claw.id = '12373',
     claw.name = 'Claw',
     claw.use = 'Weapon',
+    claw.ranged = true,
+    claw.range = 5,
     claw.equipped = true,
     claw.selected = true,
     claw.weaponType = 'versatile'
     claw.modifier = "strength"
     claw.overcomes = []
+    claw.strikeAnimation = new SlashAnimation()
+    claw.hitAnimation = new SlashHitAnimation()
 
     const bite = new Weapon()
     bite.description = 'Teeth',
@@ -107,9 +112,13 @@ export class CreaturesList {
     bite.name = 'Bite',
     bite.use = 'Weapon',
     bite.equipped = false,
+    bite.ranged = true,
+    bite.range = 5,
     bite.selected = false,
     bite.weaponType = 'versatile'
     bite.overcomes = []
+    bite.strikeAnimation = new SlashAnimation()
+    bite.hitAnimation = new SlashHitAnimation()
 
     zombieFred.inventory.push(claw, bite)
     return zombieFred

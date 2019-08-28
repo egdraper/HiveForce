@@ -17,6 +17,7 @@ export enum DamageStatus {
 
 export class AttackAction extends Action {
   public name = 'Attack';
+  public range = 1
   public disabled = false;
   public executeAsBonusAction = false;
   public executeAsReaction = false;

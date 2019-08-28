@@ -10,6 +10,7 @@ import { Movement } from './creature-view/movement';
 import { Sprite } from './creature-view/sprite';
 import { PlayerLocationService } from './creature-view/location';
 import { Attributes } from './attributes/attributes';
+import { Cell } from '../model';
 
 export class CreatureAsset extends SelectableAsset {
   public startPos = Math.floor(Math.random() * Math.floor(15) + 1);
@@ -25,6 +26,7 @@ export class CreatureAsset extends SelectableAsset {
   public aggressive = false;
   public inInitiative = false;
   public actionPerformed = new Subject<Action[]>();
+  public currentAreaOfEffect: {[key: string]: Cell}
 
   // battle
   public engagedWith: Array<CreatureAsset> = [];

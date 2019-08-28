@@ -8,6 +8,10 @@ export interface Cell {
     neighbors?: Cell[];
     destination?: boolean;
   } 
+
+ export interface RelativePositionCell {
+   distance: number
+ } 
   
   export interface Neighbor {
     cell: Cell;

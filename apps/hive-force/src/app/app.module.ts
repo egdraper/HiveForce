@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { CreatureAssetComponent } from './creature.component';
 import { GridComponent } from './grid/grid.component';
 import { CreateCreatureComponent } from './home/create-creature/create-creature.component';
+import { KeyValuePipe, CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { CreateCreatureComponent } from './home/create-creature/create-creature.
     CreateCreatureComponent,
   ],
   imports: [
+    CommonModule,
     BrowserModule,
   ],
   providers: [],

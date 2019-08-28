@@ -35,6 +35,7 @@ export class Weapon extends RollableItem {
   public attackType?: "magical" | "nonmagical"
   public overcomes?: string[] = []
   public ranged?: boolean
+  public range?: number
   public modifier?: string
   public strikeAnimation?: ActionAnimation
   public hitAnimation?: ActionAnimation

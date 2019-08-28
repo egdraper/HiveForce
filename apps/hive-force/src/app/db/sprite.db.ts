@@ -111,5 +111,40 @@ const spriteDBCollection: {[name: string]: SpriteModel } = {
     performingAction: false,
     key: 'down',
     positionNumber: 0
-  }
+  },
+  "superHuman": {
+    name: 'Super Human',
+    imageAdjustment: {
+      down: {
+        order: [0, 1, 2, 1],
+        sprite: [{ x: -157, y: -9 }, { x: -209, y: -9 }, { x: -261, y: -9 }]
+      },
+      left: {
+        order: [0, 1, 2, 1],
+        sprite: [{ x: -157, y: -80 }, { x: -209, y: -80 }, { x: -261, y: -80 }]
+      },
+      up: {
+        order: [0, 1, 2, 1],
+        sprite: [{ x: -157, y: -220 }, { x: -209, y: -220 }, { x: -261, y: -220 }]
+      },
+      right: {
+        order: [0, 1, 2, 1],
+        sprite: [{ x: -157, y: -150 }, { x: -209, y: -150 }, { x: -261, y: -150 }]
+      }
+    },
+    imgBottomOffset: 5,
+    containerWidth: 50,
+    containerHeight: 75,
+    locY: 0,
+    locX: 0,
+    imgSource: '../assets/motw.png',
+    imgSheetWidth: '',
+    imgSpriteTopOffset: -9,
+    imgSpriteLeftOffset: -1,
+    imageHeight: 'auto',
+    imageWidth: '100%',
+    performingAction: false,
+    key: 'down',
+    positionNumber: 0
+  },
 }

@@ -130,6 +130,12 @@ export class Movement {
         // this.doImageAdjustment()
   
         this.nextCell = this.path.pop();
+
+        if(!this.player.attributes.actions.find(a => a.name === "Move").areaOfEffect[this.nextCell.id]) {
+          this.moving = false
+          return
+        }
+
         if(this.nextCell.x !== this.player.location.cell.x) {
           this.player.sprite.key = this.nextCell.x > this.player.location.cell.x ? "right" : "left"
         } else if ( this.nextCell.y !== this.player.location.cell.y ) {
@@ -182,7 +188,7 @@ export class Movement {
    
           this.player.location.zIndex = this.player.location.cell.y
           this.checkSurroundings(this.nextCell, this.player.location.creaturesOnGrid);
-  
+         
           if(this.path.length !== 0) {
             // starts redirect if creature moves into path
             let creatureInPath = false

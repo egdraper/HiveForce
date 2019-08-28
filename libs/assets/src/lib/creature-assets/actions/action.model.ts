@@ -5,6 +5,7 @@ import { Item } from '@hive-force/items';
 import { CreatureAsset } from '../creature.asset';
 import { ActionAnimation } from '../animation/actionAnimation';
 import { TextAnimation } from '../animation';
+import { Cell, RelativePositionCell } from '../../model';
 
 export class Action {
   public name: string
@@ -20,7 +21,9 @@ export class Action {
   public subActions: Array<Action> = []
   public iconUrl: string
   public performanceAnimation: ActionAnimation
-  public effectAnimation: ActionAnimation
+  public effectAnimation: ActionAnimation 
+  public range: number
+  public areaOfEffect: {[key: string]: RelativePositionCell }
 
   constructor(public usedFor?: string) { }
 

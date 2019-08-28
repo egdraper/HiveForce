@@ -1,5 +1,6 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, HostListener } from "@angular/core";
 import { CreatureAsset, Cell, Engine } from '@hive-force/assets';
+import { visitAll } from '@angular/compiler';
 
 @Component({
   selector: "app-grid",
@@ -11,6 +12,7 @@ export class GridComponent {
   @Input() public engine: Engine
   public grid: {[cell: string]: Cell } = { };
   public gridDisplay: any[][] = [];
+  public editMode = false
   
   private index = 5
 
@@ -32,13 +34,33 @@ export class GridComponent {
       this.index = 5
   }
 
-  public cellClick(cell: Cell): void {
+  
+  @HostListener("document:keydown", ["$event"]) 
+  public async move(event): Promise<void> {    
+    debugger
+    if (event.code === 'KeyE') {
+       this.editMode = !this.editMode
+    }
+  }
+
+
+  public cellClick(cell: Cell, event: KeyboardEvent): void {
+    if(this.editMode) {
+      cell.obstacle = !cell.obstacle
+    }
+   
+   // if(cell.obstacle) {
+    //   cell.obstacle = false
+    // } else {
+
     // const creatures = this.creatures.filter(c => c.selected)
  
     // creatures.forEach(creature => {
     //     creature.movement.autoMove(cell)
     // })
 
+
+    //////////////////////
     const creature = this.creatures.find(c => c.activePlayer)
  
     creature.attributes.actions.forEach(a => {
@@ -53,8 +75,8 @@ export class GridComponent {
       this.gridDisplay[i] = [];
 
       for (let l = 0; l < 50; l++ ) {
-        const obstacle = ((i % 3 === 0 && l % 10 === 0) || (i % 10 === 0 && l === 3) || (i % 6 && l === 2));
-        this.grid[`x${l}:y${i}`] = { x: l, y: i, posX: l * 50, posY: i * 50, obstacle, id: `x${l}:y${i}` };
+        // const obstacle = ((i % 3 === 0 && l % 10 === 0) || (i % 10 === 0 && l === 3) || (i % 6 && l === 2));
+        this.grid[`x${l}:y${i}`] = { x: l, y: i, posX: l * 50, posY: i * 50, obstacle: false, id: `x${l}:y${i}` };
         this.gridDisplay[i][l] = this.grid[`x${l}:y${i}`];
       }
     }
@@ -74,4 +96,31 @@ export class GridComponent {
       }
     } 
   }
-}
+
+  public getCells(distance: number, x: number, y: number) {
+    const selectedCells = {}
+    selectedCells[`x${x}:y${y}`] = this.grid[`x${x}:y${y}`]
+    this.mapCells(distance, x, y, selectedCells, true)
+  }
+
+  public mapCells(distance: number, x: number, y: number, selectedCells: {[key: string]: Cell}, odd: boolean) {
+    if(distance < 0) { return }
+ 
+    for(let i = 0; i <= distance; i++) {
+      selectedCells[`x${x - i}:y${y}`] = this.grid[`x${x - i}:y${y}`]
+      selectedCells[`x${x}:y${y - i}`] = this.grid[`x${x}:y${y - i}`]
+      selectedCells[`x${x}:y${y + i}`] = this.grid[`x${x}:y${y + i}`]
+      selectedCells[`x${x + i}:y${y}`] = this.grid[`x${x + i}:y${y}`]
+      this.grid[`x${x - i}:y${y}`].obstacle = true
+      this.grid[`x${x}:y${y - i}`].obstacle = true
+      this.grid[`x${x}:y${y + i}`].obstacle = true
+      this.grid[`x${x + i}:y${y}`].obstacle = true  
+    }
+
+    const newDistance = odd ? distance - 1 : distance - 2
+    this.mapCells(newDistance, x - 1, y - 1, selectedCells, !odd) 
+    this.mapCells(newDistance, x + 1, y + 1, selectedCells, !odd) 
+    this.mapCells(newDistance, x - 1, y + 1, selectedCells, !odd) 
+    this.mapCells(newDistance, x + 1, y - 1, selectedCells, !odd) 
+  }
+} 

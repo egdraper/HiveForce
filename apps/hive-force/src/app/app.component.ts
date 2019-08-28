@@ -68,7 +68,7 @@ export class AppComponent {
 
     const creature2 = new Monk(5, name + "1", "Way of the Open Hand")
     creature2.frame = 6
-    const sprite2 = new Sprite(new SpriteDB().get("halfElf"))
+    const sprite2 = new Sprite(new SpriteDB().get("superHuman"))
     creature2.sprite = sprite2
     this.players.push(creature2);
   }
