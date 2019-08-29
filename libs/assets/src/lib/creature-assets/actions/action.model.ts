@@ -3,9 +3,9 @@ import { Effect } from '../effects/effects.model';
 import { MasterLog } from '@hive-force/log';
 import { Item } from '@hive-force/items';
 import { CreatureAsset } from '../creature.asset';
-import { ActionAnimation } from '../animation/actionAnimation';
-import { TextAnimation } from '../animation';
-import { Cell, RelativePositionCell } from '../../model';
+import { TextAnimation, ActionAnimation } from '@hive-force/animations';
+import { RelativePositionCell } from '@hive-force/maps';
+
 
 export class Action {
   public name: string

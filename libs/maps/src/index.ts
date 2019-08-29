@@ -1,1 +1,2 @@
-export * from './lib/maps.model';
+export * from "./lib/cell"
+export * from "./lib/grid"

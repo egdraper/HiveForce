@@ -282,18 +282,18 @@
       },
       "schematics": {}
     },
-    "backstories": {
+    "animations": {
       "projectType": "library",
-      "root": "libs/backstories",
-      "sourceRoot": "libs/backstories/src",
+      "root": "libs/animations",
+      "sourceRoot": "libs/animations/src",
       "prefix": "hive-force",
       "architect": {
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "libs/backstories/tsconfig.lib.json",
-              "libs/backstories/tsconfig.spec.json"
+              "libs/animations/tsconfig.lib.json",
+              "libs/animations/tsconfig.spec.json"
             ],
             "exclude": ["**/node_modules/**"]
           }
@@ -301,9 +301,9 @@
         "test": {
           "builder": "@nrwl/jest:jest",
           "options": {
-            "jestConfig": "libs/backstories/jest.config.js",
-            "tsConfig": "libs/backstories/tsconfig.spec.json",
-            "setupFile": "libs/backstories/src/test-setup.ts"
+            "jestConfig": "libs/animations/jest.config.js",
+            "tsConfig": "libs/animations/tsconfig.spec.json",
+            "setupFile": "libs/animations/src/test-setup.ts"
           }
         }
       },

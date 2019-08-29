@@ -1,9 +1,7 @@
 import { Engine } from './engine';
 import { remove } from 'lodash';
-import { ActionAnimation } from './actionAnimation';
-import { Cell } from '../../model';
-import { Sprite } from '../creature-view';
-import { TextAnimation } from './textAnimation';
+import { TextAnimation } from './text-animation';
+import { Cell } from '@hive-force/maps';
 
 export class ActionResultTextAnimation extends TextAnimation {
   public color = "Orange"

@@ -1,4 +1,4 @@
-import { ActionAnimation } from 'libs/assets/src/lib/creature-assets/animation/actionAnimation';
+import { ActionAnimation } from '@hive-force/animations';
 
 export class Item {
   public id: string;

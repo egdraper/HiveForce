@@ -1,8 +1,9 @@
 // tslint:disable: radix
 import { Component, Input, HostListener} from '@angular/core';
-import { CreatureAsset, Action, GameComponents, Engine, SlashAnimation, TextAnimation, ActionResultTextAnimation, CreaturesEffect, Cell, RelativePositionCell } from '@hive-force/assets';
+import { CreatureAsset, Action, GameComponents, CreaturesEffect } from '@hive-force/assets';
 import { MasterLog } from '@hive-force/log';
-import { ActionAnimation } from 'libs/assets/src/lib/creature-assets/animation/actionAnimation';
+import { Map } from "@hive-force/maps"
+import { TextAnimation, ActionAnimation, Engine } from '@hive-force/animations';
 
 @Component({
   selector: 'creature-asset',
@@ -12,14 +13,13 @@ import { ActionAnimation } from 'libs/assets/src/lib/creature-assets/animation/a
 export class CreatureAssetComponent implements GameComponents{
   @Input() public creatureAsset: CreatureAsset;
   @Input() public gridCreatures: Array<CreatureAsset>;
-  @Input() public grid: { [cell: string]: any };
+  @Input() public map: Map;
   @Input() public engine: Engine
   @Input() public creaturesAreSelected = false
 
   public actionAnimation: ActionAnimation
   public textAnimation: TextAnimation
   public sideBarOn = true
-  public selectedAction: Action
 
   private ctrIsHeld = false
   // private listener
@@ -27,7 +27,7 @@ export class CreatureAssetComponent implements GameComponents{
   // public constructor(private renderer: Renderer2) {}
 
   public ngOnInit(): void {
-    this.creatureAsset.location.grid = this.grid
+    this.creatureAsset.location.grid = this.map.grid
     this.creatureAsset.location.creaturesOnGrid = this.gridCreatures
     this.creatureAsset.sprite.doImageAdjustment()
 
@@ -68,7 +68,7 @@ export class CreatureAssetComponent implements GameComponents{
       this.ctrIsHeld = true
     }
   
-    if(!this.creatureAsset.activePlayer || !this.creatureAsset.selected) { return }
+    if(!this.creatureAsset.activePlayer) { return }
 
     if (event.code === 'KeyW') {
       this.creatureAsset.sprite.key = "up"  
@@ -92,10 +92,14 @@ export class CreatureAssetComponent implements GameComponents{
   }
 
   public highlight(action: Action) {
-    this.getCells(action, this.creatureAsset.location.cell.x, this.creatureAsset.location.cell.y)
+    action.areaOfEffect = this.map.getAreaOfEffect(action.range, this.creatureAsset.location.cell.x, this.creatureAsset.location.cell.y)
   }
 
-  public onCreatureSelect(): void {
+  public onCreatureSelect(): void {    
+    if(this.creatureAsset.activePlayer) {
+      return
+    }
+
     const wasSelected = this.creatureAsset.selected
     
     if(!this.ctrIsHeld) {
@@ -110,7 +114,7 @@ export class CreatureAssetComponent implements GameComponents{
   }
   
   public selectAction(action: Action, event: any): void {
-    this.selectedAction = action
+    this.creatureAsset.selectedAction = action
     if(!action.areaOfEffect || action.name !== "Move") {
       action.areaOfEffect = {}
       this.highlight(action)
@@ -154,26 +158,5 @@ export class CreatureAssetComponent implements GameComponents{
     this.creatureAsset.attributes.actions.forEach(a => a.selected = false)
   }
 
-  public getCells(action: Action, x: number, y: number) {
- 
-    action.areaOfEffect[`x${x}:y${y}`] = this.grid[`x${x}:y${y}`]
-    this.mapCells(action.range, x, y, action.areaOfEffect, true)
-  }
-
-  public mapCells(distance: number, x: number, y: number, selectedCells: {[key: string]: RelativePositionCell}, odd: boolean) {
-    if(distance < 0) { return }
- 
-    for(let i = 0; i <= distance; i++) {
-      selectedCells[`x${x - i}:y${y}`] = this.grid[`x${x - i}:y${y}`]
-      selectedCells[`x${x}:y${y - i}`] = this.grid[`x${x}:y${y - i}`]
-      selectedCells[`x${x}:y${y + i}`] = this.grid[`x${x}:y${y + i}`]
-      selectedCells[`x${x + i}:y${y}`] = this.grid[`x${x + i}:y${y}`] 
-    }
-
-    const newDistance = odd ? distance - 1 : distance - 2
-    this.mapCells(newDistance, x - 1, y - 1, selectedCells, !odd) 
-    this.mapCells(newDistance, x + 1, y + 1, selectedCells, !odd) 
-    this.mapCells(newDistance, x - 1, y + 1, selectedCells, !odd) 
-    this.mapCells(newDistance, x + 1, y - 1, selectedCells, !odd) 
-  }
+  
 }

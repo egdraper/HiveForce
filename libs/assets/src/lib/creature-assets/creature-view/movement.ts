@@ -1,7 +1,7 @@
-import { Cell } from '../../model';
 import { CreatureAsset } from '../creature.asset';
 import { remove } from "lodash"
 import { ShortestPath } from './shortest-path';
+import { Cell } from '@hive-force/maps';
 
 export class Movement {
     public moving = false
@@ -9,8 +9,7 @@ export class Movement {
     public nextCell: Cell
     public redirect: any  
   
-    constructor(
-      public player: CreatureAsset) {}
+    constructor(public player: CreatureAsset) {}
   
     public moveCharacter(direction: string, cell: Cell, creaturesOnGrid: Array<CreatureAsset>, creatureFacingOverride?: string): void {
       // creatureFacingOverride prevents the creature from turning around when knocked back

@@ -2,9 +2,11 @@
 import { Component, ViewChild } from '@angular/core'
 import { MasterLog } from "@hive-force/log"
 import { Dice } from "@hive-force/dice"
-import { CreatureAsset, Action, Monk, Sprite, Engine } from '@hive-force/assets';
+import { CreatureAsset, Action, Monk} from '@hive-force/assets';
 import { CreaturesList } from './creatures';
 import { SpriteDB } from "./db/sprite.db"
+import { Map } from '@hive-force/maps';
+import { Engine, Sprite } from '@hive-force/animations';
 
 @Component({
   selector: 'hive-force-root',
@@ -24,12 +26,16 @@ export class AppComponent {
   public id = 0
   public creaturesClass = new CreaturesList()
   public engine: Engine
+  public map: Map
 
   public constructor() {
     this.engine = new Engine()
   }
 
   public ngOnInit(): void {
+    this.map = new Map()
+    this.map.createGrid(50, 50)
+
     this.createCreature("Jahml");
 
     this.players[this.playerIndex].activePlayer = true
@@ -94,10 +100,24 @@ export class AppComponent {
     player.attributes.actionsPerformed = []
     player.attributes.actionsRemaining = 2
     player.attributes.actionsQueued = []
-    player.attributes.actions.forEach(a => a.disabled = false)
+    player.attributes.actions.forEach(a => {
+      a.disabled = false
+      a.selected = false
+    })
+    player.selectedAction = null
 
-    const newPlayer = this.getNextPlayer()
+    const newPlayer = this.getNextPlayer()  
     newPlayer.activePlayer = true
+    newPlayer.selected = false    
+    
+    const defaultAction = newPlayer.attributes.actions.find(action => action.name === "Move")
+    newPlayer.selectedAction = defaultAction
+    defaultAction.selected = true
+    defaultAction.areaOfEffect = this.map.getAreaOfEffect(
+      defaultAction.range, 
+      newPlayer.location.cell.x,
+      newPlayer.location.cell.y
+    )
   }
 
   public onExecute(activePlayer: CreatureAsset): void {

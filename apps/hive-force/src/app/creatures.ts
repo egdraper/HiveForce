@@ -1,7 +1,7 @@
-import { CreatureAsset, AttackAction,
-  SlashAnimation, SlashHitAnimation, Sprite, Cell, MoveAction } from '@hive-force/assets';
+import { CreatureAsset, AttackAction, MoveAction } from '@hive-force/assets';
 import { Weapon } from '@hive-force/items';
 import { SpriteDB } from "./db/sprite.db"
+import { Sprite, SlashHitAnimation, SlashAnimation } from '@hive-force/animations';
 
 export class CreaturesList {
   public creatures: CreatureAsset[] = [];

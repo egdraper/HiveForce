@@ -1,7 +1,7 @@
 module.exports = {
-  name: 'backstories',
+  name: 'animations',
   preset: '../../jest.config.js',
-  coverageDirectory: '../../coverage/libs/backstories',
+  coverageDirectory: '../../coverage/libs/animations',
   snapshotSerializers: [
     'jest-preset-angular/AngularSnapshotSerializer.js',
     'jest-preset-angular/HTMLCommentSerializer.js'

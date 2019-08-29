@@ -22,7 +22,7 @@
       "@hive-force/class": ["libs/class/src/index.ts"],
       "@hive-force/items": ["libs/items/src/index.ts"],
       "@hive-force/spells": ["libs/spells/src/index.ts"],
-      "@hive-force/backstories": ["libs/backstories/src/index.ts"],
+      "@hive-force/animations": ["libs/animations/src/index.ts"],
       "@hive-force/log": ["libs/log/src/index.ts"],
       "@hive-force/dice": ["libs/dice/src/index.ts"],
       "@hive-force/assets": ["libs/assets/src/index.ts"],

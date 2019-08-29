@@ -13,7 +13,7 @@ import { Action } from '../actions/action.model';
 import { HillDwarf } from '../race/dwarf.race';
 import { Class } from './base.class';
 import { MoveAction } from '../actions/move-action';
-import { SlashAnimation, SlashHitAnimation } from '../animation';
+import { SlashAnimation, SlashHitAnimation } from '@hive-force/animations';
 
 export class Monk extends Class {
   public className = 'Monk';

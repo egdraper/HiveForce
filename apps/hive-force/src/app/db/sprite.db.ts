@@ -1,4 +1,4 @@
-import { SpriteModel } from '@hive-force/assets';
+import { SpriteModel } from '@hive-force/animations'
 
 export class SpriteDB {
   public get(spriteName: string): SpriteModel {

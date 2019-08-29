@@ -1,5 +1,5 @@
-import { Cell } from '../../model';
 import { CreatureAsset } from '../creature.asset';
+import { Cell } from '@hive-force/maps';
 
 export class PlayerLocationService {
   // player grid position info

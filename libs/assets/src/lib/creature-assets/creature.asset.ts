@@ -7,10 +7,11 @@ import { Race } from './race/base.race';
 import { Effect } from './effects/effects.model';
 import { Action, CreaturesEffect } from './actions/action.model';
 import { Movement } from './creature-view/movement';
-import { Sprite } from './creature-view/sprite';
 import { PlayerLocationService } from './creature-view/location';
 import { Attributes } from './attributes/attributes';
-import { Cell } from '../model';
+import { Cell } from '@hive-force/maps';
+import { Sprite } from '@hive-force/animations';
+
 
 export class CreatureAsset extends SelectableAsset {
   public startPos = Math.floor(Math.random() * Math.floor(15) + 1);
@@ -27,6 +28,7 @@ export class CreatureAsset extends SelectableAsset {
   public inInitiative = false;
   public actionPerformed = new Subject<Action[]>();
   public currentAreaOfEffect: {[key: string]: Cell}
+  public selectedAction: Action
 
   // battle
   public engagedWith: Array<CreatureAsset> = [];

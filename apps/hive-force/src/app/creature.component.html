@@ -107,9 +107,9 @@
 </div>
 
 <div 
-*ngFor="let cell of selectedAction?.areaOfEffect | keyvalue"
-[class.creature-effect-area]="selectedAction?.selected"
-[class.highlighted]="selectedAction?.selected"
+*ngFor="let cell of creatureAsset.selectedAction?.areaOfEffect | keyvalue"
+[class.creature-effect-area]="creatureAsset.selectedAction?.selected"
+[class.highlighted]="creatureAsset.selectedAction?.selected"
 [style.left.px]="cell.value.posX"
 [style.top.px]="cell.value.posY">
 </div>

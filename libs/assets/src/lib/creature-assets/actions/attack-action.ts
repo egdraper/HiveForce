@@ -5,8 +5,7 @@ import { Weapon } from '@hive-force/items';
 import { MasterLog } from '@hive-force/log';
 import { cloneDeep } from 'lodash';
 import { CreatureAsset } from '../creature.asset';
-import { ActionAnimation } from '../animation/actionAnimation';
-import { TextAnimation, ActionResultTextAnimation } from '../animation';
+import { ActionAnimation, ActionResultTextAnimation} from '@hive-force/animations';
 
 export enum DamageStatus {
   doubled,

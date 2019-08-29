@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Cell, Visited } from '../../model';
 import { CreatureAsset } from '../creature.asset';
+import { Cell, Visited } from '@hive-force/maps';
 
 @Injectable()
 export class ShortestPath {
@@ -8,6 +8,9 @@ export class ShortestPath {
   public creaturesOnGrid = []
   public maxSearchRange = 1000
   public searchIndex = 0
+  public totalDistance = 0
+
+  private odd = true
      
   public setGrid(grid: {[cell: string]: any }) {
     this.grid = grid;
@@ -18,7 +21,6 @@ export class ShortestPath {
     end.destination = true; // css styling
     end = this.verifyClosetLocation(start, end)
     return this.start(start, end)
-
   }
 
   private start(start: Cell, end: Cell): Cell[] {
@@ -34,6 +36,7 @@ export class ShortestPath {
 
   private getShortestPath(cell: any, shortest: Cell[]) {
     if (cell.prevCel) {
+      debugger
      shortest.push(cell.prevCel.cell);
      cell.prevCel.cell.path = true;
      this.getShortestPath(cell.prevCel, shortest);
@@ -62,9 +65,10 @@ export class ShortestPath {
 
             if ((!cell.obstacle && !creatureOnSquare) && !store.some(i => index === i)) {
               if (!visited[`x${cell.x}:y${cell.y}`]) {
+                debugger
                 visited[`x${cell.x}:y${cell.y}`] = {
                   cell,
-                  distance: visited[visitedCell].distance + 1,
+                  distance: visited[visitedCell].distance + this.alternateDiagonal(index),
                   prevCel: visited[visitedCell]
                 };
               } else {
@@ -128,5 +132,14 @@ export class ShortestPath {
 
   public isBadLocation(end: Cell): boolean {
     return end.obstacle || this.creaturesOnGrid.find(a => a.location.cell.id === end.id) 
+  }
+
+  private alternateDiagonal(index: number, odd: number): number {
+    if(index > 3) {
+      const movementDistance = this.odd ? 1 : 2
+      this.odd = !this.odd
+      return movementDistance
+    }
+    return 1
   }
 }

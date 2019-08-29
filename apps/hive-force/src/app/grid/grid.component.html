@@ -1,6 +1,6 @@
 <div 
   class="rows"
-  *ngFor="let row of gridDisplay">
+  *ngFor="let row of map.gridDisplay">
 
   <div 
     class="cell"
@@ -29,7 +29,7 @@
 <creature-asset
   *ngFor="let creature of creatures"
   [creatureAsset]="creature"
-  [grid]="grid"
+  [map]="map"
   [gridCreatures]="creatures"
   [engine]="engine">
 </creature-asset>
