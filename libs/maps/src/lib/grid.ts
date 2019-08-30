@@ -1,8 +1,9 @@
 import { Cell, RelativePositionCell } from './cell';
+import { JsonPipe } from '@angular/common';
 
 export class Map {
   public grid: {[cell: string]: Cell } = { };
-  public gridDisplay: any[][] = [];
+  public gridDisplay: Cell[][] = [];
 
   public createGrid(width: number, height: number) {
     this.generateGrid(width, height)

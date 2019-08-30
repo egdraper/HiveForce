@@ -1,9 +1,10 @@
 // tslint:disable: radix
 import { Component, Input, HostListener} from '@angular/core';
-import { CreatureAsset, Action, GameComponents, CreaturesEffect } from '@hive-force/assets';
+import { CreatureAsset, Action, GameComponents, CreaturesEffect, MoveAction, ShortestPath } from '@hive-force/assets';
 import { MasterLog } from '@hive-force/log';
 import { Map } from "@hive-force/maps"
 import { TextAnimation, ActionAnimation, Engine } from '@hive-force/animations';
+import { debug } from 'util';
 
 @Component({
   selector: 'creature-asset',
@@ -115,6 +116,10 @@ export class CreatureAssetComponent implements GameComponents{
   
   public selectAction(action: Action, event: any): void {
     this.creatureAsset.selectedAction = action
+    if(action instanceof MoveAction && (action.maxRange > action.range)) {
+      action.areaOfEffect = null
+    }
+
     if(!action.areaOfEffect || action.name !== "Move") {
       action.areaOfEffect = {}
       this.highlight(action)
@@ -132,6 +137,7 @@ export class CreatureAssetComponent implements GameComponents{
 
   public executeAction(action: Action): void { 
     this.getSelectedCreatures().forEach(selectedCreature => {
+      this.adjustMovement()
       const results = this.creatureAsset.executeAction(action, selectedCreature) as CreaturesEffect
 
       this.actionAnimation = action.performanceAnimation
@@ -158,5 +164,12 @@ export class CreatureAssetComponent implements GameComponents{
     this.creatureAsset.attributes.actions.forEach(a => a.selected = false)
   }
 
+  private adjustMovement(): void {
+    debugger
+    const moveAction = this.creatureAsset.attributes.actions.find(a => a.name === "Move") as MoveAction
+    const shortestPath = new ShortestPath()
+    const pathBack = shortestPath.find(this.creatureAsset.location.cell, this.map.grid[moveAction.starting], this.gridCreatures)
+    moveAction.range =  moveAction.range - shortestPath.totalDistance
+  }
   
 }

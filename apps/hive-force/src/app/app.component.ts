@@ -1,8 +1,8 @@
 // tslint:disable: radix
-import { Component, ViewChild } from '@angular/core'
+import { Component, ViewChild, OnInit } from '@angular/core'
 import { MasterLog } from "@hive-force/log"
 import { Dice } from "@hive-force/dice"
-import { CreatureAsset, Action, Monk} from '@hive-force/assets';
+import { CreatureAsset, Action, Monk, MoveAction} from '@hive-force/assets';
 import { CreaturesList } from './creatures';
 import { SpriteDB } from "./db/sprite.db"
 import { Map } from '@hive-force/maps';
@@ -13,8 +13,9 @@ import { Engine, Sprite } from '@hive-force/animations';
   templateUrl: './app.component.html',  
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   @ViewChild("hey", {static: false}) TextBox
+  public dm = false
   public message = ""
   public title = 'hive-force';
   public totalRollAmount = 0;
@@ -33,15 +34,22 @@ export class AppComponent {
   }
 
   public ngOnInit(): void {
-    this.map = new Map()
-    this.map.createGrid(50, 50)
+    this.loadMap()
+    this.loadCreatures()
+  }
 
+  public loadMap(): void {
+    this.map = new Map()
+    this.map.createGrid(20, 20)
+  }
+
+  public loadCreatures(): void { 
     this.createCreature("Jahml");
 
     this.players[this.playerIndex].activePlayer = true
 
     this.numberOfPlayers = this.players.length
-    this.creaturesClass.creatures.forEach(a => this.players.push(a) )
+    this.creaturesClass.creatures.forEach(a => this.players.push(a))
     this.creatures = this.creaturesClass.creatures
     this.players.forEach(p => this.engine.assets.push(p))
     this.engine.run()
@@ -53,6 +61,7 @@ export class AppComponent {
       })
     })
   }
+   
 
   public onClick(): void {
     const dice = new Dice();
@@ -110,8 +119,9 @@ export class AppComponent {
     newPlayer.activePlayer = true
     newPlayer.selected = false    
     
-    const defaultAction = newPlayer.attributes.actions.find(action => action.name === "Move")
+    const defaultAction = newPlayer.attributes.actions.find(action => action.name === "Move") as MoveAction
     newPlayer.selectedAction = defaultAction
+    defaultAction.range = defaultAction.maxRange
     defaultAction.selected = true
     defaultAction.areaOfEffect = this.map.getAreaOfEffect(
       defaultAction.range, 
@@ -130,8 +140,21 @@ export class AppComponent {
   }
 
   private getNextPlayer(): CreatureAsset {
-    (this.playerIndex === this.players.length - 1) ? this.playerIndex = 0 : this.playerIndex++
-      
-   return this.players[this.playerIndex]
+    if(this.dm) {
+      (this.playerIndex === this.players.length - 1) ? this.playerIndex = 0 : this.playerIndex++
+      return this.players[this.playerIndex]
+    }
+
+    let nextPlayer
+    while(!nextPlayer) {
+      (this.playerIndex === this.players.length - 1) ? this.playerIndex = 0 : this.playerIndex++
+      const nextCreature = this.players[this.playerIndex]
+      if(!nextCreature.nonPlayableCharacter) {
+        nextPlayer = nextCreature
+        break
+      }
+    }
+
+    return nextPlayer
   }
 }

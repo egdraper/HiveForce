@@ -26,17 +26,17 @@ export class ShortestPath {
   private start(start: Cell, end: Cell): Cell[] {
     this.searchIndex = 0
     const visited = { };
-    visited[`x${start.x}:y${start.y}`] = { cell: start, distance: 0 };
+    visited[`x${start.x}:y${start.y}`] = { cell: start, steps: { moves: 0, distance: 0, odd: true } };
 
     this.visitedNow(end, visited);
     const shortestPath = [];
     shortestPath.push(end);
+    this.totalDistance = visited[`x${end.x}:y${end.y}`].steps.distance
     return this.getShortestPath(visited[`x${end.x}:y${end.y}`], shortestPath);
   }
 
   private getShortestPath(cell: any, shortest: Cell[]) {
     if (cell.prevCel) {
-      debugger
      shortest.push(cell.prevCel.cell);
      cell.prevCel.cell.path = true;
      this.getShortestPath(cell.prevCel, shortest);
@@ -65,15 +65,14 @@ export class ShortestPath {
 
             if ((!cell.obstacle && !creatureOnSquare) && !store.some(i => index === i)) {
               if (!visited[`x${cell.x}:y${cell.y}`]) {
-                debugger
                 visited[`x${cell.x}:y${cell.y}`] = {
                   cell,
-                  distance: visited[visitedCell].distance + this.alternateDiagonal(index),
-                  prevCel: visited[visitedCell]
+                  steps: this.alternateDiagonal(visited[visitedCell], index),
+                  prevCel: visited[visitedCell],
                 };
               } else {
-                if (visited[`x${cell.x}:y${cell.y}`].distance > visited[visitedCell] + 1) {
-                   visited[`x${cell.x}:y${cell.y}`].distance = visited[visitedCell] + 1;
+                if (visited[`x${cell.x}:y${cell.y}`].steps.moves > visited[visitedCell] + 1) {
+                   visited[`x${cell.x}:y${cell.y}`].steps.moves = visited[visitedCell] + 1;
                 }
               }
             }
@@ -134,12 +133,22 @@ export class ShortestPath {
     return end.obstacle || this.creaturesOnGrid.find(a => a.location.cell.id === end.id) 
   }
 
-  private alternateDiagonal(index: number, odd: number): number {
+  private alternateDiagonal(visited: Visited, index: number): any {
+    let newSteps
+
     if(index > 3) {
-      const movementDistance = this.odd ? 1 : 2
-      this.odd = !this.odd
-      return movementDistance
+      newSteps = {
+        distance: visited.steps.distance + (visited.steps.odd ? 1 : 2),
+        odd: !visited.steps.odd,
+        moves: visited.steps.moves + 1
+      }
+      return newSteps
     }
-    return 1
+
+    return {
+      distance: visited.steps.distance + 1,
+      odd: visited.steps.odd,
+      moves: visited.steps.moves + 1
+    }
   }
 }

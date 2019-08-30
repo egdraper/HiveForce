@@ -18,7 +18,11 @@ export interface Neighbor {
 }
 
 export interface Visited {
-  cell?: Cell;
-  distance?: number;
+  cell?: Cell
+  steps?: {
+    distance?: number,
+    odd?: boolean,
+    moves?: number
+  }
   checked?: boolean;
 }

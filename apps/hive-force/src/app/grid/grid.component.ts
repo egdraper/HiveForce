@@ -1,5 +1,5 @@
 import { Component, Input, HostListener } from "@angular/core"
-import { CreatureAsset } from '@hive-force/assets'
+import { CreatureAsset, MoveAction } from '@hive-force/assets'
 import { Map, Cell } from "@hive-force/maps"
 import { Engine } from '@hive-force/animations'
 
@@ -12,8 +12,6 @@ export class GridComponent {
   @Input() public creatures: Array<CreatureAsset>
   @Input() public engine: Engine
   @Input() public map: Map
-
-
   public editMode = false
   
   private index = 5
@@ -62,6 +60,8 @@ export class GridComponent {
  
     creature.attributes.actions.forEach(a => {
       if(a.name === "Move" && a.selected) {
+        const moveAction = a as MoveAction
+        moveAction.starting = creature.location.cell.id
         creature.movement.autoMove(cell)
       }
     })
