@@ -165,7 +165,6 @@ export class CreatureAssetComponent implements GameComponents{
   }
 
   private adjustMovement(): void {
-    debugger
     const moveAction = this.creatureAsset.attributes.actions.find(a => a.name === "Move") as MoveAction
     const shortestPath = new ShortestPath()
     const pathBack = shortestPath.find(this.creatureAsset.location.cell, this.map.grid[moveAction.starting], this.gridCreatures)

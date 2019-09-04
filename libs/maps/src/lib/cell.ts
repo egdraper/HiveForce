@@ -7,6 +7,11 @@ export interface Cell {
   obstacle?: boolean;
   neighbors?: Cell[];
   destination?: boolean;
+  imgUrl?: string;
+  imgIndexX?: number;
+  imgIndexY?: number;
+  imgWidth?: number;
+  imgHeight?: number;
 }
 
 export interface RelativePositionCell extends Cell {
@@ -25,4 +30,11 @@ export interface Visited {
     moves?: number
   }
   checked?: boolean;
+}
+
+export class GridDetails {
+  name: string
+  width: number
+  height: number
+  grid?: {[cell: string]: Cell }
 }

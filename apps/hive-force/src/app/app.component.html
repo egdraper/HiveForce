@@ -1,13 +1,20 @@
-<div class="game-canvas">
-  <div class="game-space">
-    <app-grid
-      [creatures]="players"
-      [engine]="engine"
-      [map]="map">
+<button (click)="onSaveMap()">Save Map</button>
+<button (click)="onLoadMap()">Load Map</button>
+<button (click)="onGenerateMap()">Generate Map</button>
+<button (click)="endTurn(player)">End Turn</button>
+
+<div 
+  class="game-canvas">
+  <div  
+    canvasCenter
+    id="main-grid"
+    class="main-grid game-space">
+    <app-grid      
+      [engine]="engine">
     </app-grid>
   </div>
 
-  <div *ngFor="let player of players">
+  <!-- <div *ngFor="let player of players">
       <div *ngIf="player.activePlayer">
         <h1>
           {{ player.name }} the {{ player?.race?.name }} {{ player?.className }}
@@ -66,5 +73,5 @@
     </div>
     <textarea #hey rows="13" cols="100">
   {{ message }}
-  </textarea>
+  </textarea> -->
 

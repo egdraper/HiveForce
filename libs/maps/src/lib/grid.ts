@@ -1,8 +1,9 @@
-import { Cell, RelativePositionCell } from './cell';
+import { Cell, RelativePositionCell, GridDetails } from './cell';
 import { JsonPipe } from '@angular/common';
 
 export class Map {
-  public grid: {[cell: string]: Cell } = { };
+  public grid: {[cell: string]: Cell } = { }
+  public gridDisplayLite: GridDetails
   public gridDisplay: Cell[][] = [];
 
   public createGrid(width: number, height: number) {
@@ -16,16 +17,85 @@ export class Map {
     return selectedCells
   }
 
-  private generateGrid(width: number, height: number) {
+  public setGridDetails(gridDetails: GridDetails) {
+    this.gridDisplayLite = gridDetails,
+    this.createDisplayArray(gridDetails.width, gridDetails.height, gridDetails.grid)
+    this.addNeighbors(gridDetails.width, gridDetails.height)
+  }
+
+  public createGridDetail(): any {
+    this.gridDisplayLite.grid = {}
+
+     Object.keys(this.grid).forEach(cell => {
+      this.gridDisplayLite.grid[this.grid[cell].id] = {
+        id: this.grid[cell].id,
+        x: this.grid[cell].x,
+        y: this.grid[cell].y,
+        posY: this.grid[cell].posY,
+        posX: this.grid[cell].posX,
+        obstacle: this.grid[cell].obstacle,
+        imgUrl: this.grid[cell].imgUrl,
+        imgIndexX: this.grid[cell].imgIndexX,
+        imgIndexY: this.grid[cell].imgIndexY,
+        imgWidth: this.grid[cell].imgWidth,
+        imgHeight: this.grid[cell].imgHeight
+      }      
+    })
+
+    return {
+      displayGrid: this.gridDisplayLite
+    }
+  }
+
+  private generateGrid(width: number, height: number, name: string = "No Name") {
+    this.gridDisplayLite = {
+      height,
+      width,
+      name
+    }
+    this.createDisplayArray(width, height,)
+    this.addNeighbors(width, height)
+  }
+
+  private createDisplayArray(width: number, height: number, grid?: {[key: string]: Cell}) {
+    let imgIndexX = 1
+    let imgIndexY = 1
+    
     for (let i = 0; i < height; i++) {
       this.gridDisplay[i] = [];
 
       for (let l = 0; l < width; l++ ) {
-        this.grid[`x${l}:y${i}`] = { x: l, y: i, posX: l * 50, posY: i * 50, obstacle: false, id: `x${l}:y${i}` };
+        this.grid[`x${l}:y${i}`] = grid && grid[`x${l}:y${i}`] 
+          ? grid[`x${l}:y${i}`] 
+          : { 
+            x: l,
+            y: i,
+            posX: l * 50,
+            posY: i * 50,
+            obstacle: false,
+            id: `x${l}:y${i}`,
+            imgUrl: "../../../assets/grass1.png",
+            imgIndexX: imgIndexX === 1 ? 0 : (imgIndexX - 1) * (-50),
+            imgIndexY: imgIndexY === 1 ? 0 : (imgIndexY - 1) * (-50),
+            imgWidth: 150,
+            imgHeight: 150,
+          };
+          
+        imgIndexX ++
+
+        if (imgIndexX > 3 && imgIndexY < 3) { 
+          imgIndexX = 1 
+          imgIndexY++
+        } else if (imgIndexX > 3 && imgIndexY >= 3 ) {
+          imgIndexX = 1
+          imgIndexY = 1
+        }
         this.gridDisplay[i][l] = this.grid[`x${l}:y${i}`];
       }
     }
+  }
 
+  private addNeighbors(width: number, height: number) {
     for (let i = 0; i < height; i++) {
       for (let l = 0; l < width; l++ ) {
         const cell = this.grid[`x${l}:y${i}`];

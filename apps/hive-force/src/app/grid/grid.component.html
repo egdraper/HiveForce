@@ -1,6 +1,7 @@
+
 <div 
   class="rows"
-  *ngFor="let row of map.gridDisplay">
+  *ngFor="let row of map?.gridDisplay">
 
   <div 
     class="cell"
@@ -14,16 +15,19 @@
       [class.destination]="cell.destination">
       
       <img
+        class="background-image"
         src="{{
-          cell.obstacle
-            ? '../../../assets/lava.png'
-            : '../../../assets/cave-floor.jpg'
+          cell.imgUrl
         }}"
-        width="48"
-        height="48"/>
+        [style.width.px]="cell.imgWidth"
+        [style.heigh.px]="cell.imgHeight"
+        [style.left.px]="cell.imgIndexX"
+        [style.top.px]="cell.imgIndexY"/>
 
     </div>
   </div>
+
+ 
 </div>
 
 <creature-asset

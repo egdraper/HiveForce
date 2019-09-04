@@ -1,10 +1,10 @@
 <div *ngIf="creatureAsset.activePlayer">
-  <!-- <div *ngFor="let cell of creatureAsset.location.cell.neighbors">
+  <div *ngFor="let cell of creatureAsset.location.cell.neighbors">
     <div *ngFor="let c of cell.neighbors"
     class="creature-effect-area grid-border"
     [style.left.px]="c.posX"
     [style.top.px]="c.posY"></div>
-  </div> -->
+  </div>
 </div>
 <div
   class="creature-attributes"
@@ -68,10 +68,6 @@
   </div>
 </div>
 
-
-
-
-
 <div
     class="action-animation-container"
     *ngIf="actionAnimation && actionAnimation?.sprite"
@@ -107,9 +103,9 @@
 </div>
 
 <div 
-*ngFor="let cell of creatureAsset.selectedAction?.areaOfEffect | keyvalue"
-[class.creature-effect-area]="creatureAsset.selectedAction?.selected"
-[class.highlighted]="creatureAsset.selectedAction?.selected"
-[style.left.px]="cell.value.posX"
-[style.top.px]="cell.value.posY">
+  *ngFor="let cell of creatureAsset.selectedAction?.areaOfEffect | keyvalue"
+  [class.creature-effect-area]="creatureAsset.selectedAction?.selected"
+  [class.highlighted]="creatureAsset.selectedAction?.selected && creatureAsset.inInitiative"
+  [style.left.px]="cell?.value?.posX"
+  [style.top.px]="cell?.value?.posY">
 </div>

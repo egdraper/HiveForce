@@ -1,5 +1,5 @@
 // tslint:disable: radix
-import { Component, ViewChild, OnInit } from '@angular/core'
+import { Component, ViewChild, OnInit, ChangeDetectorRef, ViewChildren} from '@angular/core'
 import { MasterLog } from "@hive-force/log"
 import { Dice } from "@hive-force/dice"
 import { CreatureAsset, Action, Monk, MoveAction} from '@hive-force/assets';
@@ -8,6 +8,11 @@ import { SpriteDB } from "./db/sprite.db"
 import { Map } from '@hive-force/maps';
 import { Engine, Sprite } from '@hive-force/animations';
 
+// firebase
+import { AngularFirestore } from '@angular/fire/firestore';
+import { GridComponent } from './grid/grid.component';
+import { CreatureAssetComponent } from './creature.component';
+
 @Component({
   selector: 'hive-force-root',
   templateUrl: './app.component.html',  
@@ -15,11 +20,13 @@ import { Engine, Sprite } from '@hive-force/animations';
 })
 export class AppComponent implements OnInit {
   @ViewChild("hey", {static: false}) TextBox
+  @ViewChild(GridComponent, { static: false }) gridComponent: GridComponent
+
   public dm = false
   public message = ""
   public title = 'hive-force';
   public totalRollAmount = 0;
-  public players: Array<CreatureAsset> = []
+  public players: Array<CreatureAsset>
   public creatures: Array<CreatureAsset>
   public activePlayer: CreatureAsset
   public playerIndex = 0
@@ -29,23 +36,56 @@ export class AppComponent implements OnInit {
   public engine: Engine
   public map: Map
 
-  public constructor() {
+  public constructor(
+    private firestore: AngularFirestore,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {
     this.engine = new Engine()
   }
 
   public ngOnInit(): void {
+ 
+  }
+
+  public loadGame(): void {
+    // TODO
+  }
+
+  public onSaveMap(): void {
+    const gridDetailModel =  this.map.createGridDetail() 
+    this.firestore.collection("maps").add(gridDetailModel)
+  }
+
+  public onLoadMap(): void {
+    this.firestore.collection("maps").snapshotChanges().subscribe(item => {
+      this.map = new Map()
+      this.map.setGridDetails((item[0].payload.doc.data() as any).displayGrid)
+      this.gridComponent.loadMap(this.map)
+      this.loadCreatures()
+      this.gridComponent.placeCreatures(this.players)
+
+      this.changeDetectorRef.detectChanges()
+      window.dispatchEvent(new Event("resize"))
+    })
+  }
+
+  public onGenerateMap(): void {
     this.loadMap()
+    this.gridComponent.loadMap(this.map)
     this.loadCreatures()
+    this.gridComponent.placeCreatures(this.players)
+    
+    this.changeDetectorRef.detectChanges()
+    window.dispatchEvent(new Event("resize"))
   }
 
   public loadMap(): void {
     this.map = new Map()
-    this.map.createGrid(20, 20)
+    this.map.createGrid(20, 15)
   }
 
-  public loadCreatures(): void { 
+  public loadCreatures(): void {
     this.createCreature("Jahml");
-
     this.players[this.playerIndex].activePlayer = true
 
     this.numberOfPlayers = this.players.length
@@ -74,6 +114,7 @@ export class AppComponent implements OnInit {
   }
 
   public createCreature(name?: string): void {
+    this.players = []
     const creature = new Monk(10, name, "Way of the Open Hand")
     creature.frame = 5
     const sprite = new Sprite(new SpriteDB().get("blondHuman"))
@@ -103,7 +144,8 @@ export class AppComponent implements OnInit {
     });
   }
 
-  public endTurn(player: CreatureAsset): void {
+  public async endTurn(): Promise<void> {
+    const player = this.players.find(p => p.activePlayer)
     player.activePlayer = false
     player.attributes.attacksRemaining = 2
     player.attributes.actionsPerformed = []
@@ -115,7 +157,7 @@ export class AppComponent implements OnInit {
     })
     player.selectedAction = null
 
-    const newPlayer = this.getNextPlayer()  
+    const newPlayer = await this.getNextPlayer()  
     newPlayer.activePlayer = true
     newPlayer.selected = false    
     
@@ -139,7 +181,7 @@ export class AppComponent implements OnInit {
     })
   }
 
-  private getNextPlayer(): CreatureAsset {
+  private async getNextPlayer(): Promise<CreatureAsset> {
     if(this.dm) {
       (this.playerIndex === this.players.length - 1) ? this.playerIndex = 0 : this.playerIndex++
       return this.players[this.playerIndex]
@@ -152,9 +194,26 @@ export class AppComponent implements OnInit {
       if(!nextCreature.nonPlayableCharacter) {
         nextPlayer = nextCreature
         break
+      } else {
+       await this.autoAttack(nextCreature) 
       }
     }
 
     return nextPlayer
+  }
+
+  public async autoAttack(creature: CreatureAsset): Promise<void> {
+    const localPlayers = this.players.filter(player => !player.nonPlayableCharacter)
+    creature.activePlayer = true
+
+    localPlayers[0].selected = true
+    await creature.movement.autoMove(localPlayers[0].location.cell)
+
+    debugger
+    // this.creatureComponent.executeAction(creature.attributes.actions.find(a => a.name === "Attack"))
+    creature.activePlayer = false
+
+    
+    debugger
   }
 }

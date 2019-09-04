@@ -2,12 +2,14 @@ import { CreatureAsset } from '../creature.asset';
 import { remove } from "lodash"
 import { ShortestPath } from './shortest-path';
 import { Cell } from '@hive-force/maps';
+import { Subject } from 'rxjs';
 
 export class Movement {
     public moving = false
     public path: any
     public nextCell: Cell
-    public redirect: any  
+    public redirect: any
+    public movementResolve: any
   
     constructor(public player: CreatureAsset) {}
   
@@ -68,7 +70,7 @@ export class Movement {
       }  
     }
   
-    public checkSurroundings(cell: Cell, creaturesOnGrid: Array<CreatureAsset> ): void {    // looks for other creatures within 5 feet
+    public checkSurroundings(cellToCheck: Cell, creaturesOnGrid: Array<CreatureAsset> ): void {    // looks for other creatures within 5 feet
       let engagedWith 
       const enemies: CreatureAsset[] = [] 
       this.player.engagedWith.forEach(a => enemies.push(a))
@@ -80,8 +82,10 @@ export class Movement {
      
       this.player.engagedWith = []
   
-      this.player.location.cell.neighbors.forEach(a => {
-        const enemy = creaturesOnGrid.find(c => c.location.cell.id === a.id)
+      this.player.location.cell.neighbors.forEach(cell => {
+        if(!cell) { return}
+
+        const enemy = creaturesOnGrid.find(c => c.location.cell.id === cell.id)
   
         this.player.engagedWith.forEach(e => {
           
@@ -107,10 +111,14 @@ export class Movement {
       return creature
     }
   
-    public autoMove(end: Cell): void {
-        const shortestPath = new ShortestPath()
-        const path = shortestPath.find(this.player.location.cell, end, this.player.location.creaturesOnGrid)
-        this.startMovement("left", path )
+    public async autoMove(end: Cell): Promise<any> {
+        const movementComplete = new Promise((resolve) => {
+          this.movementResolve = resolve
+          const shortestPath = new ShortestPath()
+          const path = shortestPath.find(this.player.location.cell, end, this.player.location.creaturesOnGrid)
+          this.startMovement("left", path )
+        })
+        return movementComplete
     }
   
   
@@ -130,7 +138,7 @@ export class Movement {
   
         this.nextCell = this.path.pop();
 
-        if(!this.player.attributes.actions.find(a => a.name === "Move").areaOfEffect[this.nextCell.id]) {
+        if(this.player.inInitiative && !this.player.attributes.actions.find(a => a.name === "Move").areaOfEffect[this.nextCell.id]) {
           this.moving = false
           return
         }
@@ -215,6 +223,7 @@ export class Movement {
             this.moveCreature(this.player.sprite.key);
           } else {
             this.moving = false
+            this.movementResolve()
           }
         }
       }
