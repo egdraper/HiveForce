@@ -4,6 +4,7 @@ export class SpriteSection {
 }
 
 export interface SpriteModel {
+  id?: string
   name?: string
   containerWidth?: number
   containerHeight?: number
@@ -24,6 +25,7 @@ export interface SpriteModel {
 
 export class Sprite implements SpriteModel {
   // sprite info
+    public id = ""
     public name = "Name"
     public containerWidth = 50;
     public containerHeight = 75;
@@ -63,11 +65,11 @@ export class Sprite implements SpriteModel {
   public doImageAdjustment(): void {
     if (this.imageAdjustment && this.imageAdjustment[this.key]) {
       const a = this.imageAdjustment[this.key];
+      this.imgSpriteLeftOffset = a.sprite[a.order[this.positionNumber]].x;
+      this.imgSpriteTopOffset = a.sprite[a.order[this.positionNumber]].y;
       this.positionNumber >= a.order.length - 1
         ? (this.positionNumber = 0)
         : this.positionNumber++;
-      this.imgSpriteLeftOffset = a.sprite[a.order[this.positionNumber]].x;
-      this.imgSpriteTopOffset = a.sprite[a.order[this.positionNumber]].y;
     }
   }
 }

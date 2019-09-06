@@ -6,7 +6,7 @@ import { CreatureAsset, Action, Monk, MoveAction} from '@hive-force/assets';
 import { CreaturesList } from './creatures';
 import { SpriteDB } from "./db/sprite.db"
 import { Map } from '@hive-force/maps';
-import { Engine, Sprite } from '@hive-force/animations';
+import { Engine, Sprite, ActionAnimationService } from '@hive-force/animations';
 
 // firebase
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -33,14 +33,13 @@ export class AppComponent implements OnInit {
   public numberOfPlayers = 0
   public id = 0
   public creaturesClass = new CreaturesList()
-  public engine: Engine
   public map: Map
 
   public constructor(
     private firestore: AngularFirestore,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private animationService: ActionAnimationService,
   ) {
-    this.engine = new Engine()
   }
 
   public ngOnInit(): void {
@@ -91,14 +90,14 @@ export class AppComponent implements OnInit {
     this.numberOfPlayers = this.players.length
     this.creaturesClass.creatures.forEach(a => this.players.push(a))
     this.creatures = this.creaturesClass.creatures
-    this.players.forEach(p => this.engine.assets.push(p))
-    this.engine.run()
+    this.players.forEach(p => this.animationService.engine.assets.push(p))
+    this.animationService.engine.run()
 
     MasterLog.subscribe((m) => {
-      this.message = m
-      setTimeout(()=> {
-        this.TextBox.nativeElement.scrollTop = this.TextBox.nativeElement.scrollHeight + 10;
-      })
+      // this.message = m
+      // setTimeout(()=> {
+      //   this.TextBox.nativeElement.scrollTop = this.TextBox.nativeElement.scrollHeight + 10;
+      // })
     })
   }
    
@@ -120,17 +119,19 @@ export class AppComponent implements OnInit {
     const sprite = new Sprite(new SpriteDB().get("blondHuman"))
     sprite.imgSource = "../assets/motw.png"
     creature.sprite = sprite
+    creature.attributes.actions.forEach(a => a.setupAction(creature ,this.animationService))
     this.players.push(creature)
-
+    
     const creature2 = new Monk(5, name + "1", "Way of the Open Hand")
     creature2.frame = 6
     const sprite2 = new Sprite(new SpriteDB().get("superHuman"))
     creature2.sprite = sprite2
+    creature.attributes.actions.forEach(a => a.setupAction(creature2 ,this.animationService))
     this.players.push(creature2);
   }
-
+  
   public onSubActionSelect(subAction: Action): void {
-
+    
   }
   
   public getSelectedCreatures(): Array<CreatureAsset> {
@@ -208,12 +209,8 @@ export class AppComponent implements OnInit {
 
     localPlayers[0].selected = true
     await creature.movement.autoMove(localPlayers[0].location.cell)
-
-    debugger
+   
     // this.creatureComponent.executeAction(creature.attributes.actions.find(a => a.name === "Attack"))
     creature.activePlayer = false
-
-    
-    debugger
   }
 }

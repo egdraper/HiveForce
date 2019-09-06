@@ -1,8 +1,11 @@
 import { Engine } from './engine'
 import { Cell } from '@hive-force/maps'
 import { Sprite } from './sprite';
+import { Subject } from 'rxjs';
 
 export class ActionAnimation {
     public sprite: Sprite
-    public run: (engine: Engine, performingCell?: Cell, receivingCell?: Cell) => Promise<unknown>
+    public location?: Cell
+    public presetAnimation: (watcher: Subject<Sprite>) => void
+    public run: (engine: Engine, location: Cell, watcher: Subject<any>) => Promise<unknown>
 }

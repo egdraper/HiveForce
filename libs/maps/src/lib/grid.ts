@@ -74,13 +74,13 @@ export class Map {
             posY: i * 50,
             obstacle: false,
             id: `x${l}:y${i}`,
-            imgUrl: "../../../assets/grass1.png",
+            imgUrl: "../../../assets/rock-flowers.png",
             imgIndexX: imgIndexX === 1 ? 0 : (imgIndexX - 1) * (-50),
             imgIndexY: imgIndexY === 1 ? 0 : (imgIndexY - 1) * (-50),
             imgWidth: 150,
             imgHeight: 150,
           };
-          
+
         imgIndexX ++
 
         if (imgIndexX > 3 && imgIndexY < 3) { 

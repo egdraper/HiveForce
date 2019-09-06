@@ -163,7 +163,6 @@ export class CreatureAsset extends SelectableAsset {
 
   public executeAction(action: Action, creature: CreatureAsset): boolean | void | CreatureAsset | CreaturesEffect | CreaturesEffect[] {
     return action.execute(this, creature);
-   
   }
 
   public applyReaction(

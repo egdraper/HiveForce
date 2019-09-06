@@ -1,7 +1,7 @@
 import { Component, Input, HostListener, ElementRef, ViewChildren } from "@angular/core"
 import { CreatureAsset, MoveAction } from '@hive-force/assets'
 import { Map, Cell } from "@hive-force/maps"
-import { Engine } from '@hive-force/animations'
+import { Engine, ActionAnimationService } from '@hive-force/animations'
 import { CreatureAssetComponent } from '../creature.component';
 
 @Component({
@@ -10,7 +10,6 @@ import { CreatureAssetComponent } from '../creature.component';
   styleUrls: ["./grid.component.scss"]
 })
 export class GridComponent {  
-  @Input() public engine: Engine  
   @ViewChildren(CreatureAssetComponent) public creatureComponent: Array<CreatureAssetComponent>
   
   public creatures: Array<CreatureAsset> = []

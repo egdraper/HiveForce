@@ -69,28 +69,6 @@
 </div>
 
 <div
-    class="action-animation-container"
-    *ngIf="actionAnimation && actionAnimation?.sprite"
-    [style.zIndex]="'1000'"
-    [style.width.px]="actionAnimation.sprite.containerWidth"
-    [style.height.px]="actionAnimation.sprite.containerHeight"
-    [style.bottom.px]="actionAnimation.sprite.imgBottomOffset"
-    [style.top.px]="actionAnimation.sprite.locY"
-    [style.left.px]="actionAnimation.sprite.locX"
-    [style.position]="'absolute'"
-    [style.overflow]="'hidden'">
-
-    <img
-      class="no-event"
-      src="{{ actionAnimation.sprite.imgSource }}"
-      [style.width]="actionAnimation.sprite.imgSheetWidth"
-      [style.height.px]="'auto'"
-      [style.top.px]="actionAnimation.sprite.imgSpriteTopOffset"
-      [style.left.px]="actionAnimation.sprite.imgSpriteLeftOffset"
-      [style.position]="'relative'"/>
-  </div>
-
-<div
   *ngIf="textAnimation && textAnimation.text"
   [style.width]="textAnimation.width"
   [style.height]="textAnimation.height"

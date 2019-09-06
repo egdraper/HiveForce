@@ -3,7 +3,7 @@ import { Component, Input, HostListener} from '@angular/core';
 import { CreatureAsset, Action, GameComponents, CreaturesEffect, MoveAction, ShortestPath } from '@hive-force/assets';
 import { MasterLog } from '@hive-force/log';
 import { Map } from "@hive-force/maps"
-import { TextAnimation, ActionAnimation, Engine } from '@hive-force/animations';
+import { TextAnimation, ActionAnimation, Engine, ActionAnimationService } from '@hive-force/animations';
 import { debug } from 'util';
 
 @Component({
@@ -15,14 +15,14 @@ export class CreatureAssetComponent implements GameComponents{
   @Input() public creatureAsset: CreatureAsset;
   @Input() public gridCreatures: Array<CreatureAsset>;
   @Input() public map: Map;
-  @Input() public engine: Engine
   @Input() public creaturesAreSelected = false
 
-  public actionAnimation: ActionAnimation
   public textAnimation: TextAnimation
   public sideBarOn = true
 
   private ctrIsHeld = false
+
+  constructor(private animationService: ActionAnimationService) {}
   // private listener
 
   // public constructor(private renderer: Renderer2) {}
@@ -36,7 +36,7 @@ export class CreatureAssetComponent implements GameComponents{
   }
 
   public ngAfterViewInit(): void {
-    this.engine.assets.push(this)
+    this.animationService.engine.assets.push(this)
   }
 
   public update(): void {
@@ -135,33 +135,14 @@ export class CreatureAssetComponent implements GameComponents{
     return this.gridCreatures.filter(c => c.selected) || []
   }
 
-  public executeAction(action: Action): void { 
-    this.getSelectedCreatures().forEach(selectedCreature => {
-      this.adjustMovement()
-      const results = this.creatureAsset.executeAction(action, selectedCreature) as CreaturesEffect
-
-      this.actionAnimation = action.performanceAnimation
-      this.creatureAsset.sprite.performingAction = true
-      this.actionAnimation.run(this.engine, this.creatureAsset.location.cell, this.creatureAsset.location.cell)
-        .then(() => {
-          this.creatureAsset.sprite.performingAction = false
-          if(results) {
-          this.actionAnimation = action.effectAnimation
-          selectedCreature.sprite.performingAction = true
-          this.actionAnimation.run(this.engine, this.creatureAsset.location.cell, selectedCreature.location.cell)
-            .then(() => {
-              selectedCreature.sprite.performingAction = false  
-              this.textAnimation = results.animationText
-              this.textAnimation.locY = selectedCreature.location.cell.posY
-              results.animationText.run(this.engine, selectedCreature.location.cell)
-            })
-          }
-        })       
-        
-      MasterLog.log("\n")
-    });
-
-    this.creatureAsset.attributes.actions.forEach(a => a.selected = false)
+  public executeAction(action: Action): void {
+    const selectedCreatures = this.getSelectedCreatures()
+    action.executeAction(
+      this.animationService.engine,
+      this.creatureAsset,
+      selectedCreatures,
+      this.animationService
+    )
   }
 
   private adjustMovement(): void {

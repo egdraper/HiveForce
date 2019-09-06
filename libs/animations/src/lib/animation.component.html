@@ -1,0 +1,23 @@
+<div *ngFor="let sprite of animations | keyvalue">
+<div
+    class="action-animation-container"
+    [style.visibility]="sprite.value.performingAction ? 'visible': 'hidden'"
+    [style.zIndex]="'1000'"
+    [style.width.px]="sprite.value.containerWidth"
+    [style.height.px]="sprite.value.containerHeight"
+    [style.bottom.px]="sprite.value.imgBottomOffset"
+    [style.top.px]="sprite.value.locY"
+    [style.left.px]="sprite.value.locX"
+    [style.position]="'absolute'"
+    [style.overflow]="'hidden'">
+
+    <img
+      class="no-event"
+      src="{{ sprite.value.imgSource }}"
+      [style.width]="sprite.value.imgSheetWidth"
+      [style.height.px]="'auto'"
+      [style.top.px]="sprite.value.imgSpriteTopOffset"
+      [style.left.px]="sprite.value.imgSpriteLeftOffset "
+      [style.position]="'relative'"/>
+  </div>
+</div>    

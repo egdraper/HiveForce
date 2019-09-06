@@ -1,5 +1,7 @@
-import { Asset, GameComponents } from '@hive-force/assets';
+import { GameComponents } from '@hive-force/assets';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class Engine {
   public assets: GameComponents[] = []
   public run(): any {
