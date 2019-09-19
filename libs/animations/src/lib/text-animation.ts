@@ -1,6 +1,5 @@
 import { Engine } from './engine';
-import { Cell } from '@hive-force/maps';
-import { ActionAnimation } from './action-animation';
+import { Cell } from '@hive-force/spells';
 
 export class TextAnimation {
     public width = "100%"

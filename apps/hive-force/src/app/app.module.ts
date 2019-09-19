@@ -1,22 +1,20 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AnimationModule } from '@hive-force/animations';
 
 import { AppComponent } from './app.component';
-import { CreatureAssetComponent } from './creature.component';
-import { GridComponent } from './grid/grid.component';
 import { CreateCreatureComponent } from './home/create-creature/create-creature.component';
 import { CommonModule } from '@angular/common';
 import { AngularFireModule } from "@angular/fire"
 import { AngularFirestoreModule } from "@angular/fire/firestore"
 import { environment } from '../environments/environment';
 import { CanvasCenterDirective } from './canvas-center.directive';
+import { AssetModule } from '@hive-force/assets';
+import { GridModule } from '@hive-force/maps';
+import { ActionAnimationModule } from '@hive-force/animations';
 
 @NgModule({
   declarations: [ 
-    CreatureAssetComponent,
     AppComponent,
-    GridComponent,
     CreateCreatureComponent,
     CanvasCenterDirective,
   ],
@@ -25,7 +23,9 @@ import { CanvasCenterDirective } from './canvas-center.directive';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     CommonModule,
     BrowserModule,
-    AnimationModule,    
+    GridModule,
+    ActionAnimationModule,
+    AssetModule,    
   ],
   providers: [],
   bootstrap: [AppComponent]

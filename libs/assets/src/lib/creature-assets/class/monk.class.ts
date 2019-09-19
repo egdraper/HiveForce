@@ -13,7 +13,7 @@ import { Action } from '../actions/action.model';
 import { HillDwarf } from '../race/dwarf.race';
 import { Class } from './base.class';
 import { MoveAction } from '../actions/move-action';
-import { SlashAnimation, SlashHitAnimation } from '@hive-force/animations';
+import { SlashAnimation, SlashHitAnimation, AnimatingWeapon } from '@hive-force/animations';
 
 export class Monk extends Class {
   public className = 'Monk';
@@ -164,7 +164,7 @@ export class Monk extends Class {
 
   // for demo purposes
   private getItems(): Array<Weapon> {
-      const shortSword = new Weapon()
+      const shortSword = new AnimatingWeapon()
       shortSword.description = 'Small and Pokey',
       shortSword.diceEquation = '1d4',
       shortSword.id = '1237',
@@ -180,7 +180,7 @@ export class Monk extends Class {
       shortSword.strikeAnimation = new SlashAnimation()
       shortSword.hitAnimation = new SlashAnimation()
       
-      const fist = new Weapon()
+      const fist = new AnimatingWeapon()
       fist.description = 'Fists of Fury'
       fist.diceEquation = '1d6'
       fist.id = '1235'

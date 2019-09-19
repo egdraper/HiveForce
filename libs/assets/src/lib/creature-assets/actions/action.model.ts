@@ -3,10 +3,8 @@ import { Effect } from '../effects/effects.model';
 import { MasterLog } from '@hive-force/log';
 import { Item, Weapon } from '@hive-force/items';
 import { CreatureAsset } from '../creature.asset';
-import { TextAnimation, ActionAnimation, Engine, Sprite, ActionAnimationService } from '@hive-force/animations';
-import { RelativePositionCell } from '@hive-force/maps';
-import { Subject } from 'rxjs';
-
+import { TextAnimation, ActionAnimation, Engine, ActionAnimationService, AnimatingWeapon } from '@hive-force/animations';
+import { RelativePositionCell } from '@hive-force/spells';
 
 export class Action {
   public name: string
@@ -58,44 +56,46 @@ export class Action {
   }
 
   public setupAction(player: CreatureAsset, animationService: ActionAnimationService) {
-    const item = player.getSelectedItem() as Weapon
+    const item = player.getSelectedItem() as AnimatingWeapon
     item.strikeAnimation.presetAnimation(animationService.animation)
     item.hitAnimation.presetAnimation(animationService.animation)
   }
   
   public executeAction(
-     engine: Engine,
-     creature: CreatureAsset,
-     selectedCreatures: Array<CreatureAsset>,
-     animationService: ActionAnimationService): any { 
+    engine: Engine,
+    creature: CreatureAsset,
+    selectedCreatures: Array<CreatureAsset>,
+    animationService: ActionAnimationService): any { 
     
     selectedCreatures.forEach(selectedCreature => {
       // this.adjustMovement() // this is for
       const results = this.execute(creature, selectedCreature) as CreaturesEffect
 
-      const actionAnimation = this.performanceAnimation
-      actionAnimation.location = creature.location.cell
-      const effectAnimation = this.effectAnimation
-      effectAnimation.location = selectedCreature.location.cell
-      // let textAnimation
-      creature.sprite.performingAction = true
+      this.performanceAnimation.location = creature.location.cell
+      this.effectAnimation.location = selectedCreature.location.cell
      
-      animationService.sequenceAnimations([actionAnimation, effectAnimation])
+      if(results && results.effected)
+        animationService.sequenceAnimations([
+          this.performanceAnimation,
+          results.effected ? this.effectAnimation : null
+        ])
       // actionAnimation.run(engine, creature.location.cell, watcher)
  
           
-      // if(results) {
-      //   actionAnimation = action.effectAnimation
-      //   selectedCreature.sprite.performingAction = true
+      if(results) {
+
         
-      //   actionAnimation.run(engine, creature.location.cell, selectedCreature.location.cell)
-      //   selectedCreature.sprite.performingAction = false  
-      //   textAnimation = results.animationText
+        // actionAnimation = action.effectAnimation
+        // selectedCreature.sprite.performingAction = true
         
-      //   textAnimation.locY = selectedCreature.location.cell.posY
-      //   results.animationText.run(engine, selectedCreature.location.cell)
+        // actionAnimation.run(engine, creature.location.cell, selectedCreature.location.cell)
+        // selectedCreature.sprite.performingAction = false  
+        // textAnimation = results.animationText
+        
+        // textAnimation.locY = selectedCreature.location.cell.posY
+        // results.animationText.run(engine, selectedCreature.location.cell)
    
-      // }
+      }
              
       MasterLog.log("\n")
     });

@@ -1,0 +1,46 @@
+<div *ngFor="let asset of assetService.activeAssets | keyvalue">
+<div
+    class="action-animation-container"
+    [style.visibility]="asset.value.visible ? 'visible': 'hidden'"
+    [style.zIndex]="asset.value.zIndex"
+    [style.width.px]="asset.value.containerWidth"
+    [style.height.px]="asset.value.containerHeight"
+    [style.top.px]="asset.value.locY"
+    [style.left.px]="asset.value.locX"
+    [style.position]="'absolute'"
+    [style.overflow]="'hidden'">
+
+    <img
+      class="no-event"
+      src="{{ asset.value.imgUrl }}"
+      [style.width]="asset.value.imgSheetWidth"
+      [style.height.px]="'auto'"
+      [style.top.px]="asset.value.topOffset"
+      [style.left.px]="asset.value.leftOffset"
+      [style.position]="'relative'"/>
+  </div>
+</div>    
+
+
+  <div
+      class="action-animation-container"
+      [style.visibility]="'visible'"
+      [style.zIndex]="'1000'"
+      [style.width.px]="50"
+      [style.height.px]="50"
+      [style.bottom.px]="10"
+      [style.top.px]="10"
+      [style.left.px]="10"
+      [style.position]="'absolute'"
+      [style.overflow]="'hidden'">
+  
+      <img
+        class="no-event"
+        src="../assets/number-palette.png"
+        [style.width]="'auto'"
+        [style.height.px]="'auto'"
+        [style.top.px]="10"
+        [style.left.px]="10"
+        [style.position]="'relative'"/>
+    </div>
+

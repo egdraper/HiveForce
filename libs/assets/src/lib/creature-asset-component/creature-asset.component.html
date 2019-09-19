@@ -1,0 +1,71 @@
+<div *ngFor="let creatureAsset of creatureAssetService.activeCreatureAssets">
+  <div *ngIf="creatureAsset.activePlayer">
+    <div *ngFor="let cell of creatureAsset.location.cell.neighbors">
+      <div *ngFor="let c of cell.neighbors"
+      class="creature-effect-area grid-border"
+      [style.left.px]="c.posX"
+      [style.top.px]="c.posY"></div>
+    </div>
+  </div>
+  
+  
+  <div
+    class="creature-attributes"
+    (click)="onCreatureSelect(creatureAsset)"
+    [style.left]="creatureAsset.location.positionX + 'px'"
+    [style.top]="creatureAsset.location.positionY + 'px'"
+    [class.selected]="creatureAsset.selected"
+    [class.active]="creatureAsset.activePlayer">
+   
+    <div
+      class="no-event"
+      [style.z-index]="creatureAsset.location.zIndex"
+      [style.width.px]="creatureAsset.sprite.containerWidth"
+      [style.height.px]="creatureAsset.sprite.containerHeight"
+      [style.bottom.px]="creatureAsset.sprite.imgBottomOffset"
+      [style.position]="'absolute'"
+      [style.overflow]="'hidden'">
+      <img
+        class="no-event"
+        src="{{ creatureAsset.sprite.imgSource }}"
+        [style.width]="creatureAsset.sprite.imgSheetWidth"
+        [style.height.px]="'auto'"
+        [style.top.px]="creatureAsset.sprite.imgSpriteTopOffset"
+        [style.left.px]="creatureAsset.sprite.imgSpriteLeftOffset"
+        [style.transform]="'rotate(' + creatureAsset.sprite.rotate + 'deg)'"
+        [class.action-glow]="creatureAsset.sprite.performingAction"
+        [style.position]="'relative'"/>
+    </div>
+
+    <div
+      class="speed-dial-container"
+      *ngIf="
+        creatureAsset.activePlayer &&
+        !creatureAsset.moving
+      ">
+      <div
+        class="speed-dial"
+        *ngFor="let action of creatureAsset.attributes.actions">
+        <div
+          [class.selected]="action.selected"
+          (click)="selectAction(action, $event)">
+          <div
+            (click)="executeAction(action)"
+            class="execute"
+            *ngIf="action.selected">
+            EXECUTE
+          </div>
+
+          <img
+            class="no-event"
+            src="{{ action.iconUrl }}"
+            [style.width.px]="41"
+            [style.height.px]="41"
+            [style.top.px]="0"
+            [style.left.px]="0"
+            [style.position]="'relative'"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

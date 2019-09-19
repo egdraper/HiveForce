@@ -1,2 +1,1 @@
-export * from "./lib/cell"
-export * from "./lib/grid"
+export * from "./lib/grid-component"

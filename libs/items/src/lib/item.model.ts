@@ -1,4 +1,3 @@
-import { ActionAnimation } from '@hive-force/animations';
 
 export class Item {
   public id: string;
@@ -37,6 +36,4 @@ export class Weapon extends RollableItem {
   public ranged?: boolean
   public range?: number
   public modifier?: string
-  public strikeAnimation?: ActionAnimation
-  public hitAnimation?: ActionAnimation
 }

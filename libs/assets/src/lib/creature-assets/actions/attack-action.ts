@@ -5,7 +5,7 @@ import { Weapon } from '@hive-force/items';
 import { MasterLog } from '@hive-force/log';
 import { cloneDeep } from 'lodash';
 import { CreatureAsset } from '../creature.asset';
-import { ActionAnimation, ActionResultTextAnimation} from '@hive-force/animations';
+import { ActionAnimation, ActionResultTextAnimation, AnimatingWeapon} from '@hive-force/animations';
 
 export enum DamageStatus {
   doubled,
@@ -35,7 +35,7 @@ export class AttackAction extends Action {
     player: CreatureAsset,
     creature: CreatureAsset
   ): CreaturesEffect {
-    const weapon = player.getSelectedItem() as Weapon
+    const weapon = player.getSelectedItem() as AnimatingWeapon
     this.performanceAnimation = weapon.strikeAnimation
     this.effectAnimation = weapon.hitAnimation
     

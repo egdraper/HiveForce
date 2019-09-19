@@ -1,19 +1,19 @@
-export class GameComponents {
-  public update() { }
-}
-
-export class Asset extends GameComponents{
+export class Asset {
     public id: string;
     public name: string;
   }
   
   export class MapAsset extends Asset {
-    xLocation: number;
-    yLocation: number;
-    xWidth: number;
-    xHeight: number;
-    shape: string;
-    image: any;
+    imgUrl: string
+    containerHeight: number;
+    containerWidth: number;
+    key: string 
+    leftOffset: any;
+    locX: number;
+    locY: number;
+    topOffset: number;
+    type: string;
+    visible: boolean
   }
 
   export class SelectableAsset extends Asset {

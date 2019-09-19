@@ -77,6 +77,50 @@ const spriteDBCollection: {[name: string]: SpriteModel } = {
     key: 'down',
     positionNumber: 0
   },
+  "blondHumanDead": {
+    name: 'Blond Human',
+    imageAdjustment: {
+      dead: {
+        order: [0],
+        sprite: [{ x: -383, y: 15 }]
+      },
+    },
+    imgBottomOffset: 11,
+    containerWidth: 56,
+    containerHeight: 22,
+    locY: 0,
+    locX: 0,
+    imgSource: '../assets/motw.png',
+    imgSheetWidth: '',
+    imgSpriteTopOffset: -9,
+    imgSpriteLeftOffset: -1,
+    imageHeight: 'auto',
+    imageWidth: '100%',
+    performingAction: false,
+    key: 'down',
+    positionNumber: 0,
+    shadow: "solid #444444 4px",
+    radius: 10,  
+    rotate: 90 
+  },
+
+
+    // container
+    // z-index: 7;
+    // width: 56px; -
+    // height: 22px; -
+    // bottom: 11px; -
+    // border-bottom: solid #444444 4px; -
+    // position: absolute;
+    // overflow: hidden;
+    // border-radius: 10px; -
+
+    // img
+    // top: 15px;
+    // left: -384px;
+    // position: relative;  
+    // transform: rotate(90deg);
+
   "basicSkeletonSprite": {
     name: 'Basic Skeleton',
     imageAdjustment: {  
@@ -95,7 +139,7 @@ const spriteDBCollection: {[name: string]: SpriteModel } = {
       up: {
         order: [0,1,2,1],
         sprite: [{x: -313, y: -221}, {x: -365,  y: -221 }, {x: -417, y: -221 }]
-      }
+      },
     },
     imgBottomOffset: 5,
     containerWidth: 50,

@@ -1,7 +1,7 @@
 import { CreatureAsset, AttackAction, MoveAction } from '@hive-force/assets';
 import { Weapon } from '@hive-force/items';
 import { SpriteDB } from "./db/sprite.db"
-import { Sprite, SlashHitAnimation, SlashAnimation } from '@hive-force/animations';
+import { Sprite, SlashHitAnimation, SlashAnimation, AnimatingWeapon } from '@hive-force/animations';
 
 export class CreaturesList {
   public creatures: CreatureAsset[] = [];
@@ -21,7 +21,7 @@ export class CreaturesList {
   }
 
   public addCreature(name: string, hp: number = 66) {
-    const newCreature = this.createAttributes(name, "../asset/zombie1.png")
+    const newCreature = this.createAttributes(name, "basicSkeletonSprite")
     newCreature.attributes.maxHitPoints = hp
     newCreature.attributes.currentHitPoints = hp
    
@@ -89,7 +89,7 @@ export class CreaturesList {
       vulnerabilities: ["fire"]
     };
     
-    const claw = new Weapon()
+    const claw = new AnimatingWeapon()
     claw.description = 'Long Dirty Fingernails',
     claw.diceEquation = '1d6',
     claw.id = '12373',
@@ -105,7 +105,7 @@ export class CreaturesList {
     claw.strikeAnimation = new SlashAnimation()
     claw.hitAnimation = new SlashHitAnimation()
 
-    const bite = new Weapon()
+    const bite = new AnimatingWeapon()
     bite.description = 'Teeth',
     bite.diceEquation = '1d6',
     bite.id = '12373',

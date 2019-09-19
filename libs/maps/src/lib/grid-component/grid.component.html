@@ -1,0 +1,72 @@
+
+
+      <div *ngFor="let tile of tiles"
+        [style.position] = "'absolute'"
+        [style.left.px]="tile.locX"
+        [style.top.px]="tile.locY"
+        [style.zIndex] = "tile.zIndex"
+        [style.overflow]= "'hidden'"
+        [style.width.px]="tile.containerWidth"
+        [style.height.px]="tile.containerHeight"
+        (click)="addLayer(tile)">
+        
+        <img *ngIf="true"
+          src="{{tile.url}}"
+          [style.width.px]="150"
+          [style.left.px]="tile.imgXOffset"
+          [style.top.px]="tile.imgYOffset"
+          [style.position]="'absolute'"/>
+  
+      </div>
+
+
+<div 
+  class="rows"
+  *ngFor="let row of map?.gridDisplay">
+
+  <div 
+    class="cell"
+     *ngFor="let cell of row">
+
+
+ 
+
+    <div
+      (click)="cellClick(cell, $event)"
+      class="back-ground"
+      [class.obstacle]="cell.obstacle"
+      [class.path]="cell.path"
+      [class.destination]="cell.destination">
+      
+      <img
+        class="background-image"
+        src="{{
+          cell.imgUrl
+        }}"
+        [style.width.px]="cell.imgWidth"
+        [style.heigh.px]="cell.imgHeight"
+        [style.left.px]="cell.imgIndexX"
+        [style.top.px]="cell.imgIndexY"/>
+
+    </div>
+  </div>
+
+ 
+</div>
+
+<hive-force-asset>
+</hive-force-asset>
+   
+<hive-force-creature-asset (areaOfEffectChange)="onAreaOfEffectChanged($event)">
+</hive-force-creature-asset>
+
+<hive-force-animation></hive-force-animation>
+
+<div
+  *ngFor="let cell of (areaOfEffect | keyvalue)"
+  [class.creature-effect-area]="true"
+  [class.highlighted]="true"
+  [style.left.px]="cell?.value?.posX"
+  [style.top.px]="cell?.value?.posY">
+</div>
+

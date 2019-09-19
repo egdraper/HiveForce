@@ -1,7 +1,7 @@
 <button (click)="onSaveMap()">Save Map</button>
 <button (click)="onLoadMap()">Load Map</button>
 <button (click)="onGenerateMap()">Generate Map</button>
-<button (click)="endTurn(player)">End Turn</button>
+<button (click)="endTurn()">End Turn</button>
 
 <div 
   class="game-canvas">
@@ -9,7 +9,7 @@
     canvasCenter
     id="main-grid"
     class="main-grid game-space">
-    <app-grid></app-grid>
+    <hive-force-grid></hive-force-grid>
   </div>
 
   <!-- <div *ngFor="let player of players">

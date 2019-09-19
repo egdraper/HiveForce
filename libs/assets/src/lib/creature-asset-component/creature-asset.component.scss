@@ -5,22 +5,6 @@
 
 }
 
-.creature-effect-area {
-    height: 48px;
-    width: 48px;
-    position: absolute;
-    pointer-events: none;
-
-    &.grid-border {
-        border: 1px solid  rgba(255,255,255,.025);
-    }
-
-    &.highlighted {
-        background-color: white;
-        opacity: .1;
-    }
-}
-
 .character-image {
     position: absolute;
     bottom: 4px;
@@ -51,10 +35,6 @@
 
 .active {
   background-color: rgba(255,255,255,.1);
-}
-
-.bgimg {
-    background-image: url('../assets/zombie1.png');
 }
 
 .no-event{

@@ -21,6 +21,9 @@ export interface SpriteModel {
   imageAdjustment?: { [section: string]: SpriteSection };
   key?: string;
   positionNumber?: number;
+  shadow?: string;
+  radius?: number;
+  rotate?: number;
 }
 
 export class Sprite implements SpriteModel {
@@ -42,6 +45,9 @@ export class Sprite implements SpriteModel {
     public imageAdjustment: { [section: string]: SpriteSection } = {};
     public key = 'down';
     public positionNumber = 0;
+    public shadow = "";
+    public radius = 0;
+    public rotate = 0;
 
   constructor(sprite: SpriteModel) {
     this.name = sprite.name
@@ -60,6 +66,9 @@ export class Sprite implements SpriteModel {
     this.imageAdjustment = sprite.imageAdjustment || this.imageAdjustment
     this.key = sprite.key || this.key
     this.positionNumber = sprite.positionNumber || this.positionNumber
+    this.shadow = sprite.shadow || this.shadow
+    this.radius = sprite.radius || this.radius
+    this.rotate = sprite.rotate || this.rotate
   }
 
   public doImageAdjustment(): void {

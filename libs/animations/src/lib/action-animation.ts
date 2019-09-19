@@ -1,5 +1,5 @@
 import { Engine } from './engine'
-import { Cell } from '@hive-force/maps'
+import { Cell } from '@hive-force/spells'
 import { Sprite } from './sprite';
 import { Subject } from 'rxjs';
 

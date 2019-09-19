@@ -1,6 +1,6 @@
 
 import { Item } from "@hive-force/items"
-import { Map } from "@hive-force/maps"
+import { GridService } from "@hive-force/maps"
 import { CreatureAsset } from "@hive-force/assets"
 
 
@@ -14,7 +14,7 @@ export class Game {
   id: string;
   name: string;
   players: { [id: string]: Player };
-  maps: { [id: string]: Map };
+  maps: { [id: string]: GridService };
 }
 
 export class Player {

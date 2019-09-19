@@ -1,7 +1,8 @@
-import { Cell, RelativePositionCell, GridDetails } from './cell';
-import { JsonPipe } from '@angular/common';
+import { Injectable } from '@angular/core';
+import { Cell, GridDetails, RelativePositionCell } from '@hive-force/spells';
 
-export class Map {
+@Injectable()
+export class GridService {
   public grid: {[cell: string]: Cell } = { }
   public gridDisplayLite: GridDetails
   public gridDisplay: Cell[][] = [];

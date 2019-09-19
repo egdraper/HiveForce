@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CreatureAsset } from '../creature.asset';
-import { Cell, Visited } from '@hive-force/maps';
+import { Cell, Visited } from '@hive-force/spells';
 
 @Injectable()
 export class ShortestPath {

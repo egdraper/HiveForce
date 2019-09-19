@@ -147,7 +147,7 @@ export class KnockBack extends Action {
 
   private moveBack(creature: CreatureAsset, direction: string, creatureFacing: string): void {
     for(let i = 0; i < 3; i++) {
-      creature.movement.moveCharacter(direction, creature.location.cell.neighbors[0], [], creatureFacing)
+      creature.moveCharacter(direction, creature.location.cell.neighbors[0], [], creatureFacing)
     }         
   }
 }

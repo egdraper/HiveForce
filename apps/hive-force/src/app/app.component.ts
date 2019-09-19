@@ -2,16 +2,15 @@
 import { Component, ViewChild, OnInit, ChangeDetectorRef, ViewChildren} from '@angular/core'
 import { MasterLog } from "@hive-force/log"
 import { Dice } from "@hive-force/dice"
-import { CreatureAsset, Action, Monk, MoveAction} from '@hive-force/assets';
+import { CreatureAsset, Action, Monk, MoveAction, AssetService, CreatureAssetService} from '@hive-force/assets';
 import { CreaturesList } from './creatures';
 import { SpriteDB } from "./db/sprite.db"
-import { Map } from '@hive-force/maps';
+import { mapAssets } from "./db/map-asset.db"
+import { GridService, GridComponent } from '@hive-force/maps';
 import { Engine, Sprite, ActionAnimationService } from '@hive-force/animations';
 
 // firebase
 import { AngularFirestore } from '@angular/fire/firestore';
-import { GridComponent } from './grid/grid.component';
-import { CreatureAssetComponent } from './creature.component';
 
 @Component({
   selector: 'hive-force-root',
@@ -26,19 +25,17 @@ export class AppComponent implements OnInit {
   public message = ""
   public title = 'hive-force';
   public totalRollAmount = 0;
-  public players: Array<CreatureAsset>
-  public creatures: Array<CreatureAsset>
-  public activePlayer: CreatureAsset
-  public playerIndex = 0
-  public numberOfPlayers = 0
   public id = 0
   public creaturesClass = new CreaturesList()
-  public map: Map
+  public map: GridService
+  public players: CreatureAsset[] = []
 
   public constructor(
     private firestore: AngularFirestore,
     private changeDetectorRef: ChangeDetectorRef,
     private animationService: ActionAnimationService,
+    private creatureAssetService: CreatureAssetService,
+    private assetService: AssetService,
   ) {
   }
 
@@ -57,7 +54,7 @@ export class AppComponent implements OnInit {
 
   public onLoadMap(): void {
     this.firestore.collection("maps").snapshotChanges().subscribe(item => {
-      this.map = new Map()
+      this.map = new GridService()
       this.map.setGridDetails((item[0].payload.doc.data() as any).displayGrid)
       this.gridComponent.loadMap(this.map)
       this.loadCreatures()
@@ -65,31 +62,36 @@ export class AppComponent implements OnInit {
 
       this.changeDetectorRef.detectChanges()
       window.dispatchEvent(new Event("resize"))
+
     })
   }
 
   public onGenerateMap(): void {
     this.loadMap()
+
     this.gridComponent.loadMap(this.map)
     this.loadCreatures()
     this.gridComponent.placeCreatures(this.players)
+    this.creatureAssetService.findByName("Jahml").activePlayer = true
     
     this.changeDetectorRef.detectChanges()
     window.dispatchEvent(new Event("resize"))
+
+    
+    mapAssets.forEach(asset => {
+      this.assetService.mapAssets[asset.key] = asset
+    })
   }
 
   public loadMap(): void {
-    this.map = new Map()
+    this.map = new GridService()
     this.map.createGrid(20, 15)
   }
 
   public loadCreatures(): void {
     this.createCreature("Jahml");
-    this.players[this.playerIndex].activePlayer = true
 
-    this.numberOfPlayers = this.players.length
     this.creaturesClass.creatures.forEach(a => this.players.push(a))
-    this.creatures = this.creaturesClass.creatures
     this.players.forEach(p => this.animationService.engine.assets.push(p))
     this.animationService.engine.run()
 
@@ -113,7 +115,6 @@ export class AppComponent implements OnInit {
   }
 
   public createCreature(name?: string): void {
-    this.players = []
     const creature = new Monk(10, name, "Way of the Open Hand")
     creature.frame = 5
     const sprite = new Sprite(new SpriteDB().get("blondHuman"))
@@ -133,20 +134,9 @@ export class AppComponent implements OnInit {
   public onSubActionSelect(subAction: Action): void {
     
   }
-  
-  public getSelectedCreatures(): Array<CreatureAsset> {
-    return this.creatures.filter(c => c.selected) || []
-  }
-
-  public executeAction(player: CreatureAsset, action: Action): void { 
-    this.getSelectedCreatures().forEach(selectedCreature => {
-      player.executeAction(action, selectedCreature)
-      MasterLog.log("\n")
-    });
-  }
 
   public async endTurn(): Promise<void> {
-    const player = this.players.find(p => p.activePlayer)
+    const player = this.creatureAssetService.getActivePlayer()
     player.activePlayer = false
     player.attributes.attacksRemaining = 2
     player.attributes.actionsPerformed = []
@@ -158,7 +148,7 @@ export class AppComponent implements OnInit {
     })
     player.selectedAction = null
 
-    const newPlayer = await this.getNextPlayer()  
+    const newPlayer = await this.creatureAssetService.getNextPlayer()  
     newPlayer.activePlayer = true
     newPlayer.selected = false    
     
@@ -175,40 +165,21 @@ export class AppComponent implements OnInit {
 
   public onExecute(activePlayer: CreatureAsset): void {
     const action = activePlayer.attributes.actions.find(a => a.selected)
-    this.creatures.forEach(creature => {
+    this.creatureAssetService.getAllSelectedCreatures().forEach(creature => {
       if(creature.selected) {
         action.execute(activePlayer, creature)
       }
     })
   }
 
-  private async getNextPlayer(): Promise<CreatureAsset> {
-    if(this.dm) {
-      (this.playerIndex === this.players.length - 1) ? this.playerIndex = 0 : this.playerIndex++
-      return this.players[this.playerIndex]
-    }
-
-    let nextPlayer
-    while(!nextPlayer) {
-      (this.playerIndex === this.players.length - 1) ? this.playerIndex = 0 : this.playerIndex++
-      const nextCreature = this.players[this.playerIndex]
-      if(!nextCreature.nonPlayableCharacter) {
-        nextPlayer = nextCreature
-        break
-      } else {
-       await this.autoAttack(nextCreature) 
-      }
-    }
-
-    return nextPlayer
-  }
+ 
 
   public async autoAttack(creature: CreatureAsset): Promise<void> {
     const localPlayers = this.players.filter(player => !player.nonPlayableCharacter)
     creature.activePlayer = true
 
     localPlayers[0].selected = true
-    await creature.movement.autoMove(localPlayers[0].location.cell)
+    await creature.autoMove(localPlayers[0].location.cell)
    
     // this.creatureComponent.executeAction(creature.attributes.actions.find(a => a.name === "Attack"))
     creature.activePlayer = false

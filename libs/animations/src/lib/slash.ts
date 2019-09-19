@@ -1,10 +1,9 @@
 import { Engine } from './engine';
 import { remove } from 'lodash';
 import { ActionAnimation } from './action-animation';
-import { Cell } from '@hive-force/maps';
+import { Cell } from '@hive-force/spells';
 import { Sprite } from './sprite';
 import { Subject } from 'rxjs';
-import { ChangeDetectorRef } from '@angular/core';
 
 export class SlashAnimation implements ActionAnimation {
   public sprite: Sprite;
@@ -13,8 +12,6 @@ export class SlashAnimation implements ActionAnimation {
   private frame = 1;
   private engine: Engine;
   private started = false
-
-  constructor(private changeDetection: ChangeDetectorRef) { }
 
   public presetAnimation(watcher: Subject<Sprite>): void {
     const spriteModel = {
@@ -64,28 +61,26 @@ export class SlashAnimation implements ActionAnimation {
   }
   
   public update() {
-    if (this.frame % 10 === 0) {
-      debugger
+    if (this.frame % 2 === 0) {
       this.sprite.doImageAdjustment();
       this.watcher.next(this.sprite);
-      this.started = true
-    }
-    
-    this.frame++;
-    
-    if (
-       this.sprite.positionNumber === 0 && this.started
-      ) {
-      setTimeout(() => {
+      
+      if (this.sprite.positionNumber === 1 && this.started) {
         this.frame = 1;
         this.started = false;
         this.sprite.positionNumber = 0;
         this.sprite.performingAction = false;
         this.watcher.next(this.sprite);
         remove(this.engine.assets, a => a === this);
-        this.resolve();
-      }, 30)
+        this.resolve();   
+      }
+
+      if(this.sprite.positionNumber === 1) {
+        this.started = true
+      }
+  }
+      
+  this.frame++;
     
-    }
   }
 }

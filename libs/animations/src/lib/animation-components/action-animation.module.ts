@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import { Engine } from './engine';
-import { ActionAnimationService } from './animation.service';
-import { ActionAnimationComponent } from './animation.component';
+import { Engine } from './../engine';
+import { ActionAnimationService } from './action-animation.service';
+import { ActionAnimationComponent } from './action-animation.component';
 import { CommonModule, KeyValuePipe } from '@angular/common';
 
 @NgModule({
@@ -19,4 +19,4 @@ import { CommonModule, KeyValuePipe } from '@angular/common';
     Engine
   ]
 })
-export class AnimationModule {}
+export class ActionAnimationModule {}

@@ -1,11 +1,11 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { ActionAnimationService } from './animation.service';
-import { Sprite, SpriteSection } from './sprite';
+import { ActionAnimationService } from './action-animation.service';
+import { Sprite } from './../sprite';
 
 @Component({
   selector: 'hive-force-animation',
-  styleUrls: ['./animation.component.scss'],
-  templateUrl: './animation.component.html'
+  styleUrls: ['./action-animation.component.scss'],
+  templateUrl: './action-animation.component.html'
 })
 export class ActionAnimationComponent { 
     public animations: {[key: string]: Sprite } = {}
@@ -20,7 +20,7 @@ export class ActionAnimationComponent {
           // debugger
           // delete this.animations[sprite.id]
           // return
-        }
+        } 
 
         if (!this.animations[sprite.key]) {
           this.animations[sprite.key] = sprite
@@ -35,7 +35,5 @@ export class ActionAnimationComponent {
           this.animations[sprite.key].positionNumber =  sprite.positionNumber
         }
       })
-  }
-
-    
+  }   
 }
