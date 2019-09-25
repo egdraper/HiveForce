@@ -115,18 +115,30 @@ export class AppComponent implements OnInit {
   }
 
   public createCreature(name?: string): void {
+    const deathSprite = new Sprite(new SpriteDB().get("deathCrossRed"))
+    
+    // Player 1
     const creature = new Monk(10, name, "Way of the Open Hand")
     creature.frame = 5
+
     const sprite = new Sprite(new SpriteDB().get("blondHuman"))
     sprite.imgSource = "../assets/motw.png"
-    creature.sprite = sprite
+    creature.sprite["alive"] = sprite
+    creature.sprite["death"] = deathSprite   
+    creature.activeSprite = creature.sprite["alive"]
+    
     creature.attributes.actions.forEach(a => a.setupAction(creature ,this.animationService))
     this.players.push(creature)
-    
+   
+    // Player 2
     const creature2 = new Monk(5, name + "1", "Way of the Open Hand")
     creature2.frame = 6
+
     const sprite2 = new Sprite(new SpriteDB().get("superHuman"))
-    creature2.sprite = sprite2
+    creature2.sprite["alive"] = sprite2
+    creature2.sprite["death"] = deathSprite 
+    creature2.activeSprite = creature2.sprite["alive"]
+
     creature.attributes.actions.forEach(a => a.setupAction(creature2 ,this.animationService))
     this.players.push(creature2);
   }

@@ -36,7 +36,7 @@ export class CreaturesList {
     zombieFred.id = `Zombie${name}`
     
     const sprite = new Sprite(new SpriteDB().get(creature))
-    zombieFred.sprite = sprite;
+    zombieFred.activeSprite = sprite;
     zombieFred.name = `Zombie ${name}`;
     zombieFred.level = 1;
     zombieFred.aggressive = true

@@ -20,20 +20,20 @@
     <div
       class="no-event"
       [style.z-index]="creatureAsset.location.zIndex"
-      [style.width.px]="creatureAsset.sprite.containerWidth"
-      [style.height.px]="creatureAsset.sprite.containerHeight"
-      [style.bottom.px]="creatureAsset.sprite.imgBottomOffset"
+      [style.width.px]="creatureAsset.activeSprite.containerWidth"
+      [style.height.px]="creatureAsset.activeSprite.containerHeight"
+      [style.bottom.px]="creatureAsset.activeSprite.imgBottomOffset"
       [style.position]="'absolute'"
       [style.overflow]="'hidden'">
       <img
         class="no-event"
-        src="{{ creatureAsset.sprite.imgSource }}"
-        [style.width]="creatureAsset.sprite.imgSheetWidth"
+        src="{{ creatureAsset.activeSprite.imgSource }}"
+        [style.width]="creatureAsset.activeSprite.imgSheetWidth"
         [style.height.px]="'auto'"
-        [style.top.px]="creatureAsset.sprite.imgSpriteTopOffset"
-        [style.left.px]="creatureAsset.sprite.imgSpriteLeftOffset"
-        [style.transform]="'rotate(' + creatureAsset.sprite.rotate + 'deg)'"
-        [class.action-glow]="creatureAsset.sprite.performingAction"
+        [style.top.px]="creatureAsset.activeSprite.imgSpriteTopOffset"
+        [style.left.px]="creatureAsset.activeSprite.imgSpriteLeftOffset"
+        [style.transform]="'rotate(' + creatureAsset.activeSprite.rotate + 'deg)'"
+        [class.action-glow]="creatureAsset.activeSprite.performingAction"
         [style.position]="'relative'"/>
     </div>
 
@@ -48,9 +48,9 @@
         *ngFor="let action of creatureAsset.attributes.actions">
         <div
           [class.selected]="action.selected"
-          (click)="selectAction(action, $event)">
+          (click)="selectAction(action, creatureAsset, $event)">
           <div
-            (click)="executeAction(action)"
+            (click)="onExecuteClick(action)"
             class="execute"
             *ngIf="action.selected">
             EXECUTE

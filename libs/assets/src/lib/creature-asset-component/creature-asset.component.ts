@@ -22,12 +22,12 @@ export class CreatureAssetComponent {
     ) {
     animationService.animationStarted.subscribe(locationCell => {
        const animatingCreature = this.creatureAssetService.findByLocation(locationCell.id)
-      animatingCreature.sprite.performingAction = true
+      animatingCreature.activeSprite.performingAction = true
     })
 
     animationService.animationEnded.subscribe(locationCell => {
       const animatingCreature = this.creatureAssetService.findByLocation(locationCell.id)
-      animatingCreature.sprite.performingAction = false
+      animatingCreature.activeSprite.performingAction = false
     })
   }
   
@@ -47,28 +47,23 @@ export class CreatureAssetComponent {
     const activePlayer = this.creatureAssetService.getActivePlayer()
 
     if (event.code === 'KeyW') {
-      activePlayer.sprite.key = "up"  
-      activePlayer.sprite.doImageAdjustment() 
+      activePlayer.activeSprite.key = "up"  
+      activePlayer.activeSprite.doImageAdjustment() 
     }
 
     if (event.code === 'KeyA') {
-      activePlayer.sprite.key = "left"  
-      activePlayer.sprite.doImageAdjustment() 
+      activePlayer.activeSprite.key = "left"  
+      activePlayer.activeSprite.doImageAdjustment() 
     }
     
     if (event.code === 'KeyD') {
-      activePlayer.sprite.key = "right"  
-      activePlayer.sprite.doImageAdjustment() 
+      activePlayer.activeSprite.key = "right"  
+      activePlayer.activeSprite.doImageAdjustment() 
     }
     
     if (event.code === 'KeyS') {
-      activePlayer.sprite.key = "down"  
-      activePlayer.sprite.doImageAdjustment() 
-    }
-
-    if (event.code === 'KeyP') {
-      activePlayer.sprite.key = "dead"  
-      activePlayer.sprite.doImageAdjustment() 
+      activePlayer.activeSprite.key = "down"  
+      activePlayer.activeSprite.doImageAdjustment() 
     }
   }
 
@@ -90,9 +85,10 @@ export class CreatureAssetComponent {
     creature.selected = !wasSelected 
   }
   
-  public selectAction(action: Action, event: any): void {
-    const activeCreature = this.creatureAssetService.getActivePlayer()
+  public selectAction(action: Action, activeCreature: CreatureAsset, event: any): void {
+    event.stopPropagation()
     activeCreature.selectedAction = action
+   
     if(action instanceof MoveAction && (action.maxRange > action.range)) {
       action.areaOfEffect = null
     }
@@ -102,13 +98,11 @@ export class CreatureAssetComponent {
       this.highlight(action)
     } 
 
-    event.stopPropagation()
     activeCreature.attributes.actions.forEach(a => a.selected = false)
-    
     action.selected = true
   }
 
-  public executeAction(action: Action): void {
+  public onExecuteClick(action: Action): void {
     const selectedCreatures = this.creatureAssetService.getAllSelectedCreatures()
     action.executeAction(
       this.animationService.engine,

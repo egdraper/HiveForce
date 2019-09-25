@@ -32,14 +32,14 @@ export class CreatureAsset extends SelectableAsset {
   // battle
   public engagedWith: Array<CreatureAsset> = [];
   
-  // visual attributes
+  // Visual attributes
   public location = new PlayerLocationService()
-  public sprite: Sprite
+  public sprite: {[key: string]: Sprite} = {}
+  public activeSprite: Sprite
   public frameDelay = true;
   public frame = 0;
 
   // Movement 
-
   public moving = false
   public path: any
   public nextCell: Cell
@@ -58,9 +58,9 @@ export class CreatureAsset extends SelectableAsset {
       this.frame === 40 ||
       this.frame === 50)) 
       {
-      this.sprite.doImageAdjustment()
+      this.activeSprite.doImageAdjustment()
     } else if(this.frame === 0 || this.frame === 20 || this.frame === 40 ){
-      this.sprite.doImageAdjustment()
+      this.activeSprite.doImageAdjustment()
     }
     
     // Update is called 60 times a second. For animation we want 30 times a second. This only runs every other update for graphics.
@@ -75,6 +75,10 @@ export class CreatureAsset extends SelectableAsset {
     this.frameDelay = !this.frameDelay;
   }
 
+  public die(): void {
+    
+  }
+
   public onCreatureSelect(): void {    
     this.selected = !this.selected;
   }
@@ -86,6 +90,7 @@ export class CreatureAsset extends SelectableAsset {
     const modifierAmount = this.attributes[`${skill}Modifier`];
     const result = dice.roll(`d20+${modifierAmount}`);
     const saved = result.modifiedRollValue >= DC;
+   
     MasterLog.log(saved ? `${this.name} saved!` : `${this.name} failed!`);
     MasterLog.log(`Rolled ${result.modifiedRollValue}: Needed ${DC}!`);
     MasterLog.log(`-------`);
@@ -220,7 +225,7 @@ export class CreatureAsset extends SelectableAsset {
     }
     
     if (this.activePlayer) {
-      this.sprite.key = creatureFacingOverride || direction
+      this.activeSprite.key = creatureFacingOverride || direction
   
       // Up
       if (direction === "up" && this.location.cell.y > 0) {
@@ -330,7 +335,7 @@ export class CreatureAsset extends SelectableAsset {
 
     public moveCreature(direction: string): void {
 
-      this.sprite.key = direction
+      this.activeSprite.key = direction
       // this.doImageAdjustment()
 
       this.nextCell = this.path.pop();
@@ -341,9 +346,9 @@ export class CreatureAsset extends SelectableAsset {
       }
 
       if(this.nextCell.x !== this.location.cell.x) {
-        this.sprite.key = this.nextCell.x > this.location.cell.x ? "right" : "left"
+        this.activeSprite.key = this.nextCell.x > this.location.cell.x ? "right" : "left"
       } else if ( this.nextCell.y !== this.location.cell.y ) {
-        this.sprite.key = this.nextCell.y > this.location.cell.y ? "down" : "up"
+        this.activeSprite.key = this.nextCell.y > this.location.cell.y ? "down" : "up"
       }
       
       if (this.nextCell && (!this.nextCell.obstacle && !this.checkForCreatureAtCell(this.nextCell, this.location.creaturesOnGrid))) { 
@@ -417,7 +422,7 @@ export class CreatureAsset extends SelectableAsset {
             }
           }
 
-          this.moveCreature(this.sprite.key);
+          this.moveCreature(this.activeSprite.key);
         } else {
           this.moving = false
           this.movementResolve()

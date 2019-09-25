@@ -36,8 +36,8 @@ export class Sprite implements SpriteModel {
     public locX = 0
     public imgSource = '../assets/motw.png';
     public imgSheetWidth = "";
-    public imgSpriteTopOffset = -9;
-    public imgSpriteLeftOffset = -1;
+    public imgSpriteTopOffset = 0;
+    public imgSpriteLeftOffset = 0;
     public imgBottomOffset = 0;
     public imageHeight = 'auto';
     public imageWidth = '100%';

@@ -61,27 +61,31 @@ export class Action {
     item.hitAnimation.presetAnimation(animationService.animation)
   }
   
-  public executeAction(
+  public async executeAction(
     engine: Engine,
     creature: CreatureAsset,
     selectedCreatures: Array<CreatureAsset>,
-    animationService: ActionAnimationService): any { 
+    animationService: ActionAnimationService): Promise<any> { 
     
-    selectedCreatures.forEach(selectedCreature => {
+    selectedCreatures.forEach(async (selectedCreature) => {
       // this.adjustMovement() // this is for
       const results = this.execute(creature, selectedCreature) as CreaturesEffect
 
       this.performanceAnimation.location = creature.location.cell
       this.effectAnimation.location = selectedCreature.location.cell
      
-      if(results && results.effected)
-        animationService.sequenceAnimations([
+      if(results && results.effected) {
+        await animationService.sequenceAnimations([
           this.performanceAnimation,
           results.effected ? this.effectAnimation : null
         ])
-      // actionAnimation.run(engine, creature.location.cell, watcher)
- 
-          
+      } else {
+        animationService.animate(this.performanceAnimation)
+      }
+
+      if(selectedCreature.attributes.currentHitPoints <= 0) {
+        selectedCreature.activeSprite = selectedCreature.sprite["death"]
+      }
       if(results) {
 
         

@@ -3,6 +3,7 @@ import { Subject, interval } from 'rxjs';
 import { ActionAnimation } from './../action-animation';
 import { Engine } from './../engine';
 import { Sprite } from './../sprite';
+import { Action } from 'rxjs/internal/scheduler/Action';
 
 @Injectable()
 export class ActionAnimationService {
@@ -32,5 +33,11 @@ export class ActionAnimationService {
         }
       }
     }
+  }
+
+  public async animate(animation: ActionAnimation): Promise<void> {
+    this.animationStarted.next(animation.location)
+    await animation.run(this.engine, animation.location, this.animation)
+    this.animationEnded.next(animation.location)
   }
 }

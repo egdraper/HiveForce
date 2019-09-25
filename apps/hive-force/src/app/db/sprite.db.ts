@@ -77,31 +77,28 @@ const spriteDBCollection: {[name: string]: SpriteModel } = {
     key: 'down',
     positionNumber: 0
   },
-  "blondHumanDead": {
-    name: 'Blond Human',
+  "deathCrossRed": {
+    name: 'Red Cross',
     imageAdjustment: {
       dead: {
         order: [0],
-        sprite: [{ x: -383, y: 15 }]
+        sprite: [{ x: 0, y: 0 }]
       },
     },
-    imgBottomOffset: 11,
-    containerWidth: 56,
-    containerHeight: 22,
+    imgBottomOffset: 0,
+    containerWidth: 50,
+    containerHeight: 60,
     locY: 0,
     locX: 0,
-    imgSource: '../assets/motw.png',
+    imgSource: '../assets/deathCross.png',
     imgSheetWidth: '',
-    imgSpriteTopOffset: -9,
-    imgSpriteLeftOffset: -1,
+    imgSpriteTopOffset: 0,
+    imgSpriteLeftOffset: 0,
     imageHeight: 'auto',
     imageWidth: '100%',
     performingAction: false,
-    key: 'down',
+    key: 'death',
     positionNumber: 0,
-    shadow: "solid #444444 4px",
-    radius: 10,  
-    rotate: 90 
   },
 
 
