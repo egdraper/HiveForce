@@ -18,7 +18,6 @@ import { AngularFirestore } from '@angular/fire/firestore';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  @ViewChild("hey", {static: false}) TextBox
   @ViewChild(GridComponent, { static: false }) gridComponent: GridComponent
 
   public dm = false
@@ -27,9 +26,10 @@ export class AppComponent implements OnInit {
   public totalRollAmount = 0;
   public id = 0
   public creaturesClass = new CreaturesList()
-  public map: GridService
   public players: CreatureAsset[] = []
-
+  
+  private map: GridService
+  
   public constructor(
     private firestore: AngularFirestore,
     private changeDetectorRef: ChangeDetectorRef,
@@ -62,30 +62,32 @@ export class AppComponent implements OnInit {
 
       this.changeDetectorRef.detectChanges()
       window.dispatchEvent(new Event("resize"))
-
     })
   }
 
   public onGenerateMap(): void {
-    this.loadMap()
-
-    this.gridComponent.loadMap(this.map)
+    this.map = this.loadMap()
     this.loadCreatures()
+   
+    this.gridComponent.loadMap(this.map)    
     this.gridComponent.placeCreatures(this.players)
+    
+    // TODO: Make this selectable rather than default
     this.creatureAssetService.findByName("Jahml").activePlayer = true
     
+    // TODO: Put this in a function
     this.changeDetectorRef.detectChanges()
     window.dispatchEvent(new Event("resize"))
 
-    
-    mapAssets.forEach(asset => {
-      this.assetService.mapAssets[asset.key] = asset
-    })
+    // mapAssets.forEach(asset => {
+    //   this.assetService.mapAssets[asset.key] = asset
+    // })
   }
 
-  public loadMap(): void {
-    this.map = new GridService()
-    this.map.createGrid(20, 15)
+  public loadMap(): GridService {
+    const map = new GridService()
+    map.createGrid(20, 15)
+    return map
   }
 
   public loadCreatures(): void {
@@ -103,43 +105,28 @@ export class AppComponent implements OnInit {
     })
   }
    
-
-  public onClick(): void {
-    const dice = new Dice();
-    this.totalRollAmount = dice.roll('d20').modifiedRollValue;
-  }
-
-  public addCharacter(): void {
-    // this.id++
-    // this.creatures.push(this.createCreature("Steve" + this.id));
-  }
-
   public createCreature(name?: string): void {
     const deathSprite = new Sprite(new SpriteDB().get("deathCrossRed"))
     
     // Player 1
-    const creature = new Monk(10, name, "Way of the Open Hand")
-    creature.frame = 5
-
     const sprite = new Sprite(new SpriteDB().get("blondHuman"))
+    const creature = new Monk(10, name, "Way of the Open Hand")    
     sprite.imgSource = "../assets/motw.png"
     creature.sprite["alive"] = sprite
     creature.sprite["death"] = deathSprite   
-    creature.activeSprite = creature.sprite["alive"]
-    
+    creature.activeSprite = creature.sprite["alive"]    
     creature.attributes.actions.forEach(a => a.setupAction(creature ,this.animationService))
+    creature.frame = 5
     this.players.push(creature)
    
     // Player 2
-    const creature2 = new Monk(5, name + "1", "Way of the Open Hand")
-    creature2.frame = 6
-
     const sprite2 = new Sprite(new SpriteDB().get("superHuman"))
+    const creature2 = new Monk(5, name + "1", "Way of the Open Hand")
     creature2.sprite["alive"] = sprite2
     creature2.sprite["death"] = deathSprite 
     creature2.activeSprite = creature2.sprite["alive"]
-
-    creature.attributes.actions.forEach(a => a.setupAction(creature2 ,this.animationService))
+    creature2.attributes.actions.forEach(a => a.setupAction(creature2 ,this.animationService))
+    creature2.frame = 6
     this.players.push(creature2);
   }
   

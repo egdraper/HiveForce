@@ -105,7 +105,6 @@ export class CreatureAssetComponent {
   public onExecuteClick(action: Action): void {
     const selectedCreatures = this.creatureAssetService.getAllSelectedCreatures()
     action.executeAction(
-      this.animationService.engine,
       this.creatureAssetService.getActivePlayer(),
       selectedCreatures,
       this.animationService

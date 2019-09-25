@@ -6,7 +6,7 @@ import { CreatureAsset } from '../creature.asset';
 import { TextAnimation, ActionAnimation, Engine, ActionAnimationService, AnimatingWeapon } from '@hive-force/animations';
 import { RelativePositionCell } from '@hive-force/spells';
 
-export class Action {
+export abstract class Action {
   public name: string
   public creaturesEffect: CreaturesEffect
   public requiresAttackAction: boolean
@@ -39,15 +39,6 @@ export class Action {
     return false;
   }
 
-  public isBonusActionAvailable(player: CreatureAsset) {
-    if (player.attributes.bonusActionsRemaining > 0) {
-      player.attributes.bonusActionsRemaining--;
-    } else {
-      MasterLog.log('You have no Bonus Action Remaining!!!');
-      return;
-    }
-  }
-
   public onSubActionSelect(subAction: Action): void {
     this.subActions.forEach(a => {
       a.selected = false
@@ -62,7 +53,6 @@ export class Action {
   }
   
   public async executeAction(
-    engine: Engine,
     creature: CreatureAsset,
     selectedCreatures: Array<CreatureAsset>,
     animationService: ActionAnimationService): Promise<any> { 
@@ -85,20 +75,6 @@ export class Action {
 
       if(selectedCreature.attributes.currentHitPoints <= 0) {
         selectedCreature.activeSprite = selectedCreature.sprite["death"]
-      }
-      if(results) {
-
-        
-        // actionAnimation = action.effectAnimation
-        // selectedCreature.sprite.performingAction = true
-        
-        // actionAnimation.run(engine, creature.location.cell, selectedCreature.location.cell)
-        // selectedCreature.sprite.performingAction = false  
-        // textAnimation = results.animationText
-        
-        // textAnimation.locY = selectedCreature.location.cell.posY
-        // results.animationText.run(engine, selectedCreature.location.cell)
-   
       }
              
       MasterLog.log("\n")
