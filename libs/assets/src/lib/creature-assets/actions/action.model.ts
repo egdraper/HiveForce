@@ -3,7 +3,7 @@ import { Effect } from '../effects/effects.model';
 import { MasterLog } from '@hive-force/log';
 import { Item, Weapon } from '@hive-force/items';
 import { CreatureAsset } from '../creature.asset';
-import { TextAnimation, ActionAnimation, Engine, ActionAnimationService, AnimatingWeapon } from '@hive-force/animations';
+import { TextAnimation, ActionAnimation, Engine, ActionAnimationService, AnimatingWeapon, TextAnimationService } from '@hive-force/animations';
 import { RelativePositionCell } from '@hive-force/spells';
 
 export abstract class Action {
@@ -55,7 +55,8 @@ export abstract class Action {
   public async executeAction(
     creature: CreatureAsset,
     selectedCreatures: Array<CreatureAsset>,
-    animationService: ActionAnimationService): Promise<any> { 
+    animationService: ActionAnimationService,
+    textAnimationService?: TextAnimationService): Promise<any> { 
     
     selectedCreatures.forEach(async (selectedCreature) => {
       // this.adjustMovement() // this is for
@@ -63,12 +64,14 @@ export abstract class Action {
 
       this.performanceAnimation.location = creature.location.cell
       this.effectAnimation.location = selectedCreature.location.cell
-     
+
       if(results && results.effected) {
         await animationService.sequenceAnimations([
           this.performanceAnimation,
           results.effected ? this.effectAnimation : null
         ])
+
+        textAnimationService.animate(results.text, "red", results.animationText, selectedCreature.location.cell)
       } else {
         animationService.animate(this.performanceAnimation)
       }
@@ -88,6 +91,7 @@ export abstract class Action {
 export class CreaturesEffect {
   creature: CreatureAsset;
   effected: boolean;
+  text?: string;
   effect?: Effect;
   animationText?: TextAnimation
 

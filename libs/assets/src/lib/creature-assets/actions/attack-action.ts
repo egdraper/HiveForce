@@ -5,7 +5,7 @@ import { Weapon } from '@hive-force/items';
 import { MasterLog } from '@hive-force/log';
 import { cloneDeep } from 'lodash';
 import { CreatureAsset } from '../creature.asset';
-import { ActionAnimation, ActionResultTextAnimation, AnimatingWeapon} from '@hive-force/animations';
+import { ActionAnimation, AnimatingWeapon, NumberAnimation} from '@hive-force/animations';
 
 export enum DamageStatus {
   doubled,
@@ -152,10 +152,10 @@ export class AttackAction extends Action {
         }
       }
 
-      const textAnimation = new ActionResultTextAnimation()
-      textAnimation.text = `${ totalHitPointsTaken }`
-      textAnimation.color = "red"
-      this.creaturesEffect = { creature: creature, effected: true, animationText: textAnimation };
+      const textAnimation = new NumberAnimation()
+      
+      textAnimation.presetAnimation()
+      this.creaturesEffect = { creature: creature, effected: true, text: (-1 *  totalHitPointsTaken).toString(), animationText: textAnimation };
 
       MasterLog.log(
         `${player.name} hit ${
@@ -163,9 +163,9 @@ export class AttackAction extends Action {
         } and took ${totalHitPointsTaken} damage`
       );
     } else {
-      const textAnimation = new ActionResultTextAnimation()
-      textAnimation.text = "Missed!"
-      textAnimation.color = "orange"
+      const textAnimation = new NumberAnimation()
+      
+      textAnimation.presetAnimation()
       this.creaturesEffect = { creature: creature, effected: false, animationText: textAnimation };
       MasterLog.log(`${player.name} missed!`);
     }

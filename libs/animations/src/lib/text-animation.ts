@@ -1,12 +1,9 @@
 import { Engine } from './engine';
 import { Cell } from '@hive-force/spells';
+import { Subject } from 'rxjs';
+import { Sprite } from './sprite';
 
 export class TextAnimation {
-    public width = "100%"
-    public height = "100%"
-    public locY = 0
-    public locX = 0
-    public color = "red"
-    public text = ""
-    public run(engine: Engine, creatureCell: Cell, text?: string, color?: string): void {}
+    public sprites: Array<Sprite>
+    public run: ( text: string, type: string, engine: Engine, location: Cell, watcher: Subject<any>) => Promise<unknown>
 }

@@ -1,6 +1,6 @@
 // tslint:disable: radix
 import { Component, HostListener, Output, EventEmitter } from '@angular/core';
-import { ActionAnimationService } from '@hive-force/animations'
+import { ActionAnimationService, TextAnimationService } from '@hive-force/animations'
 import { CreatureAssetService } from './creature-asset.service';
 import { Action, CreatureAsset, MoveAction } from '../creature-assets';
 
@@ -19,6 +19,7 @@ export class CreatureAssetComponent {
   constructor(
     public creatureAssetService: CreatureAssetService,
     private animationService: ActionAnimationService,
+    public textAnimationService: TextAnimationService
     ) {
     animationService.animationStarted.subscribe(locationCell => {
        const animatingCreature = this.creatureAssetService.findByLocation(locationCell.id)
@@ -29,6 +30,8 @@ export class CreatureAssetComponent {
       const animatingCreature = this.creatureAssetService.findByLocation(locationCell.id)
       animatingCreature.activeSprite.performingAction = false
     })
+
+    
   }
   
   @HostListener("document:keyup", ["$event"]) 
@@ -107,7 +110,8 @@ export class CreatureAssetComponent {
     action.executeAction(
       this.creatureAssetService.getActivePlayer(),
       selectedCreatures,
-      this.animationService
+      this.animationService,
+      this.textAnimationService,
     )
   }
 

@@ -7,7 +7,7 @@ import { CreaturesList } from './creatures';
 import { SpriteDB } from "./db/sprite.db"
 import { mapAssets } from "./db/map-asset.db"
 import { GridService, GridComponent } from '@hive-force/maps';
-import { Engine, Sprite, ActionAnimationService } from '@hive-force/animations';
+import { Engine, Sprite, ActionAnimationService, TextAnimationService } from '@hive-force/animations';
 
 // firebase
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -170,8 +170,6 @@ export class AppComponent implements OnInit {
       }
     })
   }
-
- 
 
   public async autoAttack(creature: CreatureAsset): Promise<void> {
     const localPlayers = this.players.filter(player => !player.nonPlayableCharacter)

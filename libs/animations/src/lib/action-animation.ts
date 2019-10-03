@@ -9,3 +9,4 @@ export class ActionAnimation {
     public presetAnimation: (watcher: Subject<Sprite>) => void
     public run: (engine: Engine, location: Cell, watcher: Subject<any>) => Promise<unknown>
 }
+

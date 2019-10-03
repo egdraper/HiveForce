@@ -3,6 +3,12 @@ export class SpriteSection {
   sprite: Array<{ x: number; y: number }>;
 }
 
+export class TextSprite {
+  locX: number
+  locY: number
+  sprites: Array<Sprite>
+}
+
 export interface SpriteModel {
   id?: string
   name?: string
