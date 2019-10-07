@@ -16,6 +16,7 @@ export class NumberAnimation implements TextAnimation {
   private spriteModel: SpriteModel;
   private offset = 100;
   private slowdown = 10;
+  private index = 0;
   private numberOffset = {
     black: {x: 0, y: 0},
     green: {x: -64, y: 0},
@@ -45,9 +46,31 @@ export class NumberAnimation implements TextAnimation {
       imgSource: '../assets/number-palette.png',
       imageAdjustment: {
         number: {
-          order: [0],
+          order: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
           sprite: [
+            { x: 0, y: -1 },
+            { x: 0, y: -4 },
+            { x: 0, y: -7 },
             { x: 0, y: -10 },
+            { x: 0, y: -12 },
+            { x: 0, y: -13 },
+            { x: 0, y: -8 },
+            { x: 0, y: -3 },
+            { x: 0, y: -1 },
+            { x: 0, y: 1 },
+            { x: 0, y: 4 },
+            { x: 0, y: 7 },
+            { x: 0, y: 10 },
+            { x: 0, y: 13 },
+            { x: 0, y: 16 },
+            { x: 0, y: 18 },
+            { x: 0, y: 21 },
+            { x: 0, y: 1 },
+            { x: 0, y: -3 },
+            { x: 0, y: -5 },
+            { x: 0, y: 5 },
+            { x: 0, y: 3 },
+            { x: 0, y: 1 },
           ]
         }
       }
@@ -84,17 +107,21 @@ export class NumberAnimation implements TextAnimation {
   }
   
   public update() {
-    if (this.frame % 2 === 0) {
+    if (this.frame % 2 === 0 && this.index < 23) {
       this.sprites.forEach(sprite => {
-        sprite.locY = sprite.locY - this.slowdown
+        const pos = sprite.imageAdjustment["number"].sprite
+        const order = sprite.imageAdjustment["number"].order[this.index]
+
+        sprite.locY = sprite.locY + pos[order].y
       })
+      this.index++
       this.slowdown = this.slowdown > 0 ? this.slowdown - 1 : 0
       this.watcher.next(this.sprites)
     }
     
     this.frame++ ;  
 
-    if(this.frame >= 150) {
+    if(this.frame >= 100000) {
       this.watcher.next(null);
       remove(this.engine.assets, a => a === this);
       this.resolve();   
