@@ -76,8 +76,10 @@ export class GridService {
             obstacle: false,
             id: `x${l}:y${i}`,
             imgUrl: "../../../assets/rock-flowers.png",
-            imgIndexX: imgIndexX === 1 ? 0 : (imgIndexX - 1) * (-50),
-            imgIndexY: imgIndexY === 1 ? 0 : (imgIndexY - 1) * (-50),
+
+            
+            imgIndexX: (Math.floor(Math.random() * 3)) * -50,
+            imgIndexY: (Math.floor(Math.random() * 3)) * -50,
             imgWidth: 150,
             imgHeight: 150,
           };

@@ -17,6 +17,7 @@ export class NumberAnimation implements TextAnimation {
   private offset = 100;
   private slowdown = 10;
   private index = 0;
+  private large = false;
   private numberOffset = {
     black: {x: 0, y: 0},
     green: {x: -64, y: 0},
@@ -34,6 +35,16 @@ export class NumberAnimation implements TextAnimation {
     8: {x: -48, y: -22},
     9: {x: 0, y: -44},
     0: {x: -16, y: -44},  
+    l1: {x: 0, y: 0},
+    l2: {x: -24, y: 0},
+    l3: {x: -48, y: 0},
+    l4: {x: -72, y: 0},
+    l5: {x: 0, y: -22},
+    l6: {x: -24, y: -22},
+    l7: {x: -48, y: -22},
+    l8: {x: -72, y: -22},
+    l9: {x: 0, y: -44},
+    l0: {x: -24, y: -44},  
   }
 
   public presetAnimation(): void {
@@ -49,14 +60,14 @@ export class NumberAnimation implements TextAnimation {
           order: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
           sprite: [
             { x: 0, y: -1 },
-            { x: 0, y: -4 },
-            { x: 0, y: -7 },
-            { x: 0, y: -10 },
-            { x: 0, y: -12 },
             { x: 0, y: -13 },
+            { x: 0, y: -14 },
+            { x: 0, y: -15 },
             { x: 0, y: -8 },
-            { x: 0, y: -3 },
+            { x: 0, y: -4 },
+            { x: 0, y: -2 },
             { x: 0, y: -1 },
+            { x: 0, y: 0 },
             { x: 0, y: 1 },
             { x: 0, y: 4 },
             { x: 0, y: 7 },
@@ -65,11 +76,11 @@ export class NumberAnimation implements TextAnimation {
             { x: 0, y: 16 },
             { x: 0, y: 18 },
             { x: 0, y: 21 },
-            { x: 0, y: 1 },
-            { x: 0, y: -3 },
+            { x: 0, y: 0 },
             { x: 0, y: -5 },
-            { x: 0, y: 5 },
+            { x: 0, y: -3 },
             { x: 0, y: 3 },
+            { x: 0, y: 5 },
             { x: 0, y: 1 },
           ]
         }
@@ -84,18 +95,40 @@ export class NumberAnimation implements TextAnimation {
     location: Cell,
     watcher: Subject<any>
     ): Promise<unknown> { 
-    this.slowdown = 10;   
-    const nums = text.split("")
-    const offset = 7 * (nums.length - 1)
+    this.slowdown = 10;
+    const numberWidth = 19   
+    const nums = text.split("")  
+   
+    if(Number(text) > 9) {
+      this.large = true
+    }
+   
     nums.forEach((num, index) => {
       const model = cloneDeep(this.spriteModel) as SpriteModel
-      model.imgSpriteTopOffset = this.numberOffset[type].y + this.numberOffset[num].y
+      const yOffset = (this.numberOffset[type].y + (this.numberOffset[num].y))
+      let yLargeAdjustment = 0
+      let containerSizeOffset = 0
+      let imageSize = "auto"
+      let offset = 7 * (nums.length - 1)
+     
+      if(this.large) {
+        num = `l${num}`
+        yLargeAdjustment = (Math.floor(yOffset / 2))
+        offset = 10 * (nums.length - 1)
+        containerSizeOffset = 8
+        imageSize = "192px";
+      }
+      
+      model.imgSpriteTopOffset = yOffset + yLargeAdjustment
       model.imgSpriteLeftOffset = this.numberOffset[type].x + this.numberOffset[num].x
-      model.locX = location.posX + (17 - offset) + ((index) * 15)
+      model.locX = location.posX + (17 - offset) + (index * numberWidth)
       model.locY = location.posY
+      model.containerWidth = 16 + containerSizeOffset
+      model.containerHeight = 22 + containerSizeOffset
+      model.imageWidth = imageSize
       this.sprites.push(new Sprite(model))
     });
- 
+   
     this.watcher = watcher;
     this.engine = engine;
     engine.assets.push(this);
@@ -121,7 +154,7 @@ export class NumberAnimation implements TextAnimation {
     
     this.frame++ ;  
 
-    if(this.frame >= 100000) {
+    if(this.frame >= 150) {
       this.watcher.next(null);
       remove(this.engine.assets, a => a === this);
       this.resolve();   
