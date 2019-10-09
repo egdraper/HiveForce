@@ -19,19 +19,6 @@ export class TextAnimationComponent {
           delete this.animations["1234"]
         }
         this.animations["1234"] = sprites
-
-        // if (!this.animations[sprite.key]) {
-        //   this.animations[sprite.key] = sprite
-        //   changeDetectorRef.detectChanges()
-        // } else {
-        //   this.animations[sprite.key].locY = sprite.locY
-        //   this.animations[sprite.key].locX =  sprite.locX
-        //   this.animations[sprite.key].imgSpriteTopOffset = sprite.imgSpriteTopOffset
-        //   this.animations[sprite.key].imgSpriteLeftOffset = sprite.imgSpriteLeftOffset
-        //   this.animations[sprite.key].performingAction =  sprite.performingAction
-        //   this.animations[sprite.key].imageAdjustment =  sprite.imageAdjustment
-        //   this.animations[sprite.key].positionNumber =  sprite.positionNumber
-        // }
       })
   }   
 }

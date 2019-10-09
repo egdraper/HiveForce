@@ -13,8 +13,6 @@ export class TextAnimationService {
   
   constructor(public engine: Engine) {}
 
-  public 
-
   public async animate(text: string, type: string, textAnimation: TextAnimation, location: Cell): Promise<void> {
     textAnimation.run(text, type, this.engine, location, this.animation )
   }

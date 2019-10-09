@@ -1,0 +1,22 @@
+
+<div *ngFor="let sprite of animations | keyvalue"
+      class="asset-animation-container"
+      [style.visibility]="'visible'"
+      [style.zIndex]="'1000'"
+      [style.width.px]="sprite.value.containerWidth"
+      [style.height.px]="sprite.value.containerHeight"
+      [style.bottom.px]="10"
+      [style.top.px]="sprite.value.locY"
+      [style.left.px]="sprite.value.locX"
+      [style.position]="'absolute'"
+      [style.overflow]="'hidden'">
+  
+      <img 
+        class="no-event"
+        src="{{sprite.value.imgSource}}"
+        [style.width]="'auto'"
+        [style.height]="'auto'"
+        [style.top.px]="sprite.value.imgSpriteTopOffset"
+        [style.left.px]="sprite.value.imgSpriteLeftOffset"
+        [style.position]="'relative'">
+</div>

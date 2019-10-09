@@ -4,6 +4,7 @@ import { Cell } from "@hive-force/spells"
 import { GridService } from "./grid.service"
 import { remove } from "lodash"
 import { templateJitUrl } from '@angular/compiler';
+import { ActionAnimationService, ActionAnimation, Fire1Animation, Engine, AssetAnimationService } from '@hive-force/animations'
 
 @Component({
   selector: "hive-force-grid",
@@ -21,7 +22,10 @@ export class GridComponent {
   public delete = false
   private index = 5
 
-  constructor(public creatureService: CreatureAssetService) {
+  constructor(
+    public creatureService: CreatureAssetService,
+    public animationService: AssetAnimationService,
+    ) {
     this.creatureService.$playerChange.subscribe(newCreature => {
       this.areaOfEffect = newCreature.attributes.selectedAction.areaOfEffect
     })
@@ -78,6 +82,7 @@ export class GridComponent {
     if(event.code === "KeyZ") {
       this.delete = !this.delete
     }
+
   }
 
   public addLayer(tile: any): void {
@@ -126,7 +131,12 @@ export class GridComponent {
       cell.imgWidth = 300
       cell.imgHeight = 600
     }
-   
+
+
+    const fire = new Fire1Animation()
+    fire.key = Date.now.toString()
+    fire.presetAnimation(this.animationService.animation)
+    this.animationService.animate(fire, cell)
    // if(cell.obstacle) {
     //   cell.obstacle = false
     // } else {

@@ -94,7 +94,6 @@ export class CreaturesEffect {
   text?: string;
   effect?: Effect;
   animationText?: TextAnimation
-
 }
 
 export class ConsumableAction extends Action {

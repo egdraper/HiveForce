@@ -75,6 +75,7 @@ export class Sprite implements SpriteModel {
     this.shadow = sprite.shadow || this.shadow
     this.radius = sprite.radius || this.radius
     this.rotate = sprite.rotate || this.rotate
+    this.id = sprite.id || this.id
   }
 
   public doImageAdjustment(): void {

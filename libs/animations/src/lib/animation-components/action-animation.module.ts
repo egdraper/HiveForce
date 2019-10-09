@@ -5,15 +5,19 @@ import { ActionAnimationComponent } from './action-animation.component';
 import { CommonModule, KeyValuePipe } from '@angular/common';
 import { TextAnimationComponent } from './text-animation/text-animation.component';
 import { TextAnimationService } from './text-animation/text-animation.service';
+import { AssetAnimationComponent } from './asset-animation/asset-animation.component';
+import { AssetAnimationService } from './asset-animation/asset-animation.service';
 
 @NgModule({
   declarations: [
     ActionAnimationComponent,
     TextAnimationComponent,
+    AssetAnimationComponent,
   ],
   exports: [
     ActionAnimationComponent,
-    TextAnimationComponent
+    TextAnimationComponent,
+    AssetAnimationComponent,
   ],
   imports: [
     CommonModule,
@@ -21,6 +25,7 @@ import { TextAnimationService } from './text-animation/text-animation.service';
   providers: [
     ActionAnimationService,
     TextAnimationService,
+    AssetAnimationService,
     Engine
   ]
 })

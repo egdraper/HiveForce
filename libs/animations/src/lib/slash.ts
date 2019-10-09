@@ -78,9 +78,8 @@ export class SlashAnimation implements ActionAnimation {
       if(this.sprite.positionNumber === 1) {
         this.started = true
       }
-  }
+    }
       
-  this.frame++;
-    
+    this.frame++;    
   }
 }

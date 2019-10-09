@@ -1,5 +1,7 @@
 export * from "./action-animation.module"
 export * from "./action-animation.component"
 export * from "./action-animation.service"
+export * from "./asset-animation/asset-animation.component"
+export * from "./asset-animation/asset-animation.service"
 export * from "./text-animation/text-animation.component"
 export * from "./text-animation/text-animation.service"
