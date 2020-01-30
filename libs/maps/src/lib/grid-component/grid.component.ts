@@ -133,10 +133,10 @@ export class GridComponent {
     }
 
 
-    const fire = new Fire1Animation()
-    fire.key = Date.now.toString()
-    fire.presetAnimation(this.animationService.animation)
-    this.animationService.animate(fire, cell)
+    // const fire = new Fire1Animation()
+    // fire.key = Date.now.toString()
+    // fire.presetAnimation(this.animationService.animation)
+    // this.animationService.animate(fire, cell)
    // if(cell.obstacle) {
     //   cell.obstacle = false
     // } else {

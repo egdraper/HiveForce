@@ -18,6 +18,7 @@ export class AssetAnimationComponent {
         if(!sprites) {
           delete this.animations[sprites.id]
         }
+        
         this.animations[sprites.id] = sprites
       })
   }   

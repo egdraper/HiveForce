@@ -95,26 +95,30 @@ export class NumberAnimation implements TextAnimation {
     location: Cell,
     watcher: Subject<any>
     ): Promise<unknown> { 
+    this.watcher = watcher;
+    this.engine = engine;
     this.slowdown = 10;
+
     const numberWidth = 19   
-    const nums = text.split("")  
+    const numbers = text.split("")  
    
     if(Number(text) > 9) {
       this.large = true
     }
    
-    nums.forEach((num, index) => {
+    numbers.forEach((num, index) => {         
       const model = cloneDeep(this.spriteModel) as SpriteModel
       const yOffset = (this.numberOffset[type].y + (this.numberOffset[num].y))
+      
       let yLargeAdjustment = 0
       let containerSizeOffset = 0
       let imageSize = "auto"
-      let offset = 7 * (nums.length - 1)
+      let offset = 7 * (numbers.length - 1)
      
       if(this.large) {
         num = `l${num}`
         yLargeAdjustment = (Math.floor(yOffset / 2))
-        offset = 10 * (nums.length - 1)
+        offset = 10 * (numbers.length - 1)
         containerSizeOffset = 8
         imageSize = "192px";
       }
@@ -128,9 +132,7 @@ export class NumberAnimation implements TextAnimation {
       model.imageWidth = imageSize
       this.sprites.push(new Sprite(model))
     });
-   
-    this.watcher = watcher;
-    this.engine = engine;
+
     engine.assets.push(this);
 
     const promise = new Promise(resolve => {
@@ -154,9 +156,14 @@ export class NumberAnimation implements TextAnimation {
     
     this.frame++ ;  
 
-    if(this.frame >= 150) {
+    if (this.frame >= 150) {
+      // Makes the Image disappear
       this.watcher.next(null);
+
+      // Removes the this animation from the engine.
       remove(this.engine.assets, a => a === this);
+
+      // Allows the using class to know when the animation is done. 
       this.resolve();   
     }
   }    

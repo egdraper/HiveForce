@@ -25,14 +25,14 @@ export class Fire1Animation implements AssetAnimation {
       containerHeight: 50,
       id: new Date().getTime().toString(),
       key: "fire1",
-      imgSource: '../assets/fire1.png',
+      imgSource: '../assets/dog.png',
       imageAdjustment: {
         fire1: {
-          order: [ 1, 2, 3],
+          order: [0, 1, 2],
           sprite: [
             { x: 0, y: -0 },
-            { x: -50, y: -0 },
-            { x: -100, y: -0 },
+            { x: 0, y: -50 },
+            { x: 0, y: -100 },
             { x: 0, y: -50 },
           ]
         },
