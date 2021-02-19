@@ -28,7 +28,10 @@ export class AppComponent implements OnInit {
   public creaturesClass = new CreaturesList()
   public players: CreatureAsset[] = []
   
+
   private map: GridService
+
+  
   
   public constructor(
     private firestore: AngularFirestore,
@@ -105,7 +108,7 @@ export class AppComponent implements OnInit {
     })
   }
    
-  public createCreature(name?: string): void {
+  public createCreature(name?: string): CreatureAsset {
     const deathSprite = new Sprite(new SpriteDB().get("deathCrossRed"))
     
     // Player 1
@@ -118,16 +121,18 @@ export class AppComponent implements OnInit {
     creature.attributes.actions.forEach(a => a.setupAction(creature ,this.animationService))
     creature.frame = 5
     this.players.push(creature)
+
+    return creature
    
-    // Player 2
-    const sprite2 = new Sprite(new SpriteDB().get("superHuman"))
-    const creature2 = new Monk(5, name + "1", "Way of the Open Hand")
-    creature2.sprite["alive"] = sprite2
-    creature2.sprite["death"] = deathSprite 
-    creature2.activeSprite = creature2.sprite["alive"]
-    creature2.attributes.actions.forEach(a => a.setupAction(creature2 ,this.animationService))
-    creature2.frame = 6
-    this.players.push(creature2);
+    // // Player 2
+    // const sprite2 = new Sprite(new SpriteDB().get("superHuman"))
+    // const creature2 = new Monk(5, name + "1", "Way of the Open Hand")
+    // creature2.sprite["alive"] = sprite2
+    // creature2.sprite["death"] = deathSprite 
+    // creature2.activeSprite = creature2.sprite["alive"]
+    // creature2.attributes.actions.forEach(a => a.setupAction(creature2 ,this.animationService))
+    // creature2.frame = 6
+    // this.players.push(creature2);
   }
   
   public onSubActionSelect(subAction: Action): void {

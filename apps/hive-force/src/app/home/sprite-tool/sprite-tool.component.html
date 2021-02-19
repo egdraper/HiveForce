@@ -1,0 +1,99 @@
+<div class="container">
+  <div
+  class="image-container"
+  [style.z-index]="1000"
+  [style.width.px]="50"
+  [style.height.px]="75"
+  [style.bottom.px]="0"
+  [style.overflow]="'hidden'">
+  <img
+    src="{{ creatureAsset.activeSprite.imgSource }}"
+    [style.width]=""
+    [style.height.px]="'auto'"
+    [style.top.px]="posY"
+    [style.left.px]="posX"
+    [style.position]="'relative'"/>
+</div>
+<div class="container">
+  <div
+  class="image-container"
+  [style.z-index]="1000"
+  [style.width.px]="50"
+  [style.height.px]="75"
+  [style.bottom.px]="0"
+  [style.overflow]="'hidden'">
+  <img
+    src="{{ creatureAsset.activeSprite.imgSource }}"
+    [style.width]=""
+    [style.height.px]="'auto'"
+    [style.top.px]="posY+75"
+    [style.left.px]="posX"
+    [style.position]="'relative'"/>
+</div>
+
+  <div
+      class="image-container"
+      [style.z-index]="creatureAsset?.location?.zIndex"
+      [style.width.px]="creatureAsset?.activeSprite?.containerWidth"
+      [style.height.px]="creatureAsset?.activeSprite?.containerHeight"
+      [style.bottom.px]="creatureAsset?.activeSprite?.imgBottomOffset"
+      [style.overflow]="'hidden'">
+      <img
+        src="{{ creatureAsset.activeSprite.imgSource }}"
+        [style.width]="creatureAsset?.activeSprite?.imgSheetWidth"
+        [style.height.px]="'auto'"
+        [style.top.px]="creatureAsset?.activeSprite?.imgSpriteTopOffset"
+        [style.left.px]="creatureAsset?.activeSprite?.imgSpriteLeftOffset"
+        [style.transform]="'rotate(' + creatureAsset?.activeSprite?.rotate + 'deg)'"
+        [class.action-glow]="creatureAsset?.activeSprite?.performingAction"
+        [style.position]="'relative'"/>
+    </div>
+
+
+    <div
+      *ngFor="let direction of directions"
+      class="image-container"
+      [style.z-index]="creatureAsset?.location?.zIndex"
+      [style.width.px]="creatureAsset?.activeSprite?.containerWidth"
+      [style.height.px]="creatureAsset?.activeSprite?.containerHeight"
+      [style.bottom.px]="creatureAsset?.activeSprite?.imgBottomOffset"
+      [style.overflow]="'hidden'">
+      <img
+        src="{{ creatureAsset.activeSprite.imgSource }}"
+        [style.width]="creatureAsset?.activeSprite?.imgSheetWidth"
+        [style.height.px]="'auto'"
+        [style.top.px]="creatureAsset?.activeSprite?.imgSpriteTopOffset"
+        [style.left.px]="creatureAsset?.activeSprite?.imgSpriteLeftOffset"
+        [style.transform]="'rotate(' + creatureAsset?.activeSprite?.rotate + 'deg)'"
+        [class.action-glow]="creatureAsset?.activeSprite?.performingAction"
+        [style.position]="'relative'"/>
+    </div>
+    
+    <div class="toolbar">
+      <button (click)="add()">ADD</button>
+      <button (click)="leftButtonClick()">ADD LEFT</button>
+      <button (click)="upButtonClick()">ADD UP</button>
+      <button (click)="downButtonClick()">ADD DOWN</button>
+      <button (click)="rightButtonClick()">ADD RIGHT</button>
+      <!-- <input 
+      [(ngModel)]="sprite.containerWidth"
+      placeholder="Area Width"
+      />
+
+      <input 
+      [(ngModel)]="sprite.containerHeight"
+      placeholder="Area Hight"
+      /> -->
+    <!-- <button (click)="previousPositionClick()">PREVIOUS</button>
+    <button (click)="nextPositionClick()">NEXT</button>
+    
+  
+  
+    <button (click)="leftButtonClick()">MOVE LEFT</button>
+    <button (click)="upButtonClick()">MOVE UP</button>
+    <button (click)="downButtonClick()">MOVE DOWN</button>
+    <button (click)="rightButtonClick()">MOVE RIGHT</button>
+  </div>
+</div>
+
+

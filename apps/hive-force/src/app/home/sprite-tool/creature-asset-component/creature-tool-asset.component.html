@@ -1,0 +1,21 @@
+<div>
+    <div
+      class="no-event"
+      [style.z-index]="creatureAsset.location.zIndex"
+      [style.width.px]="creatureAsset.activeSprite.containerWidth"
+      [style.height.px]="creatureAsset.activeSprite.containerHeight"
+      [style.bottom.px]="creatureAsset.activeSprite.imgBottomOffset"
+      [style.position]="'absolute'"
+      [style.overflow]="'hidden'">
+      <img
+        class="no-event"
+        src="{{ creatureAsset.activeSprite.imgSource }}"
+        [style.width]="creatureAsset.activeSprite.imgSheetWidth"
+        [style.height.px]="'auto'"
+        [style.top.px]="creatureAsset.activeSprite.imgSpriteTopOffset"
+        [style.left.px]="creatureAsset.activeSprite.imgSpriteLeftOffset"
+        [style.transform]="'rotate(' + creatureAsset.activeSprite.rotate + 'deg)'"
+        [class.action-glow]="creatureAsset.activeSprite.performingAction"
+        [style.position]="'relative'"/>
+    </div>
+</div>

@@ -8,17 +8,22 @@ import { AngularFireModule } from "@angular/fire"
 import { AngularFirestoreModule } from "@angular/fire/firestore"
 import { environment } from '../environments/environment';
 import { CanvasCenterDirective } from './canvas-center.directive';
-import { AssetModule } from '@hive-force/assets';
+import { AssetModule, CreatureAssetModule } from '@hive-force/assets';
 import { GridModule } from '@hive-force/maps';
 import { ActionAnimationModule } from '@hive-force/animations';
+import { SpriteToolComponent } from './home/sprite-tool/sprite-tool.component';
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [ 
     AppComponent,
     CreateCreatureComponent,
     CanvasCenterDirective,
+    SpriteToolComponent,
   ],
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     AngularFirestoreModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     CommonModule,

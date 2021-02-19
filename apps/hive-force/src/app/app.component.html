@@ -3,14 +3,15 @@
 <button (click)="onGenerateMap()">Generate Map</button>
 <button (click)="endTurn()">End Turn</button>
 
-<div 
-  class="game-canvas">
-  <div  
-    canvasCenter
+<hive-force-sprite-tool></hive-force-sprite-tool>
+
+<div class="game-canvas">
+  <div canvasCenter
     id="main-grid"
     class="main-grid game-space">
-    <hive-force-grid></hive-force-grid>
+    <!-- <hive-force-grid></hive-force-grid> -->
   </div>
+</div>
 
   <!-- <div *ngFor="let player of players">
       <div *ngIf="player.activePlayer">

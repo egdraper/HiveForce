@@ -55,7 +55,8 @@ export class Sprite implements SpriteModel {
     public radius = 0;
     public rotate = 0;
 
-  constructor(sprite: SpriteModel) {
+  constructor(sprite?: SpriteModel) {
+    if(!sprite) { return }
     this.name = sprite.name
     this.containerWidth = sprite.containerWidth || this.containerWidth
     this.containerHeight = sprite.containerHeight || this.containerHeight
@@ -79,7 +80,7 @@ export class Sprite implements SpriteModel {
   }
 
   public doImageAdjustment(): void {
-    if (this.imageAdjustment && this.imageAdjustment[this.key]) {
+    if (this.imageAdjustment && this.imageAdjustment[this.key] && Object.keys(this.imageAdjustment[this.key]).length !== 0) {
       const a = this.imageAdjustment[this.key];
       this.imgSpriteLeftOffset = a.sprite[a.order[this.positionNumber]].x;
       this.imgSpriteTopOffset = a.sprite[a.order[this.positionNumber]].y;
